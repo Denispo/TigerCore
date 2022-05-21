@@ -1,0 +1,22 @@
+version: "3.2"
+services:
+
+  php:
+    environment:
+      TZ: "Europe/Prague"
+    build: ./../_docker/php/
+    networks:
+      - backend
+#      - frontend
+    volumes:
+      - ./TigerCore/:/var/www/
+    depends_on:
+      - db
+
+networks:
+#  frontend:
+  backend:
+
+
+#volumes:
+#  form:

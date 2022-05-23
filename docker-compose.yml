@@ -9,7 +9,7 @@ services:
       - backend
 #      - frontend
     volumes:
-      - ./TigerCore/:/var/www/
+      - .:/var/www/
 
 networks:
 #  frontend:

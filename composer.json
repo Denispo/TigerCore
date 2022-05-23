@@ -8,13 +8,12 @@
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
-  "require-dev": {
+  "require": {
+    "php": ">=8.0",
     "nette/routing": "^3.0",
     "nette/http": "^3.1",
-    "nette/application": "^3.1",
     "nette/robot-loader": "^3.4",
     "nette/database": "^3.1",
-    "nette/di": "^3.0",
     "nette/utils": "^3.2",
     "firebase/php-jwt": "^6.1"
   }

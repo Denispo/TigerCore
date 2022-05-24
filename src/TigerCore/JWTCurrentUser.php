@@ -13,35 +13,6 @@ class JWTCurrentUser extends BaseCurrentUser implements ICurrentUser {
 
   private static self $currentUser;
 
-  private const PRIVATE_KEY = <<<PEPA
------BEGIN RSA PRIVATE KEY-----
-MIICXQIBAAKBgHpaoLu4bzEHguSYLuClUd39wOCIpBCnX1U6TxjES4EScd+0Z9jO
-GCpBFTUf+7YK7EwRbNrYriDn4uC65epPi3FQ2OPJqHULIwFGclAIY0eFvsTe1I2P
-hnUzR4SbLeKjSpxrDj9CIYEgHgGwlEzNwXuCpFJwYtX1mx2VapTSjdyvAgMBAAEC
-gYA0bXUGOwdaKO/LZ/JeTDiCOONW0vYKNM3CxVNzN1lrGy40PydoXRc5s92Uf/np
-jVCnX6gXNlWWwAYVacBu4FrNQRw3C1LsHY4RdrLQRQ4SanIShfUb4msDhSzsfLjK
-gujkNQM3d5ut/fsh3JA3nOKkSicGA0I6TKaG1TNaRHFDcQJBAMHYFuLS1gQ3Lwxa
-MbwBm1x2v7ihAX8Kpok0WBzXz4TpQzdvIy/u4fIKRNvHFRLaFLg0650tBN3kqJym
-WyVnsWsCQQChljHSYMspwu9fmHcN83HZfgPyFBkKfsebUia8PdUrAKJQamVI2Qgl
-hBGBQqsvcUzSGVf2j3zCmMLc2ePgft7NAkEAudNXjTYk6IGmXqcQSnUX5LoJ7Qqc
-Dpe9Moa1eWEBlR6wyzGFf+v3OjrR7Aabkyjw9+3zeQexRK5xXUq00dTn5QJBAJc9
-umI8AMyUzXI/hWeEbhJw9YZ2sz10jqXdTa4xfb1jOYllHGoD4bEjnTLMUOf19z5L
-RF7dzJtjWjhWpQiyFx0CQQCCZZh0VtZbJH7PQcWYmrEQT6F1DNiJO2FSh3C1mrO9
-/++6Y1ceiC9Y1ub5B5Xq63gFZAPWCiT7NB8SObz+JGZ9
------END RSA PRIVATE KEY-----
-PEPA;
-
-
-  private const PUBLIC_KEY = <<<PEPA
------BEGIN PUBLIC KEY-----
-MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgHpaoLu4bzEHguSYLuClUd39wOCI
-pBCnX1U6TxjES4EScd+0Z9jOGCpBFTUf+7YK7EwRbNrYriDn4uC65epPi3FQ2OPJ
-qHULIwFGclAIY0eFvsTe1I2PhnUzR4SbLeKjSpxrDj9CIYEgHgGwlEzNwXuCpFJw
-YtX1mx2VapTSjdyvAgMBAAE=
------END PUBLIC KEY-----
-PEPA;
-
-
   private array $decodedToken = [];
 
   public static function getInstance(VO_TokenPlainStr $tokenStr):static {

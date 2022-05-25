@@ -4,14 +4,16 @@ namespace TigerCore\Request;
 
 use TigerCore\Auth\ICurrentUser;
 use TigerCore\Response\BaseResponseException;
+use TigerCore\Response\ICanAddToPayload;
 
 interface ICanMatch {
 
   /**
    * @param ICurrentUser $currentUser
+   * @param ICanAddToPayload $payload
    * @return void
    * @throws BaseResponseException
    */
-  public function onMatch(ICurrentUser $currentUser):void;
+  public function onMatch(ICurrentUser $currentUser, ICanAddToPayload $payload):void;
 
 }

@@ -6,6 +6,4 @@ interface ICurrentUser {
 
   public function isLoggedIn():bool;
 
-  public function logOut();
-
 }

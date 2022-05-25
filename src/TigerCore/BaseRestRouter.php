@@ -2,9 +2,10 @@
 
 namespace TigerCore;
 
-use TigerCore\Auth\ICanGetCurentUser;
+use TigerCore\Auth\ICurrentUser;
 use TigerCore\Constants\RequestMethod;
-use TigerCore\Request\IOnAddToPayload;
+use TigerCore\Request\BaseRequest;
+use TigerCore\Request\ICanGetRequestMask;
 use TigerCore\Request\ICanAuthorizeRequest;
 use TigerCore\Request\ICanMatch;
 use TigerCore\Request\RequestData;
@@ -13,7 +14,12 @@ use TigerCore\Response\ICanAddToPayload;
 use Nette\Http\IRequest;
 use Nette\Routing\Route;
 
-abstract class BaseRestRouter implements ICanMatchRoutes, ICanGetCurentUser, ICanAddToPayload {
+abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICanAddRequest {
+
+  /**
+   * @var BaseRequest[]
+   */
+  private array $routes;
 
   private function mapData(object $class, array $data):void {
 
@@ -48,17 +54,21 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanGetCurentUser, ICa
    */
   protected abstract function onGetRoutes(RequestMethod $requestMethod, ICanAddRequest $r);
 
+  protected abstract function onGetCurrentUser():ICurrentUser;
+
+  public function add(ICanGetRequestMask $request) {
+    $this->routes[] = $request;
+  }
 
   /**
    * @param IRequest $httpRequest
    * @return void
    */
   public function match(IRequest $httpRequest):void {
-    $routeCollector = new _RouteCollector();
 
-    $this->onGetRoutes(RequestMethod::getFromHttpRequest($httpRequest), $routeCollector);
+    $this->onGetRoutes(RequestMethod::getFromHttpRequest($httpRequest), $this);
 
-    foreach ($routeCollector->getRoutes() as $oneRequest) {
+    foreach ($this->routes as $oneRequest) {
       $params = (new Route($oneRequest->getMask()->getValue()))->match($httpRequest);
       if ($params) {
 
@@ -73,15 +83,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanGetCurentUser, ICa
 
         if ($oneRequest instanceof ICanMatch) {
           try {
-            $oneRequest->onMatch($this->onGetCurrentUser());
-          } catch (BaseResponseException $e) {
-            return;
-          }
-        };
-
-        if ($oneRequest instanceof IOnAddToPayload) {
-          try {
-            $oneRequest->onAddPayload($this);
+            $oneRequest->onMatch($this->onGetCurrentUser(), $this);
           } catch (BaseResponseException $e) {
             return;
           }

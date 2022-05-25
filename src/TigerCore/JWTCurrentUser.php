@@ -67,9 +67,6 @@ class JWTCurrentUser extends BaseCurrentUser implements ICurrentUser {
     return $this->getUserId() != '';
   }
 
-  public function logOut() {
-    // TODO: Implement logOut() method.
-  }
 
   public function getUserRole():string {
     return Arrays::get($this->decodedToken, 'role', '');

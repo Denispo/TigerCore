@@ -2,6 +2,7 @@
 
 namespace TigerCore\Request;
 
+use TigerCore\Response\ICanAddToPayload;
 use TigerCore\ValueObject\VO_BaseId;
 use TigerCore\ValueObject\VO_Email;
 use TigerCore\ValueObject\VO_Password;
@@ -26,9 +27,9 @@ abstract class BaseLoginUserRequest extends BaseFormRequest implements ICanMatch
 
   protected abstract function onVerifyPassword(VO_Password $password, VO_BaseId $userId):PasswordValidity;
 
-  protected abstract function onLoginComplete(VO_BaseId $userId):void;
+  protected abstract function onLoginComplete(VO_BaseId $userId, ICanAddToPayload $payload):void;
 
-  public function onMatch(ICurrentUser $currentUser):void {
+  public function onMatch(ICurrentUser $currentUser, ICanAddToPayload $payload):void {
 
     $userEmail = new VO_Email($this->userName);
     if (!$userEmail->isValid()) {
@@ -53,7 +54,7 @@ abstract class BaseLoginUserRequest extends BaseFormRequest implements ICanMatch
       throw new InvalidCredentialsException();
     }
 
-    $this->onLoginComplete($userId);
+    $this->onLoginComplete($userId, $payload);
 
   }
 

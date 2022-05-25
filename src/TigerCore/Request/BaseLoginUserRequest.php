@@ -2,6 +2,7 @@
 
 namespace TigerCore\Request;
 
+use TigerCore\Response\BaseResponseException;
 use TigerCore\Response\ICanAddToPayload;
 use TigerCore\ValueObject\VO_BaseId;
 use TigerCore\ValueObject\VO_Email;
@@ -27,6 +28,12 @@ abstract class BaseLoginUserRequest extends BaseFormRequest implements ICanMatch
 
   protected abstract function onVerifyPassword(VO_Password $password, VO_BaseId $userId):PasswordValidity;
 
+  /**
+   * @param VO_BaseId $userId
+   * @param ICanAddToPayload $payload
+   * @return void
+   * @throws BaseResponseException
+   */
   protected abstract function onLoginComplete(VO_BaseId $userId, ICanAddToPayload $payload):void;
 
   public function onMatch(ICurrentUser $currentUser, ICanAddToPayload $payload):void {

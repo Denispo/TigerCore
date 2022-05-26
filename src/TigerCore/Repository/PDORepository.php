@@ -3,7 +3,6 @@
 namespace TigerCore\Repository;
 
 use Nette\Database\Connection;
-use Nette\Utils\DateTime;
 
 class PDORepository {
 
@@ -11,13 +10,15 @@ class PDORepository {
 
   }
 
+
+
   /**
    * @param string $sql
    * @param ...$params
-   * @return int[][]|string[][]|DateTime[][]|float[][]|bool[][]|\DateInterval[][]
+   * @return SqlResult
    */
-  protected function fetchAll(string $sql, ...$params): array {
-    return $this->db->fetchAll($sql, ...$params);
+  protected function select(string $sql, ...$params): SqlResult {
+    return new SqlResult($this->db->fetchAll($sql, ...$params));
   }
 
   /**

@@ -5,7 +5,7 @@ namespace TigerCore\Request;
 
 abstract class BaseFormRequest extends BaseRequest implements ICanCheckCSRF {
 
-  #[RequestData('csrf')]
+  #[RequestParam('csrf')]
   public mixed $csrf;
 
   public function getCsrf(): string {

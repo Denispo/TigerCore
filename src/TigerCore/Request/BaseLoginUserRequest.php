@@ -13,13 +13,13 @@ use TigerCore\Response\InvalidCredentialsException;
 
 abstract class BaseLoginUserRequest extends BaseFormRequest implements ICanMatch {
 
-  #[RequestData('name')]
+  #[RequestParam('name')]
   public mixed $userName;
 
-  #[RequestData('email')]
+  #[RequestParam('email')]
   public mixed $userEmail;
 
-  #[RequestData('password')]
+  #[RequestParam('password')]
   public mixed $userPassword;
 
   //----------------------------

@@ -8,7 +8,7 @@ use TigerCore\Request\BaseRequest;
 use TigerCore\Request\ICanGetRequestMask;
 use TigerCore\Request\ICanAuthorizeRequest;
 use TigerCore\Request\ICanMatch;
-use TigerCore\Request\RequestData;
+use TigerCore\Request\RequestParam;
 use TigerCore\Response\BaseResponseException;
 use TigerCore\Response\ICanAddToPayload;
 use Nette\Http\IRequest;
@@ -29,11 +29,11 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICan
     $data = array_change_key_case($data, CASE_LOWER);
 
     foreach ($props as $oneProp) {
-      $attributes = $oneProp->getAttributes(RequestData::class);
+      $attributes = $oneProp->getAttributes(RequestParam::class);
       foreach ($attributes as $oneAttribute) {
 
         /**
-         * @var RequestData $attr
+         * @var RequestParam $attr
          */
         $attr = $oneAttribute->newInstance();
         $paramName = $attr->getParamName();

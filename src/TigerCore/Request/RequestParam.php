@@ -3,15 +3,15 @@
 namespace TigerCore\Request;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class RequestData {
-  private string $paramName;
+class RequestParam {
+  private string $paramParam;
 
   public function __construct( string $paramName, private $defaultValue = null) {
-    $this->paramName = strtolower(trim($paramName));
+    $this->paramParam = strtolower(trim($paramName));
   }
 
   public function getParamName():string {
-    return $this->paramName;
+    return $this->paramParam;
   }
 
   public function getDefaultValue() {

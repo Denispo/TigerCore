@@ -3,6 +3,7 @@
 namespace TigerCore\Repository;
 
 use Nette\Database\Connection;
+use TigerCore\ValueObject\VO_LastInsertedId;
 
 class PDORepository {
 
@@ -24,10 +25,10 @@ class PDORepository {
   /**
    * @param string $sql
    * @param ...$params
-   * @return string Last inserted id
+   * @return VO_LastInsertedId Last inserted id
    */
-  protected function insert(string $sql, ...$params):string {
+  protected function insert(string $sql, ...$params):VO_LastInsertedId {
     $this->db->query($sql, ...$params);
-    return $this->db->getInsertId();
+    return new VO_LastInsertedId($this->db->getInsertId());
   }
 }

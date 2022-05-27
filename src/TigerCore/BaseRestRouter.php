@@ -40,6 +40,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICan
 
 
         $value = $data[strtolower($paramName)] ?? null;
+        $oneProp->getType()
 
         $oneProp->setValue($class, $value);
       }

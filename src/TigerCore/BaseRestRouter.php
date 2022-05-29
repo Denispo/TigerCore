@@ -13,6 +13,7 @@ use TigerCore\Response\BaseResponseException;
 use TigerCore\Response\ICanAddToPayload;
 use Nette\Http\IRequest;
 use Nette\Routing\Route;
+use TigerCore\ValueObject\BaseValueObject;
 
 abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICanAddRequest {
 
@@ -40,9 +41,22 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICan
 
 
         $value = $data[strtolower($paramName)] ?? null;
-        $oneProp->getType()
+        $type = $oneProp->getType();
+          if ($type && !$type->isBuiltin()) {
+              if (is_a($type->getName(), BaseValueObject::class, true)) {
+                  // Parametr je BaseValueObject
+                  $oneProp->setValue($class, new ($type->getName())($value));
 
-        $oneProp->setValue($class, $value);
+              } else {
+                  // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject
+              }
+          } else {
+              // Parametr je obycejneho PHP typy (int, string, mixed atd.)
+              $oneProp->setValue($class, $value);
+          }
+
+
+
       }
     }
 

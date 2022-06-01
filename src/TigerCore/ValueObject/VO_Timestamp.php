@@ -36,4 +36,15 @@ class VO_Timestamp extends BaseValueObject {
     public function addMinutes(int $minutesCount):self{
       return new self($this->getValue() + ($minutesCount * 60));
     }
+
+  public function isInFuture(): bool
+  {
+    return $this->getValue() > time();
+  }
+
+  public function isInPast(): bool
+  {
+    return !$this->isInFuture();
+  }
+
 }

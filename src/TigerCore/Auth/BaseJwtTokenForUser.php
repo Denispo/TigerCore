@@ -37,7 +37,7 @@ abstract class BaseJwtTokenForUser implements ICanGetTokenStrForUser, ICanParseT
    */
   public function parseToken(VO_TokenPlainStr $tokenStr): BaseDecodedTokenData {
     try {
-      $data = JWT::decode($tokenStr->getValue(), new Key($this->publicKey->getValue(), 'RS256'));
+      $data = (array) JWT::decode($tokenStr->getValue(), new Key($this->publicKey->getValue(), 'RS256'));
     } catch (\InvalidArgumentException|\DomainException|\UnexpectedValueException|SignatureInvalidException|BeforeValidException|ExpiredException $e) {
       switch (get_class($e)) {
         case \InvalidArgumentException::class:{
@@ -73,7 +73,7 @@ abstract class BaseJwtTokenForUser implements ICanGetTokenStrForUser, ICanParseT
     }
 
     $userId = Arrays::get($data, 'uid', '');
-    return new BaseDecodedTokenData(new VO_BaseId($userId), Arrays::get((array)$data, 'claims', []));
+    return new BaseDecodedTokenData(new VO_BaseId($userId), Arrays::get($data, 'claims', []));
   }
 
   public function getTokenStr(VO_BaseId $userId):VO_TokenPlainStr {

@@ -16,6 +16,7 @@ use TigerCore\Payload\IBasePayload;
 use TigerCore\Request\BaseRequest;
 use TigerCore\Request\RequestParam;
 use TigerCore\Response\ICanAddToPayload;
+use TigerCore\ValueObject\VO_BaseId;
 use TigerCore\ValueObject\VO_PayloadKey;
 use TigerCore\ValueObject\VO_RouteMask;
 use TigerCore\ValueObject\VO_Timestamp;
@@ -38,7 +39,7 @@ class Payload extends BasePayload
 
     public function getPayloadKey(): VO_PayloadKey
     {
-        return 'testkey';
+        return new VO_PayloadKey('testkey');
     }
 
 }
@@ -67,6 +68,11 @@ class CurrentUser implements ICurrentUser
     {
        return true;
     }
+
+  public function getUserId(): VO_BaseId
+  {
+    return new VO_BaseId(0);
+  }
 }
 
 class RestRouter extends BaseRestRouter
@@ -85,6 +91,7 @@ class RestRouter extends BaseRestRouter
     public function addToPayload(IBasePayload $payload)
     {
 
+        echo($payload->getPayloadKey()->getValue().PHP_EOL);
         print_r($payload->getPayloadData());
     }
 }

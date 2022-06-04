@@ -45,7 +45,7 @@ class SqlResult {
         $attr = $oneAttribute->newInstance();
         $fieldName = $attr->getFieldName();
         if ($oneProp->isPublic()) {
-          $propParams = ['field' => $fieldName, 'propname' => $oneProp->name, 'is_vo' => false, 'vo_classname' => ''];
+          $propParams = ['field' => $fieldName, 'default'=> $attr->getDefaultValue() , 'propname' => $oneProp->name, 'is_vo' => false, 'vo_classname' => ''];
           $propParams['exists'] = property_exists($tempData, $fieldName);
 
 
@@ -84,7 +84,9 @@ class SqlResult {
         } else {
           // TODO: nekde ulozit/nekoho informovat, ze pro tuto property nemame z DB informaci
           if ($oneTmpProp['is_vo']) {
-            $obj->{$oneTmpProp['propname']} = new $oneTmpProp['vo_classname'](null);
+            $obj->{$oneTmpProp['propname']} = new $oneTmpProp['vo_classname']($oneTmpProp['default']);
+          } else {
+            $obj->{$oneTmpProp['propname']} = $oneTmpProp['default'];
           }
         }
       }

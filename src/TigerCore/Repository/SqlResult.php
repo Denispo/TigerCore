@@ -2,6 +2,7 @@
 
 namespace TigerCore\Repository;
 
+use Nette\Database\Row;
 use Nette\Utils\DateTime;
 use ReflectionException;
 use TigerCore\ValueObject\BaseValueObject;
@@ -9,7 +10,8 @@ use TigerCore\ValueObject\BaseValueObject;
 class SqlResult {
 
   /**
-   * @param int[][]|string[][]|DateTime[][]|float[][]|bool[][]|\DateInterval[][] $data
+   * --param int[][]|string[][]|DateTime[][]|float[][]|bool[][]|\DateInterval[][] $data
+   * @param Row[] $data
    */
   public function __construct(private array $data) {
 
@@ -23,12 +25,14 @@ class SqlResult {
    */
   public function mapToData(BaseDbData $dbData):array {
 
-    $tmpProps = []; // [['field' => number, 'propname' => string], [,]]
+    $tmpProps = []; // [['field' => 'id', 'propname' => 'userId'], [,]]
     $result = [];
 
 
     $reflection = new \ReflectionClass($dbData);
     $props = $reflection->getProperties();
+
+    $tempData = current($this->data);
 
     foreach ($props as $oneProp) {
       // Prvne si ulozime vsechny DbField::class property...
@@ -42,6 +46,10 @@ class SqlResult {
         $fieldName = $attr->getFieldName();
         if ($oneProp->isPublic()) {
           $propParams = ['field' => $fieldName, 'propname' => $oneProp->name, 'is_vo' => false, 'vo_classname' => ''];
+          $propParams['exists'] = property_exists($tempData, $fieldName);
+
+
+
           $type = $oneProp->getType();
 
           if ($type && !$type->isBuiltin()) {
@@ -65,14 +73,19 @@ class SqlResult {
     foreach ($this->data as $oneData) {
       $obj = new $dbData();
       foreach ($tmpProps as $oneTmpProp) {
-        if (array_key_exists($oneTmpProp['field'], $oneData)) {
+        if ($oneTmpProp['exists']) {
+
           if ($oneTmpProp['is_vo']) {
-            $obj->$oneTmpProp['propname'] = (new $oneTmpProp['vo_classname'])($oneData[$oneTmpProp['field']]);
+            $obj->$oneTmpProp['propname'] = (new $oneTmpProp['vo_classname'])($oneData->$oneTmpProp['field']);
           } else {
-            $obj->$oneTmpProp['propname'] = $oneData[$oneTmpProp['field']];
+            $obj->$oneTmpProp['propname'] = $oneData->$oneTmpProp['field'];
           }
+
         } else {
           // TODO: nekde ulozit/nekoho informovat, ze pro tuto property nemame z DB informaci
+          if ($oneTmpProp['is_vo']) {
+            $obj->$oneTmpProp['propname'] = (new $oneTmpProp['vo_classname'])(null);
+          }
         }
       }
       $result[] = $obj;

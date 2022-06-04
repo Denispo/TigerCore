@@ -7,7 +7,7 @@ class RP_Boolean extends BaseRequestParam implements ICanGetParamValueAsBoolean 
 
   private bool $paramValue;
 
-  public function onSetValue(mixed $paramValue): bool {
+  protected function onSetValue(mixed $paramValue): bool {
     if (is_bool($paramValue)) {
       $this->paramValue = $paramValue;
       return true;

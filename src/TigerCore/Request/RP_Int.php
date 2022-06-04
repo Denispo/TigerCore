@@ -11,7 +11,7 @@ class RP_Int extends BaseRequestParam implements ICanGetParamValueAsInit {
     return $this->paramValue;
   }
 
-  public function onSetValue(mixed $paramValue):bool {
+  protected function onSetValue(mixed $paramValue):bool {
     if (is_int($paramValue)) {
       $this->paramValue = $paramValue;
       return true;

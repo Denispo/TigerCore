@@ -6,7 +6,7 @@ class RP_String extends BaseRequestParam implements ICanGetParamValueAsString {
 
   private string $paramValue;
 
-  public function onSetValue(mixed $paramValue): bool {
+  protected function onSetValue(mixed $paramValue): bool {
     if (is_string($paramValue)) {
       $this->paramValue = $paramValue;
       return true;

@@ -10,7 +10,7 @@ abstract class BaseRequestParam {
     $this->wasSet = $this->onSetValue($paramValue);
   }
 
-  public abstract function onSetValue(mixed $paramValue):bool;
+  protected abstract function onSetValue(mixed $paramValue):bool;
 
   public function valueWasSet():bool {
     return $this->wasSet;

@@ -6,16 +6,16 @@ namespace TigerCore\Requests;
 
 abstract class BaseRequestParam {
 
-  private bool $wasSet;
+  private bool $isSet;
 
   public function __construct(private string $paramName, mixed $paramValue) {
-    $this->wasSet = $this->onSetValue($paramValue);
+    $this->isSet = $this->onSetValue($paramValue);
   }
 
   protected abstract function onSetValue(mixed $paramValue):bool;
 
-  public function valueWasSet():bool {
-    return $this->wasSet;
+  public function isSet():bool {
+    return $this->isSet;
   }
 
   public function getParamName():string

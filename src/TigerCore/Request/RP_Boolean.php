@@ -1,7 +1,8 @@
 <?php
 
-namespace TigerCore\Requests;
+declare(strict_types=1);
 
+namespace TigerCore\Requests;
 
 class RP_Boolean extends BaseRequestParam implements ICanGetParamValueAsBoolean {
 

@@ -9,6 +9,7 @@ use TigerCore\Request\ICanGetRequestMask;
 use TigerCore\Request\ICanAuthorizeRequest;
 use TigerCore\Request\ICanMatch;
 use TigerCore\Request\RequestParam;
+use TigerCore\Requests\BaseRequestParam;
 use TigerCore\Response\BaseResponseException;
 use TigerCore\Response\ICanAddToPayload;
 use Nette\Http\IRequest;
@@ -47,8 +48,11 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICan
                   // Parametr je BaseValueObject
                   $oneProp->setValue($class, new ($type->getName())($value));
 
+              } elseif (is_a($type->getName(), BaseRequestParam::class, true))  {
+                $oneProp->setValue($class, new ($type->getName())($paramName, $value));
+
               } else {
-                  // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject
+                // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject ani BaseRequestParam
               }
           } else {
               // Parametr je obycejneho PHP typy (int, string, mixed atd.)

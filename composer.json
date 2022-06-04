@@ -2,9 +2,7 @@
   "name": "denispo/tigercore",
   "description": "tiger core for tiger app",
   "autoload": {
-    "psr-4": {
-      "Denispo\\TigerCore\\": "src/"
-    }
+    "classmap": ["src/"]
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

@@ -4,14 +4,16 @@ namespace TigerCore\Repository;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class DbField {
-  private int|string $fieldName;
 
-  public function __construct(int|string $fieldName) {
-    $this->fieldName = $fieldName;
+  public function __construct(private int|string $fieldName, private int|bool|string|float $defaultValue) {
   }
 
   public function getFieldName():int|string {
     return $this->fieldName;
+  }
+
+  public function getDefaultValue():int|bool|string|float {
+    return $this->defaultValue;
   }
 
 }

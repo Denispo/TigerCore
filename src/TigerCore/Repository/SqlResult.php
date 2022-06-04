@@ -4,6 +4,7 @@ namespace TigerCore\Repository;
 
 use Nette\Utils\DateTime;
 use ReflectionException;
+use TigerCore\ValueObject\BaseValueObject;
 
 class SqlResult {
 
@@ -40,7 +41,19 @@ class SqlResult {
         $attr = $oneAttribute->newInstance();
         $fieldName = $attr->getFieldName();
         if ($oneProp->isPublic()) {
-          $tmpProps[] = ['field' => $fieldName, 'propname' => $oneProp->name];
+          $propParams = ['field' => $fieldName, 'propname' => $oneProp->name, 'is_vo' => false, 'vo_classname' => ''];
+          $type = $oneProp->getType();
+
+          if ($type && !$type->isBuiltin()) {
+            if (is_a($type->getName(), BaseValueObject::class, true)) {
+              // Parametr je BaseValueObject
+              $propParams['is_vo'] = true;
+              $propParams['vo_classname'] = $type->getName();
+            } else {
+              // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject
+            }
+          }
+          $tmpProps[] = $propParams;
         } else {
           // TODO: Reagovat, ze property neni public?
         }
@@ -53,7 +66,11 @@ class SqlResult {
       $obj = new $dbData();
       foreach ($tmpProps as $oneTmpProp) {
         if (array_key_exists($oneTmpProp['field'], $oneData)) {
-          $obj->$oneTmpProp['propname'] = $oneData[$oneTmpProp['field']];
+          if ($oneTmpProp['is_vo']) {
+            $obj->$oneTmpProp['propname'] = (new $oneTmpProp['vo_classname'])($oneData[$oneTmpProp['field']]);
+          } else {
+            $obj->$oneTmpProp['propname'] = $oneData[$oneTmpProp['field']];
+          }
         } else {
           // TODO: nekde ulozit/nekoho informovat, ze pro tuto property nemame z DB informaci
         }

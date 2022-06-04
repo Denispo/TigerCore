@@ -85,7 +85,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICan
 
     foreach ($this->routes as $oneRequest) {
       $params = (new Route($oneRequest->getMask()->getValue()))->match($httpRequest);
-      if ($params) {
+      if ($params !== null) {
 
         $this->mapData($oneRequest, $params);
 

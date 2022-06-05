@@ -26,7 +26,11 @@ class RP_Boolean extends BaseRequestParam implements ICanGetParamValueAsBoolean 
     return false;
   }
 
-  public function getValueAsBool(): bool {
-    return $this->paramValue;
+  public function getValueAsBool(bool|null $defaultValue = null): bool {
+    if ($this->isSet() || $defaultValue === null) {
+      return $this->paramValue;
+    } else {
+      return $defaultValue;
+    }
   }
 }

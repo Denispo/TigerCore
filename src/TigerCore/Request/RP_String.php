@@ -26,7 +26,11 @@ class RP_String extends BaseRequestParam implements ICanGetParamValueAsString {
     return $this->paramValue == '';
   }
 
-  public function getValueAsString(): string {
-    return $this->paramValue;
+  public function getValueAsString(string|null $defaultValue = null): string {
+    if ($this->isSet() || $defaultValue === null) {
+      return $this->paramValue;
+    } else {
+      return $defaultValue;
+    }
   }
 }

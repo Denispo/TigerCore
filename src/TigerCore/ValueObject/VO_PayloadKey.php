@@ -17,7 +17,7 @@ class VO_PayloadKey extends BaseValueObject {
 
     #[pure]
     function isValid(): bool {
-        return $this->isEmpty();
+        return !$this->isEmpty();
     }
 
     #[pure]

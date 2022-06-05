@@ -21,6 +21,9 @@ class SqlResult {
    * @return int[]|string[]|float[]|bool[]|\DateInterval[]
    */
   public function getByFieldName(VO_DbFieldName $fieldName):array {
+    if (!$this->data) {
+      return [];
+    }
     $result = [];
     if (!$fieldName->isValid() || !property_exists(current($this->data), $fieldName->getValue())) {
       return $result;
@@ -39,6 +42,10 @@ class SqlResult {
    * @return array<BaseDbData<T>>
    */
   public function mapToData(BaseDbData $dbData):array {
+
+    if (!$this->data) {
+      return [];
+    }
 
     $tmpProps = []; // [['field' => 'id', 'propname' => 'userId'], [,]]
     $result = [];

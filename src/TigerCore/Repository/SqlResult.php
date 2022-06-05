@@ -3,9 +3,8 @@
 namespace TigerCore\Repository;
 
 use Nette\Database\Row;
-use Nette\Utils\DateTime;
-use ReflectionException;
 use TigerCore\ValueObject\BaseValueObject;
+use TigerCore\ValueObject\VO_DbFieldName;
 
 class SqlResult {
 
@@ -18,10 +17,26 @@ class SqlResult {
   }
 
   /**
+   * @param VO_DbFieldName $fieldName
+   * @return int[]|string[]|float[]|bool[]|\DateInterval[]
+   */
+  public function getByFieldName(VO_DbFieldName $fieldName):array {
+    $result = [];
+    if (!$fieldName->isValid() || !property_exists(current($this->data), $fieldName->getValue())) {
+      return $result;
+    }
+
+    foreach ($this->data as $oneData) {
+      $result[] = $oneData[$fieldName->getValue()];
+    }
+    return $result;
+
+  }
+  
+  /**
    * @template T of BaseDbData
    * @param BaseDbData<T> $dbData
    * @return array<BaseDbData<T>>
-   * @throws ReflectionException
    */
   public function mapToData(BaseDbData $dbData):array {
 

@@ -22,6 +22,6 @@ class VO_DbFieldName extends BaseValueObject {
 
     #[pure]
     function isEmpty(): bool {
-        return $this->getValue() != '';
+        return $this->getValue() == '';
     }
 }

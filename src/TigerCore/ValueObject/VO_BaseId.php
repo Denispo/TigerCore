@@ -26,6 +26,6 @@ class VO_BaseId extends BaseValueObject {
 
     #[pure]
     function isEmpty(): bool {
-        return $this->getValue() === 0 || $this->getValue() != '';
+        return $this->getValue() === 0 || $this->getValue() == '';
     }
 }

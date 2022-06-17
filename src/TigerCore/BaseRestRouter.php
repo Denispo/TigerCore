@@ -2,6 +2,7 @@
 
 namespace TigerCore;
 
+use FastRoute\RouteCollector;
 use TigerCore\Auth\ICurrentUser;
 use TigerCore\Constants\RequestMethod;
 use TigerCore\Request\BaseRequest;
@@ -15,6 +16,7 @@ use TigerCore\Response\ICanAddToPayload;
 use Nette\Http\IRequest;
 use Nette\Routing\Route;
 use TigerCore\ValueObject\BaseValueObject;
+use function FastRoute\simpleDispatcher;
 
 abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICanAddRequest {
 
@@ -85,7 +87,22 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICan
    */
   public function match(IRequest $httpRequest):void {
 
+
+
     $this->onGetRoutes(RequestMethod::getFromHttpRequest($httpRequest), $this);
+
+    $dispatcher = simpleDispatcher(function(RouteCollector $r) {
+     // $r->addRoute('GET', '/users', 'get_all_users_handler');
+      // {id} must be a number (\d+)
+     // $r->addRoute('GET', '/user/{id:\d+}', 'get_user_handler');
+      // The /{title} suffix is optional
+      //$r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
+      foreach ($this->routes as $oneRequest) {
+        $r->addRoute('',$oneRequest->getMask()->getValue(), $oneRequest);
+      }
+    });
+
+    $dispatcher->dispatch(strtoupper($httpRequest->getMethod()), $httpRequest->getUrl()->getBaseUrl())
 
     foreach ($this->routes as $oneRequest) {
       $params = (new Route($oneRequest->getMask()->getValue()))->match($httpRequest);

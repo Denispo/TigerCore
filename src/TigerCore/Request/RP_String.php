@@ -6,7 +6,7 @@ namespace TigerCore\Requests;
 
 class RP_String extends BaseRequestParam implements ICanGetParamValueAsString {
 
-  private string $paramValue;
+  private string $paramValue = '';
 
   protected function onSetValue(mixed $paramValue): bool {
     if (is_string($paramValue)) {

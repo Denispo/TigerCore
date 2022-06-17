@@ -42,6 +42,10 @@ class RP_DateTime extends BaseRequestParam implements ICanGetParamValueAsTimesta
   }
 
   public function getValueAsTimestamp(): VO_Timestamp {
-    return $this->paramValue;
+    if ($this->isSet()) {
+      return $this->paramValue;
+    } else {
+      return new VO_Timestamp(0);
+    }
   }
 }

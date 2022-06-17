@@ -5,6 +5,6 @@ namespace TigerCore\Requests;
 
 interface ICanGetParamValueAsBoolean {
 
-  public function getValueAsBool():bool;
+  public function getValueAsBool(bool $defaultValue = false):bool;
 
 }

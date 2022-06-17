@@ -9,8 +9,8 @@ class RP_Int extends BaseRequestParam implements ICanGetParamValueAsInit {
 
   private int $paramValue;
 
-  public function getValueAsInt(int|null $defaultValue = null): int {
-    if ($this->isSet() || $defaultValue === null) {
+  public function getValueAsInt(int $defaultValue = 0): int {
+    if ($this->isSet()) {
       return $this->paramValue;
     } else {
       return $defaultValue;

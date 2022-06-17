@@ -5,6 +5,6 @@ namespace TigerCore\Requests;
 
 interface ICanGetParamValueAsString {
 
-  public function getValueAsString():string;
+  public function getValueAsString(string $defaultValue = ''):string;
 
 }

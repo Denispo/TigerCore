@@ -99,7 +99,8 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICan
       }
     });
 
-    $routeInfo = $dispatcher->dispatch(strtoupper($httpRequest->getMethod()), $httpRequest->getUrl()->getBaseUrl());
+    $requestMethod = strtoupper($httpRequest->getMethod());
+    $routeInfo = $dispatcher->dispatch($requestMethod, $httpRequest->getUrl()->getPath());
 
     $params = [];
 
@@ -114,9 +115,12 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICan
       case Dispatcher::FOUND:
         $oneRequest = $routeInfo[1];
         $params = $routeInfo[2];
-        // ... call $handler with $vars
+        if ($requestMethod === 'POST' || $requestMethod === 'PUT') {
+          $params = array_merge($params, $httpRequest->getPost());
+        }
         break;
     }
+
 
     if (isset($oneRequest) && is_object($oneRequest)) {
       $this->mapData($oneRequest, $params);

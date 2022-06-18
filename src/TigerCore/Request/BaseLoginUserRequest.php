@@ -11,7 +11,7 @@ use TigerCore\Auth\ICurrentUser;
 use TigerCore\Constants\PasswordValidity;
 use TigerCore\Response\InvalidCredentialsException;
 
-abstract class BaseLoginUserRequest extends BaseFormRequest implements ICanMatch {
+abstract class BaseLoginUserRequest extends BaseFormRequest {
 
   #[RequestParam('name')]
   public mixed $userName;

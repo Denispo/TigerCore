@@ -2,26 +2,23 @@
 
 namespace TigerCore;
 
+use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use TigerCore\Auth\ICurrentUser;
-use TigerCore\Constants\RequestMethod;
-use TigerCore\Request\BaseRequest;
 use TigerCore\Request\ICanGetRequestMask;
-use TigerCore\Request\ICanAuthorizeRequest;
 use TigerCore\Request\ICanMatch;
 use TigerCore\Request\RequestParam;
 use TigerCore\Requests\BaseRequestParam;
 use TigerCore\Response\BaseResponseException;
 use TigerCore\Response\ICanAddToPayload;
 use Nette\Http\IRequest;
-use Nette\Routing\Route;
 use TigerCore\ValueObject\BaseValueObject;
 use function FastRoute\simpleDispatcher;
 
 abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICanAddRequest {
 
   /**
-   * @var BaseRequest[]
+   * @var array
    */
   private array $routes;
 
@@ -70,15 +67,14 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICan
   }
 
   /**
-   * @param RequestMethod $requestMethod
    * @param ICanAddRequest $r
    */
-  protected abstract function onGetRoutes(RequestMethod $requestMethod, ICanAddRequest $r);
+  protected abstract function onGetRoutes(ICanAddRequest $r);
 
   protected abstract function onGetCurrentUser():ICurrentUser;
 
-  public function add(ICanGetRequestMask $request) {
-    $this->routes[] = $request;
+  public function addRequest(string|array $method, ICanGetRequestMask $request):void {
+    $this->routes[] = ['method' => $method,'request' => $request];
   }
 
   /**
@@ -87,23 +83,55 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICan
    */
   public function match(IRequest $httpRequest):void {
 
+    $this->onGetRoutes($this);
 
-
-    $this->onGetRoutes(RequestMethod::getFromHttpRequest($httpRequest), $this);
-
+    /**
+     * @var $dispatcher Dispatcher\GroupCountBased
+     */
     $dispatcher = simpleDispatcher(function(RouteCollector $r) {
      // $r->addRoute('GET', '/users', 'get_all_users_handler');
       // {id} must be a number (\d+)
      // $r->addRoute('GET', '/user/{id:\d+}', 'get_user_handler');
       // The /{title} suffix is optional
       //$r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
-      foreach ($this->routes as $oneRequest) {
-        $r->addRoute('',$oneRequest->getMask()->getValue(), $oneRequest);
+      foreach ($this->routes as $oneRoute) {
+        $r->addRoute($oneRoute['method'],$oneRoute['request']->getMask()->getValue(), $oneRoute['request']);
       }
     });
 
-    $dispatcher->dispatch(strtoupper($httpRequest->getMethod()), $httpRequest->getUrl()->getBaseUrl())
+    $routeInfo = $dispatcher->dispatch(strtoupper($httpRequest->getMethod()), $httpRequest->getUrl()->getBaseUrl());
 
+    $params = [];
+
+    switch ($routeInfo[0]) {
+      case Dispatcher::NOT_FOUND:
+        // ... 404 Not Found
+        break;
+      case Dispatcher::METHOD_NOT_ALLOWED:
+        $allowedMethods = $routeInfo[1];
+        // ... 405 Method Not Allowed
+        break;
+      case Dispatcher::FOUND:
+        $oneRequest = $routeInfo[1];
+        $params = $routeInfo[2];
+        // ... call $handler with $vars
+        break;
+    }
+
+    if (isset($oneRequest) && is_object($oneRequest)) {
+      $this->mapData($oneRequest, $params);
+
+
+      if ($oneRequest instanceof ICanMatch) {
+        try {
+          $oneRequest->onMatch($this->onGetCurrentUser(), $this);
+        } catch (BaseResponseException $e) {
+          return;
+        }
+      };
+
+    }
+/*
     foreach ($this->routes as $oneRequest) {
       $params = (new Route($oneRequest->getMask()->getValue()))->match($httpRequest);
       if ($params !== null) {
@@ -128,5 +156,6 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICan
         return;
       }
     }
+   */
   }
 }

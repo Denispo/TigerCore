@@ -80,7 +80,7 @@ class RestRouter extends BaseRestRouter
 
     protected function onGetRoutes(RequestMethod $requestMethod, ICanAddRequest $r)
     {
-        $r->add(new Request());
+        $r->addRequest(new Request());
     }
 
     protected function onGetCurrentUser(): ICurrentUser

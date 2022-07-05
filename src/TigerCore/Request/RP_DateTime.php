@@ -16,7 +16,7 @@ class RP_DateTime extends BaseRequestParam implements ICanGetParamValueAsTimesta
     }
 
     if (is_numeric($paramValue)) {
-      if ($paramValue > 9999999999999) {
+      if ($paramValue > 999999999999) {
         // timestamp je v milisekundach
         $this->paramValue = new VO_Timestamp(round(((int)$paramValue)/1000));
       } else {

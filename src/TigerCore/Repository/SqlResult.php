@@ -44,7 +44,8 @@ class SqlResult {
   public function mapToData(BaseDbData $dbData):array {
 
     if (!$this->data) {
-      return [];
+      // pokud nejsou data, tak si hrajeme an to, ze data jsou prazny objekt. Diky tomu se vsechny property u T inicializuji a nastavi se jim defaultni hodnota
+      $this->data = [new \stdClass()];
     }
 
     $tmpProps = []; // [['field' => 'id', 'propname' => 'userId'], [,]]

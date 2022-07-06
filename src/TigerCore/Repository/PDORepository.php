@@ -29,6 +29,8 @@ class PDORepository {
    */
   protected function insert(string $sql, ...$params):VO_LastInsertedId {
     $this->db->query($sql, ...$params);
-    return new VO_LastInsertedId($this->db->getInsertId());
+    $lastInsertedId = new VO_LastInsertedId($this->db->getInsertId());
+    $this->db->commit();
+    return $lastInsertedId;
   }
 }

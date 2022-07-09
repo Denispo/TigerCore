@@ -33,4 +33,16 @@ class PDORepository {
     $this->db->commit();
     return $lastInsertedId;
   }
+
+  /**
+   * @param string $sql
+   * @param ...$params
+   * @return int Affected rows count
+   */
+  protected function update(string $sql, ...$params):int {
+    $resultset = $this->db->query($sql, ...$params);
+    $rowsCount = $resultset->getRowCount() ?? 0;
+    $this->db->commit();
+    return $rowsCount;
+  }
 }

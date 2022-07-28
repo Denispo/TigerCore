@@ -5,11 +5,11 @@ namespace tests;
 require_once __DIR__.'/../vendor/autoload.php';
 
 
+use Nette\Http\IRequest;
 use Nette\Http\UrlScript;
 use Nette\Loaders\RobotLoader;
 use TigerCore\Auth\ICurrentUser;
 use TigerCore\BaseRestRouter;
-use TigerCore\Constants\RequestMethod;
 use TigerCore\ICanAddRequest;
 use TigerCore\Payload\BasePayload;
 use TigerCore\Payload\IBasePayload;
@@ -55,7 +55,7 @@ class Request extends BaseRequest
         return new VO_RouteMask('/test/<testparam>[/]');
     }
 
-    public function onMatch(ICurrentUser $currentUser, ICanAddToPayload $payload): void
+    public function onMatch(ICurrentUser $currentUser, ICanAddToPayload $payload, IRequest $httpRequest): void
     {
         $payload->addToPayload(new Payload(['data' => $this->testParam->getValue()]));
     }
@@ -78,9 +78,9 @@ class CurrentUser implements ICurrentUser
 class RestRouter extends BaseRestRouter
 {
 
-    protected function onGetRoutes(RequestMethod $requestMethod, ICanAddRequest $r)
+    protected function onGetRoutes(ICanAddRequest $r)
     {
-        $r->addRequest(new Request());
+        $r->addRequest('GET', new Request());
     }
 
     protected function onGetCurrentUser(): ICurrentUser
@@ -98,5 +98,7 @@ class RestRouter extends BaseRestRouter
 
 $request = new \Nette\Http\Request(new UrlScript('http://www.test.com/test/123456'));
 
+$currentUser = new CurrentUser();
+
 $router = new RestRouter();
-$router->match($request);
+$router->match($request, $currentUser);

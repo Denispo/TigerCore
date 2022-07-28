@@ -3,6 +3,6 @@
 namespace TigerCore\Request;
 
 
-abstract class BaseRequest implements ICanGetRequestMask, ICanMatch {
+abstract class BaseRequest implements ICanGetRequestMask, ICanMatchRequest {
 
 }

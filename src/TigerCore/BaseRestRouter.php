@@ -6,7 +6,7 @@ use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use TigerCore\Auth\ICurrentUser;
 use TigerCore\Request\ICanGetRequestMask;
-use TigerCore\Request\ICanMatch;
+use TigerCore\Request\ICanMatchRequest;
 use TigerCore\Request\RequestParam;
 use TigerCore\Requests\BaseRequestParam;
 use TigerCore\Response\BaseResponseException;
@@ -71,17 +71,16 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICan
    */
   protected abstract function onGetRoutes(ICanAddRequest $r);
 
-  protected abstract function onGetCurrentUser():ICurrentUser;
-
   public function addRequest(string|array $method, ICanGetRequestMask $request):void {
     $this->routes[] = ['method' => $method,'request' => $request];
   }
 
   /**
    * @param IRequest $httpRequest
+   * @param ICurrentUser $currentUser
    * @return void
    */
-  public function match(IRequest $httpRequest):void {
+  public function match(IRequest $httpRequest, ICurrentUser $currentUser):void {
 
     $this->onGetRoutes($this);
 
@@ -126,9 +125,9 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICan
       $this->mapData($oneRequest, $params);
 
 
-      if ($oneRequest instanceof ICanMatch) {
+      if ($oneRequest instanceof ICanMatchRequest) {
         try {
-          $oneRequest->onMatch($this->onGetCurrentUser(), $this);
+          $oneRequest->onMatch($currentUser, $this);
         } catch (BaseResponseException $e) {
           return;
         }

@@ -6,7 +6,7 @@ use TigerCore\Auth\ICurrentUser;
 use TigerCore\Response\BaseResponseException;
 use TigerCore\Response\ICanAddToPayload;
 
-interface ICanMatch {
+interface ICanMatchRequest {
 
   /**
    * @param ICurrentUser $currentUser

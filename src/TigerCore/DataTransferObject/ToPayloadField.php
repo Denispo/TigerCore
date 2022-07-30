@@ -3,7 +3,7 @@
 namespace TigerCore\DataTransferObject;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class PayloadField {
+class ToPayloadField {
 
   public function __construct(private string $fieldName) {
   }

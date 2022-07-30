@@ -2,7 +2,7 @@
 
 namespace TigerCore\Payload;
 
-use TigerCore\DataTransferObject\PayloadField;
+use TigerCore\DataTransferObject\ToPayloadField;
 use TigerCore\ValueObject\BaseValueObject;
 
 abstract class BasePayload implements IBasePayload{
@@ -28,11 +28,11 @@ abstract class BasePayload implements IBasePayload{
 
     foreach ($props as $oneProp) {
       // Prvne si ulozime vsechny PayloadField::class property...
-      $attributes = $oneProp->getAttributes(PayloadField::class);
+      $attributes = $oneProp->getAttributes(ToPayloadField::class);
       foreach ($attributes as $oneAttribute) {
 
         /**
-         * @var PayloadField $attr
+         * @var ToPayloadField $attr
          */
         $attr = $oneAttribute->newInstance();
         $fieldName = $attr->getFieldName();

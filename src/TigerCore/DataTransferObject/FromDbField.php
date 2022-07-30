@@ -3,7 +3,7 @@
 namespace TigerCore\DataTransferObject;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class DbField {
+class FromDbField {
 
   public function __construct(private int|string $fieldName, private int|bool|string|float $defaultValue) {
   }

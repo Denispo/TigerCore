@@ -4,7 +4,7 @@ namespace TigerCore\Repository;
 
 use Nette\Database\Row;
 use TigerCore\DataTransferObject\BaseDTO;
-use TigerCore\DataTransferObject\DbField;
+use TigerCore\DataTransferObject\FromDbField;
 use TigerCore\ValueObject\BaseValueObject;
 use TigerCore\ValueObject\VO_DbFieldName;
 
@@ -61,11 +61,11 @@ class SqlResult {
 
     foreach ($props as $oneProp) {
       // Prvne si ulozime vsechny DbField::class property...
-      $attributes = $oneProp->getAttributes(DbField::class);
+      $attributes = $oneProp->getAttributes(FromDbField::class);
       foreach ($attributes as $oneAttribute) {
 
         /**
-         * @var DbField $attr
+         * @var FromDbField $attr
          */
         $attr = $oneAttribute->newInstance();
         $fieldName = $attr->getFieldName();

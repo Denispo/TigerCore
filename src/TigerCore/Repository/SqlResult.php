@@ -3,6 +3,8 @@
 namespace TigerCore\Repository;
 
 use Nette\Database\Row;
+use TigerCore\DataTransferObject\BaseDTO;
+use TigerCore\DataTransferObject\DbField;
 use TigerCore\ValueObject\BaseValueObject;
 use TigerCore\ValueObject\VO_DbFieldName;
 
@@ -38,14 +40,14 @@ class SqlResult {
   
   /**
    * @template T of BaseDbData
-   * @param BaseDbData<T> $dbData
-   * @return array<BaseDbData<T>>
+   * @param BaseDTO<T> $dbData
+   * @return array<BaseDTO<T>>
    */
-  public function mapToData(BaseDbData $dbData):array {
+  public function mapToData(BaseDTO $dbData):array {
 
     if (!$this->data) {
       // pokud nejsou data, tak si hrajeme an to, ze data jsou prazny objekt. Diky tomu se vsechny property u T inicializuji a nastavi se jim defaultni hodnota
-      $this->data = [new \stdClass()];
+      $this->data = [new BaseDTO()];
     }
 
     $tmpProps = []; // [['field' => 'id', 'propname' => 'userId'], [,]]

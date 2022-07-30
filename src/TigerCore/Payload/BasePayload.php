@@ -2,20 +2,20 @@
 
 namespace TigerCore\Payload;
 
-use TigerCore\Repository\PayloadField;
+use TigerCore\DataTransferObject\PayloadField;
 use TigerCore\ValueObject\BaseValueObject;
 
 abstract class BasePayload implements IBasePayload{
 
   /**
    * @template T
-   * @param array<T> $dbData Array of classes. Each class has to be exactly the same type
-   * @return array Payload data mapped from $dbData object
+   * @param array<T> $data Array of classes. Each class has to be exactly the same type
+   * @return array Payload data mapped from $data object
    * @throws \ReflectionException
    */
-  protected function mapFromData(array $dbData):array {
+  protected function mapFromData(array $data):array {
 
-    if (!$dbData || count($dbData) === 0) {
+    if (!$data || count($data) === 0) {
       return [];
     }
 
@@ -23,7 +23,7 @@ abstract class BasePayload implements IBasePayload{
     $result = [];
 
 
-    $reflection = new \ReflectionClass(current($dbData));
+    $reflection = new \ReflectionClass(current($data));
     $props = $reflection->getProperties();
 
     foreach ($props as $oneProp) {
@@ -58,7 +58,7 @@ abstract class BasePayload implements IBasePayload{
     }
 
 
-    foreach ($dbData as $oneData) {
+    foreach ($data as $oneData) {
       $res = [];
       foreach ($tmpProps as $oneTmpProp) {
         if ($oneTmpProp['is_vo']) {

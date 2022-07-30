@@ -1,6 +1,6 @@
 <?php
 
-namespace TigerCore\Repository;
+namespace TigerCore\DataTransferObject;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class PayloadField {

@@ -81,6 +81,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
    * @param IRequest $httpRequest
    * @param ICurrentUser $currentUser
    * @return void
+   * @throws BaseResponseException
    */
   public function match(IRequest $httpRequest, ICurrentUser $currentUser):void {
 
@@ -128,39 +129,9 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
 
 
       if ($oneRequest instanceof ICanRunMatchedRequest) {
-        try {
           $oneRequest->runMatchedRequest($currentUser, $this->onGetPayloadContainer(), $httpRequest);
-        } catch (BaseResponseException $e) {
-          return;
-        }
       };
 
     }
-/*
-    foreach ($this->routes as $oneRequest) {
-      $params = (new Route($oneRequest->getMask()->getValue()))->match($httpRequest);
-      if ($params !== null) {
-
-        $this->mapData($oneRequest, $params);
-
-        if ($oneRequest instanceof ICanAuthorizeRequest) {
-          $authorized = $oneRequest->onIsAuthorized($this->onGetCurrentUser());
-          if (!$authorized) {
-            return;
-          }
-        };
-
-        if ($oneRequest instanceof ICanMatch) {
-          try {
-            $oneRequest->onMatch($this->onGetCurrentUser(), $this);
-          } catch (BaseResponseException $e) {
-            return;
-          }
-        };
-
-        return;
-      }
-    }
-   */
   }
 }

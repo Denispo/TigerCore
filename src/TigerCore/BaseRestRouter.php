@@ -127,7 +127,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddPayload, ICanAd
 
       if ($oneRequest instanceof ICanRunMatchedRequest) {
         try {
-          $result = $oneRequest->runMatchedRequest($currentUser, $this, $httpRequest);
+          $oneRequest->runMatchedRequest($currentUser, $this, $httpRequest);
         } catch (BaseResponseException $e) {
           return;
         }

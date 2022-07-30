@@ -15,7 +15,7 @@ use Nette\Http\IRequest;
 use TigerCore\ValueObject\BaseValueObject;
 use function FastRoute\simpleDispatcher;
 
-abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddPayload, ICanAddRequest {
+abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
 
   /**
    * @var array
@@ -70,6 +70,8 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddPayload, ICanAd
    * @param ICanAddRequest $r
    */
   protected abstract function onGetRoutes(ICanAddRequest $r);
+
+  protected abstract function onGetPayloadContainer():ICanAddPayload;
 
   public function addRequest(string|array $method, ICanGetRequestMask $request):void {
     $this->routes[] = ['method' => $method,'request' => $request];
@@ -127,7 +129,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddPayload, ICanAd
 
       if ($oneRequest instanceof ICanRunMatchedRequest) {
         try {
-          $oneRequest->runMatchedRequest($currentUser, $this, $httpRequest);
+          $oneRequest->runMatchedRequest($currentUser, $this->onGetPayloadContainer(), $httpRequest);
         } catch (BaseResponseException $e) {
           return;
         }

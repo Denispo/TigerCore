@@ -4,7 +4,7 @@ namespace TigerCore\Request;
 
 use Nette\Http\IRequest;
 use TigerCore\Response\BaseResponseException;
-use TigerCore\Response\ICanAddToPayload;
+use TigerCore\Response\ICanAddPayload;
 use TigerCore\ValueObject\VO_BaseId;
 use TigerCore\ValueObject\VO_Email;
 use TigerCore\ValueObject\VO_Password;
@@ -31,13 +31,13 @@ abstract class BaseLoginUserRequest extends BaseFormRequest {
 
   /**
    * @param VO_BaseId $userId
-   * @param ICanAddToPayload $payload
+   * @param ICanAddPayload $payload
    * @return void
    * @throws BaseResponseException
    */
-  protected abstract function onLoginComplete(VO_BaseId $userId, ICanAddToPayload $payload):void;
+  protected abstract function onLoginComplete(VO_BaseId $userId, ICanAddPayload $payload):void;
 
-  public function onMatch(ICurrentUser $currentUser, ICanAddToPayload $payload, IRequest $httpRequest):void {
+  public function runMatchedRequest(ICurrentUser $currentUser, ICanAddPayload $payload, IRequest $httpRequest):void {
 
     $userEmail = new VO_Email($this->userName);
     if (!$userEmail->isValid()) {

@@ -3,10 +3,10 @@
 namespace TigerCore;
 
 use TigerCore\Auth\ICurrentUser;
-use TigerCore\Response\ICanAddToPayload;
+use TigerCore\Response\ICanAddPayload;
 use Nette\Http\IRequest;
 
-abstract class TigerApp extends BaseApp implements ICanAddToPayload {
+abstract class TigerApp extends BaseApp implements ICanAddPayload {
 
   public function run(IRequest $httpRequest, ICurrentUser $currentUser) {
     $router = $this->onGetRouter();

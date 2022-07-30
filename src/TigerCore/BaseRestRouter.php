@@ -6,16 +6,16 @@ use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use TigerCore\Auth\ICurrentUser;
 use TigerCore\Request\ICanGetRequestMask;
-use TigerCore\Request\ICanMatchRequest;
+use TigerCore\Request\ICanRunMatchedRequest;
 use TigerCore\Request\RequestParam;
 use TigerCore\Requests\BaseRequestParam;
 use TigerCore\Response\BaseResponseException;
-use TigerCore\Response\ICanAddToPayload;
+use TigerCore\Response\ICanAddPayload;
 use Nette\Http\IRequest;
 use TigerCore\ValueObject\BaseValueObject;
 use function FastRoute\simpleDispatcher;
 
-abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICanAddRequest {
+abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddPayload, ICanAddRequest {
 
   /**
    * @var array
@@ -125,9 +125,9 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddToPayload, ICan
       $this->mapData($oneRequest, $params);
 
 
-      if ($oneRequest instanceof ICanMatchRequest) {
+      if ($oneRequest instanceof ICanRunMatchedRequest) {
         try {
-          $oneRequest->onMatch($currentUser, $this, $httpRequest);
+          $result = $oneRequest->runMatchedRequest($currentUser, $this, $httpRequest);
         } catch (BaseResponseException $e) {
           return;
         }

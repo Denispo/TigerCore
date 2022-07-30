@@ -3,15 +3,15 @@
 namespace TigerCore\Request;
 
 use TigerCore\Response\BaseResponseException;
-use TigerCore\Response\ICanAddToPayload;
+use TigerCore\Response\ICanAddPayload;
 
 interface IOnAddToPayload {
 
   /**
-   * @param ICanAddToPayload $payload
+   * @param ICanAddPayload $payload
    * @return void
    * @throws BaseResponseException
    */
-  public function onAddPayload(ICanAddToPayload $payload):void;
+  public function onAddPayload(ICanAddPayload $payload):void;
 
 }

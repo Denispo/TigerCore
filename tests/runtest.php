@@ -15,7 +15,7 @@ use TigerCore\Payload\BasePayload;
 use TigerCore\Payload\IBasePayload;
 use TigerCore\Request\BaseRequest;
 use TigerCore\Request\RequestParam;
-use TigerCore\Response\ICanAddToPayload;
+use TigerCore\Response\ICanAddPayload;
 use TigerCore\ValueObject\VO_BaseId;
 use TigerCore\ValueObject\VO_PayloadKey;
 use TigerCore\ValueObject\VO_RouteMask;
@@ -55,9 +55,9 @@ class Request extends BaseRequest
         return new VO_RouteMask('/test/<testparam>[/]');
     }
 
-    public function onMatch(ICurrentUser $currentUser, ICanAddToPayload $payload, IRequest $httpRequest): void
+    public function runMatchedRequest(ICurrentUser $currentUser, ICanAddPayload $payload, IRequest $httpRequest): void
     {
-        $payload->addToPayload(new Payload(['data' => $this->testParam->getValue()]));
+        $payload->addPayload(new Payload(['data' => $this->testParam->getValue()]));
     }
 }
 
@@ -88,7 +88,7 @@ class RestRouter extends BaseRestRouter
         return new CurrentUser();
     }
 
-    public function addToPayload(IBasePayload $payload)
+    public function addPayload(IBasePayload $payload)
     {
 
         echo($payload->getPayloadKey()->getValue().PHP_EOL);

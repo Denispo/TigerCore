@@ -7,8 +7,6 @@ use TigerCore\Exceptions\InvalidTokenException;
 use TigerCore\ValueObject\VO_BaseId;
 use TigerCore\ValueObject\VO_Timestamp;
 use TigerCore\ValueObject\VO_TokenPlainStr;
-use TigerCore\ValueObject\VO_TokenPrivateKey;
-use TigerCore\ValueObject\VO_TokenPublicKey;
 use Firebase\JWT\BeforeValidException;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
@@ -16,12 +14,11 @@ use Firebase\JWT\Key;
 use Firebase\JWT\SignatureInvalidException;
 use Nette\Utils\Arrays;
 
-abstract class BaseJwtTokenForUser implements ICanGetTokenStrForUser, ICanParseTokenStr{
+abstract class BaseJwtToken implements ICanGetTokenStrForUser, ICanParseTokenStr{
 
   protected abstract function onGetClaims(): array;
-  protected abstract function onGetTokenExpirationDate():VO_Timestamp;
-  protected abstract function onGetPrivateKey():VO_TokenPrivateKey;
-  protected abstract function onGetPublicKey():VO_TokenPublicKey;
+
+  protected abstract function onGetTokenSettings():JwtTokenSettings;
 
 
   /**
@@ -31,7 +28,7 @@ abstract class BaseJwtTokenForUser implements ICanGetTokenStrForUser, ICanParseT
    */
   public function parseToken(VO_TokenPlainStr $tokenStr): BaseUserTokenData {
     try {
-      $data = (array) JWT::decode($tokenStr->getValue(), new Key($this->onGetPublicKey()->getValue(), 'RS256'));
+      $data = (array) JWT::decode($tokenStr->getValue(), new Key($this->onGetTokenSettings()->getPublicKey()->getValue(), 'RS256'));
     } catch (\InvalidArgumentException|\DomainException|\UnexpectedValueException|SignatureInvalidException|BeforeValidException|ExpiredException $e) {
       switch (get_class($e)) {
         case \InvalidArgumentException::class:{
@@ -75,7 +72,7 @@ abstract class BaseJwtTokenForUser implements ICanGetTokenStrForUser, ICanParseT
       return new VO_TokenPlainStr('');
     }
 
-    $privateKey = $this->onGetPrivateKey();
+    $privateKey = $this->onGetTokenSettings()->getPrivateKey();
 
     if ($privateKey->isEmpty()) {
       return new VO_TokenPlainStr('');
@@ -83,7 +80,7 @@ abstract class BaseJwtTokenForUser implements ICanGetTokenStrForUser, ICanParseT
 
     $claims = $this->onGetClaims();
 
-    $expirationDate = $this->onGetTokenExpirationDate();
+    $expirationDate = (new VO_Timestamp(time()))->addDuration($this->onGetTokenSettings()->getDuration());
 
     $tokenStr = JWT::encode([
       'uid' => $userId->getValue(),

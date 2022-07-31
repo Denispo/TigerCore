@@ -14,7 +14,6 @@ use TigerCore\Response\ICanAddPayload;
 use Nette\Http\IRequest;
 use TigerCore\Response\MethodNotAllowedException;
 use TigerCore\Response\NotFoundException;
-use TigerCore\Response\UnauthorizedException;
 use TigerCore\ValueObject\BaseValueObject;
 use function FastRoute\simpleDispatcher;
 

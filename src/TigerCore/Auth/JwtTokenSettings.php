@@ -11,7 +11,6 @@ class JwtTokenSettings {
   private VO_Duration $duration;
 
   public function __construct(private ICanGetTokenPrivateKey $privateKey, private ICanGetTokenPublicKey $publicKey) {
-    $this->duration = new VO_Duration();
   }
 
   public function setDuration(VO_Duration $tokenDuration):void {

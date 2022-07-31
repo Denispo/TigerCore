@@ -4,7 +4,7 @@ namespace TigerCore\Auth;
 
 use TigerCore\Constants\TokenError;
 use TigerCore\Exceptions\InvalidTokenException;
-use TigerCore\ValueObject\VO_BaseId;
+use TigerCore\ValueObject\VO_Duration;
 use TigerCore\ValueObject\VO_Timestamp;
 use TigerCore\ValueObject\VO_TokenPlainStr;
 use Firebase\JWT\BeforeValidException;
@@ -12,9 +12,8 @@ use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Firebase\JWT\SignatureInvalidException;
-use Nette\Utils\Arrays;
 
-abstract class BaseJwtToken implements ICanGetTokenStrForUser, ICanParseTokenStr{
+abstract class BaseJwtToken{
 
   protected abstract function onGetClaims(): array;
 
@@ -23,10 +22,10 @@ abstract class BaseJwtToken implements ICanGetTokenStrForUser, ICanParseTokenStr
 
   /**
    * @param VO_TokenPlainStr $tokenStr
-   * @return BaseUserTokenData
+   * @return BaseTokenClaims
    * @throws InvalidTokenException
    */
-  public function parseToken(VO_TokenPlainStr $tokenStr): BaseUserTokenData {
+  protected function doDecodeToken(VO_TokenPlainStr $tokenStr): BaseTokenClaims {
     try {
       $data = (array) JWT::decode($tokenStr->getValue(), new Key($this->onGetTokenSettings()->getPublicKey()->getValue(), 'RS256'));
     } catch (\InvalidArgumentException|\DomainException|\UnexpectedValueException|SignatureInvalidException|BeforeValidException|ExpiredException $e) {
@@ -63,14 +62,16 @@ abstract class BaseJwtToken implements ICanGetTokenStrForUser, ICanParseTokenStr
       throw new InvalidTokenException($error, $e->getMessage(), $e->getCode(), $e->getPrevious());
     }
 
-    $userId = Arrays::get($data, 'uid', '');
-    return new BaseUserTokenData(new VO_BaseId($userId), Arrays::get($data, 'claims', []));
+    return new BaseTokenClaims($data);
   }
 
-  public function getTokenStr(VO_BaseId $userId):VO_TokenPlainStr {
-    if (!$userId->isValid()) {
-      return new VO_TokenPlainStr('');
-    }
+  /**
+   * @param BaseTokenClaims $claims
+   * @param VO_Duration $duration
+   * @return VO_TokenPlainStr
+   * @throws \DomainException Unsupported algorithm or bad key was specified
+   */
+  protected function doEncodeToken(BaseTokenClaims $claims, VO_Duration $duration):VO_TokenPlainStr {
 
     $privateKey = $this->onGetTokenSettings()->getPrivateKey();
 
@@ -78,16 +79,21 @@ abstract class BaseJwtToken implements ICanGetTokenStrForUser, ICanParseTokenStr
       return new VO_TokenPlainStr('');
     }
 
-    $claims = $this->onGetClaims();
+    $alg = 'RS256';
 
-    $expirationDate = (new VO_Timestamp(time()))->addDuration($this->onGetTokenSettings()->getDuration());
+    $expirationDate = (new VO_Timestamp(time()))->addDuration($duration);
 
-    $tokenStr = JWT::encode([
-      'uid' => $userId->getValue(),
-      'iat' => time(),
-      'exp' => $expirationDate->getValue(),
-      'claims' => $claims
-    ], $privateKey->getValue(), 'RS256');
+    $tokenStr = JWT::encode(
+      array_merge(
+        $claims->getClaims(),
+        [
+          'iat' => time(),
+          'exp' => $expirationDate->getValue(),
+        ]
+      ),
+      $privateKey->getValue(),
+      $alg
+    );
 
     return new VO_TokenPlainStr($tokenStr);
 

@@ -12,6 +12,9 @@ use TigerCore\Requests\BaseRequestParam;
 use TigerCore\Response\BaseResponseException;
 use TigerCore\Response\ICanAddPayload;
 use Nette\Http\IRequest;
+use TigerCore\Response\MethodNotAllowedException;
+use TigerCore\Response\NotFoundException;
+use TigerCore\Response\UnauthorizedException;
 use TigerCore\ValueObject\BaseValueObject;
 use function FastRoute\simpleDispatcher;
 
@@ -108,11 +111,10 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
 
     switch ($routeInfo[0]) {
       case Dispatcher::NOT_FOUND:
-        // ... 404 Not Found
+        throw new NotFoundException();
         break;
       case Dispatcher::METHOD_NOT_ALLOWED:
-        $allowedMethods = $routeInfo[1];
-        // ... 405 Method Not Allowed
+        throw new MethodNotAllowedException('Allowed methods: '.implode(', ',$routeInfo[1]));
         break;
       case Dispatcher::FOUND:
         $oneRequest = $routeInfo[1];
@@ -126,7 +128,6 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
 
     if (isset($oneRequest) && is_object($oneRequest)) {
       $this->mapData($oneRequest, $params);
-
 
       if ($oneRequest instanceof ICanRunMatchedRequest) {
           $oneRequest->runMatchedRequest($currentUser, $this->onGetPayloadContainer(), $httpRequest);

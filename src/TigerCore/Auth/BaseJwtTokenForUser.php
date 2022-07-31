@@ -18,26 +18,20 @@ use Nette\Utils\Arrays;
 
 abstract class BaseJwtTokenForUser implements ICanGetTokenStrForUser, ICanParseTokenStr{
 
-  public function __construct(
-    private VO_TokenPrivateKey $privateKey,
-    private VO_TokenPublicKey $publicKey
-  ) {
-
-  }
-
   protected abstract function onGetClaims(): array;
-
   protected abstract function onGetTokenExpirationDate():VO_Timestamp;
+  protected abstract function onGetPrivateKey():VO_TokenPrivateKey;
+  protected abstract function onGetPublicKey():VO_TokenPublicKey;
 
 
   /**
    * @param VO_TokenPlainStr $tokenStr
-   * @return BaseDecodedTokenData
+   * @return BaseUserTokenData
    * @throws InvalidTokenException
    */
-  public function parseToken(VO_TokenPlainStr $tokenStr): BaseDecodedTokenData {
+  public function parseToken(VO_TokenPlainStr $tokenStr): BaseUserTokenData {
     try {
-      $data = (array) JWT::decode($tokenStr->getValue(), new Key($this->publicKey->getValue(), 'RS256'));
+      $data = (array) JWT::decode($tokenStr->getValue(), new Key($this->onGetPublicKey()->getValue(), 'RS256'));
     } catch (\InvalidArgumentException|\DomainException|\UnexpectedValueException|SignatureInvalidException|BeforeValidException|ExpiredException $e) {
       switch (get_class($e)) {
         case \InvalidArgumentException::class:{
@@ -73,11 +67,17 @@ abstract class BaseJwtTokenForUser implements ICanGetTokenStrForUser, ICanParseT
     }
 
     $userId = Arrays::get($data, 'uid', '');
-    return new BaseDecodedTokenData(new VO_BaseId($userId), Arrays::get($data, 'claims', []));
+    return new BaseUserTokenData(new VO_BaseId($userId), Arrays::get($data, 'claims', []));
   }
 
   public function getTokenStr(VO_BaseId $userId):VO_TokenPlainStr {
     if (!$userId->isValid()) {
+      return new VO_TokenPlainStr('');
+    }
+
+    $privateKey = $this->onGetPrivateKey();
+
+    if ($privateKey->isEmpty()) {
       return new VO_TokenPlainStr('');
     }
 
@@ -90,7 +90,7 @@ abstract class BaseJwtTokenForUser implements ICanGetTokenStrForUser, ICanParseT
       'iat' => time(),
       'exp' => $expirationDate->getValue(),
       'claims' => $claims
-    ], $this->privateKey->getValue(), 'RS256');
+    ], $privateKey->getValue(), 'RS256');
 
     return new VO_TokenPlainStr($tokenStr);
 

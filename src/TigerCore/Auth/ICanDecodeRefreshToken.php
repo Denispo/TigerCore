@@ -9,9 +9,9 @@ interface ICanDecodeRefreshToken {
 
   /**
    * @param VO_TokenPlainStr $refreshToken
-   * @return BaseDecodedTokenData
+   * @return BaseUserTokenData
    * @throws InvalidTokenException
    */
-  public function decodeRefreshToken(VO_TokenPlainStr $refreshToken):BaseDecodedTokenData;
+  public function decodeRefreshToken(VO_TokenPlainStr $refreshToken):BaseUserTokenData;
 
 }

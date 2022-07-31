@@ -4,7 +4,7 @@ namespace TigerCore\Auth;
 
 use TigerCore\ValueObject\VO_BaseId;
 
-class BaseDecodedTokenData {
+class BaseUserTokenData {
 
   public function __construct(
     private VO_BaseId $userId,

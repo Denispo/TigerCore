@@ -9,9 +9,9 @@ interface ICanDecodeAuthToken {
 
   /**
    * @param VO_TokenPlainStr $authToken
-   * @return BaseDecodedTokenData
+   * @return BaseUserTokenData
    * @throws InvalidTokenException
    */
-  public function decodeAuthToken(VO_TokenPlainStr $authToken):BaseDecodedTokenData;
+  public function decodeAuthToken(VO_TokenPlainStr $authToken):BaseUserTokenData;
 
 }

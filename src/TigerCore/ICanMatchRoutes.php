@@ -3,18 +3,18 @@
 namespace TigerCore;
 
 use Nette\Http\IRequest;
-use TigerCore\Auth\ICanGetCurentUser;
+use TigerCore\Auth\ICanGetCurrentUser;
 use TigerCore\Response\BaseResponseException;
 
 interface ICanMatchRoutes  {
 
   /**
    * @param IRequest $httpRequest
-   * @param ICanGetCurentUser $currentUser
+   * @param ICanGetCurrentUser $currentUser
    * @return void
    * @throws BaseResponseException
    */
-  public function match(IRequest $httpRequest, ICanGetCurentUser $currentUser):void;
+  public function match(IRequest $httpRequest, ICanGetCurrentUser $currentUser):void;
 
 
 }

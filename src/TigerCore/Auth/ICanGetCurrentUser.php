@@ -2,7 +2,7 @@
 
 namespace TigerCore\Auth;
 
-interface ICanGetCurentUser {
+interface ICanGetCurrentUser {
 
   public function GetCurrentUser():ICurrentUser;
 

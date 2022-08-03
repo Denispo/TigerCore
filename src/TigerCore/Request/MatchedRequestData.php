@@ -4,7 +4,7 @@ namespace TigerCore\Request;
 
 
 use Nette\Http\IRequest;
-use TigerCore\Auth\ICanGetCurentUser;
+use TigerCore\Auth\ICanGetCurrentUser;
 use TigerCore\Auth\ICurrentUser;
 use TigerCore\Payload\IBasePayload;
 use TigerCore\Response\ICanAddPayload;
@@ -12,9 +12,9 @@ use TigerCore\Response\ICanAddPayload;
 class MatchedRequestData {
 
   public function __construct(
-    private ICanGetCurentUser $currentUser,
-    private ICanAddPayload $payload,
-    private IRequest $httpRequest
+    private ICanGetCurrentUser $currentUser,
+    private ICanAddPayload     $payload,
+    private IRequest           $httpRequest
   ) {
 
   }

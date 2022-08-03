@@ -4,7 +4,7 @@ namespace TigerCore;
 
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
-use TigerCore\Auth\ICanGetCurentUser;
+use TigerCore\Auth\ICanGetCurrentUser;
 use TigerCore\Request\ICanGetRequestMask;
 use TigerCore\Request\ICanRunMatchedRequest;
 use TigerCore\Request\MatchedRequestData;
@@ -82,11 +82,11 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
 
   /**
    * @param IRequest $httpRequest
-   * @param ICanGetCurentUser $currentUser
+   * @param ICanGetCurrentUser $currentUser
    * @return void
    * @throws BaseResponseException
    */
-  public function match(IRequest $httpRequest, ICanGetCurentUser $currentUser):void {
+  public function match(IRequest $httpRequest, ICanGetCurrentUser $currentUser):void {
 
     $this->onGetRoutes($this);
 

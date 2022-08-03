@@ -4,9 +4,10 @@ namespace TigerCore;
 
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
-use TigerCore\Auth\ICurrentUser;
+use TigerCore\Auth\ICanGetCurentUser;
 use TigerCore\Request\ICanGetRequestMask;
 use TigerCore\Request\ICanRunMatchedRequest;
+use TigerCore\Request\MatchedRequestData;
 use TigerCore\Request\RequestParam;
 use TigerCore\Requests\BaseRequestParam;
 use TigerCore\Response\BaseResponseException;
@@ -44,21 +45,21 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
 
         $value = $data[strtolower($paramName)] ?? null;
         $type = $oneProp->getType();
-          if ($type && !$type->isBuiltin()) {
-              if (is_a($type->getName(), BaseValueObject::class, true)) {
-                  // Parametr je BaseValueObject
-                  $oneProp->setValue($class, new ($type->getName())($value));
+        if ($type && !$type->isBuiltin()) {
+          if (is_a($type->getName(), BaseValueObject::class, true)) {
+            // Parametr je BaseValueObject
+            $oneProp->setValue($class, new ($type->getName())($value));
 
-              } elseif (is_a($type->getName(), BaseRequestParam::class, true))  {
-                $oneProp->setValue($class, new ($type->getName())($paramName, $value));
+          } elseif (is_a($type->getName(), BaseRequestParam::class, true))  {
+            $oneProp->setValue($class, new ($type->getName())($paramName, $value));
 
-              } else {
-                // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject ani BaseRequestParam
-              }
           } else {
-              // Parametr je obycejneho PHP typy (int, string, mixed atd.)
-              $oneProp->setValue($class, $value);
+            // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject ani BaseRequestParam
           }
+        } else {
+          // Parametr je obycejneho PHP typy (int, string, mixed atd.)
+          $oneProp->setValue($class, $value);
+        }
 
 
 
@@ -81,11 +82,11 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
 
   /**
    * @param IRequest $httpRequest
-   * @param ICurrentUser $currentUser
+   * @param ICanGetCurentUser $currentUser
    * @return void
    * @throws BaseResponseException
    */
-  public function match(IRequest $httpRequest, ICurrentUser $currentUser):void {
+  public function match(IRequest $httpRequest, ICanGetCurentUser $currentUser):void {
 
     $this->onGetRoutes($this);
 
@@ -93,9 +94,9 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
      * @var $dispatcher Dispatcher\GroupCountBased
      */
     $dispatcher = simpleDispatcher(function(RouteCollector $r) {
-     // $r->addRoute('GET', '/users', 'get_all_users_handler');
+      // $r->addRoute('GET', '/users', 'get_all_users_handler');
       // {id} must be a number (\d+)
-     // $r->addRoute('GET', '/user/{id:\d+}', 'get_user_handler');
+      // $r->addRoute('GET', '/user/{id:\d+}', 'get_user_handler');
       // The /{title} suffix is optional
       //$r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
       foreach ($this->routes as $oneRoute) {
@@ -129,7 +130,12 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
       $this->mapData($oneRequest, $params);
 
       if ($oneRequest instanceof ICanRunMatchedRequest) {
-          $oneRequest->runMatchedRequest($currentUser, $this->onGetPayloadContainer(), $httpRequest);
+        $requestData = new MatchedRequestData(
+          currentUser: $currentUser,
+          payload: $this->onGetPayloadContainer(),
+          httpRequest: $httpRequest
+        );
+        $oneRequest->runMatchedRequest($requestData);
       };
 
     }

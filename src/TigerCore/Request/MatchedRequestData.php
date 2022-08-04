@@ -29,7 +29,7 @@ class MatchedRequestData {
   }
 
   public function getCurrentUser():ICurrentUser {
-    return $this->currentUser->GetCurrentUser();
+    return $this->currentUser->getCurrentUser();
 
   }
 

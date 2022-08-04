@@ -8,7 +8,7 @@ use TigerCore\ValueObject\VO_TokenPlainStr;
 abstract class BaseTokenPayload extends BasePayload {
 
   public function __construct(VO_TokenPlainStr $tokenStr) {
-    parent::__construct(['tkn' => $tokenStr]);
+    parent::__construct(['tkn' => $tokenStr], false);
   }
 
   public abstract function getPayloadKey():VO_PayloadKey;

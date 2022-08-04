@@ -15,8 +15,6 @@ use Firebase\JWT\SignatureInvalidException;
 
 abstract class BaseJwtToken{
 
-  protected abstract function onGetClaims(): array;
-
   protected abstract function onGetTokenSettings():JwtTokenSettings;
 
 

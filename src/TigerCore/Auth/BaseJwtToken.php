@@ -64,12 +64,12 @@ abstract class BaseJwtToken{
   }
 
   /**
-   * @param BaseTokenClaims $claims
+   * @param ICanGetTokenClaims $claims
    * @param VO_Duration $duration
    * @return VO_TokenPlainStr
    * @throws \DomainException Unsupported algorithm or bad key was specified
    */
-  protected function doEncodeToken(BaseTokenClaims $claims, VO_Duration $duration):VO_TokenPlainStr {
+  protected function doEncodeToken(ICanGetTokenClaims $claims, VO_Duration $duration):VO_TokenPlainStr {
 
     $privateKey = $this->onGetTokenSettings()->getPrivateKey();
 

@@ -5,7 +5,7 @@ namespace TigerCore\Auth;
 class BaseTokenClaims implements ICanAddCustomTokenClaim, ICanGetTokenClaims{
 
   public function __construct(
-    private array $claims = []) {
+    protected array $claims = []) {
   }
 
   public function addCustomClaim(string $name, string $value):void {

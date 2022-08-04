@@ -2,7 +2,7 @@
 
 namespace TigerCore\Auth;
 
-class BaseTokenClaim implements ICanAddCustomTokenClaim, ICanGetTokenClaims{
+class BaseTokenClaims implements ICanAddCustomTokenClaim, ICanGetTokenClaims{
 
   public function __construct(
     private array $claims = []) {

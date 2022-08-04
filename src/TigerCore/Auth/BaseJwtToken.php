@@ -20,10 +20,10 @@ abstract class BaseJwtToken{
 
   /**
    * @param VO_TokenPlainStr $tokenStr
-   * @return BaseTokenClaim
+   * @return BaseTokenClaims
    * @throws InvalidTokenException
    */
-  protected function doDecodeToken(VO_TokenPlainStr $tokenStr): BaseTokenClaim {
+  protected function doDecodeToken(VO_TokenPlainStr $tokenStr): BaseTokenClaims {
     try {
       $data = (array) JWT::decode($tokenStr->getValue(), new Key($this->onGetTokenSettings()->getPublicKey()->getValue(), 'RS256'));
     } catch (\InvalidArgumentException|\DomainException|\UnexpectedValueException|SignatureInvalidException|BeforeValidException|ExpiredException $e) {
@@ -60,16 +60,16 @@ abstract class BaseJwtToken{
       throw new InvalidTokenException($error, $e->getMessage(), $e->getCode(), $e->getPrevious());
     }
 
-    return new BaseTokenClaim($data);
+    return new BaseTokenClaims($data);
   }
 
   /**
-   * @param BaseTokenClaim $claims
+   * @param BaseTokenClaims $claims
    * @param VO_Duration $duration
    * @return VO_TokenPlainStr
    * @throws \DomainException Unsupported algorithm or bad key was specified
    */
-  protected function doEncodeToken(BaseTokenClaim $claims, VO_Duration $duration):VO_TokenPlainStr {
+  protected function doEncodeToken(BaseTokenClaims $claims, VO_Duration $duration):VO_TokenPlainStr {
 
     $privateKey = $this->onGetTokenSettings()->getPrivateKey();
 

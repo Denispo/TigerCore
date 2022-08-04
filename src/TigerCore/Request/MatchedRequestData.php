@@ -6,14 +6,13 @@ namespace TigerCore\Request;
 use Nette\Http\IRequest;
 use TigerCore\Auth\ICanGetCurrentUser;
 use TigerCore\Auth\ICurrentUser;
-use TigerCore\Payload\IBasePayload;
 use TigerCore\Response\ICanAddPayload;
 
 class MatchedRequestData {
 
   public function __construct(
     private ICanGetCurrentUser $currentUser,
-    private ICanAddPayload     $payload,
+    private ICanAddPayload     $payloadContainer,
     private IRequest           $httpRequest
   ) {
 
@@ -23,9 +22,8 @@ class MatchedRequestData {
     return $this->httpRequest;
   }
 
-  public function addToPayload(IBasePayload $payload):void {
-    $this->payload->addPayload($payload);
-
+  public function getPayloadContainer():ICanAddPayload {
+    return $this->payloadContainer;
   }
 
   public function getCurrentUser():ICurrentUser {

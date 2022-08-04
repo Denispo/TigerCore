@@ -132,7 +132,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
       if ($oneRequest instanceof ICanRunMatchedRequest) {
         $requestData = new MatchedRequestData(
           currentUser: $currentUser,
-          payload: $this->onGetPayloadContainer(),
+          payloadContainer: $this->onGetPayloadContainer(),
           httpRequest: $httpRequest
         );
         $oneRequest->runMatchedRequest($requestData);

@@ -2,20 +2,24 @@
 
 namespace TigerCore\Response;
 
-use Nette\Http\IResponse;
+use TigerCore\Payload\ExceptionPayload;
+use TigerCore\Payload\IBasePayload;
+use TigerCore\ValueObject\VO_PayloadKey;
 
-class BaseResponseException extends \Exception implements ICanGetPayload {
+class BaseResponseException extends \Exception implements IBasePayload {
 
+  private ExceptionPayload $payload;
 
-  public function __construct(private ICanGetPayload|null $payload = null, string $message = '',  int $httpResponseCode = IResponse::S400_BAD_REQUEST) {
-    parent::__construct($message, $httpResponseCode);
+  public function __construct(int $httpIResponseCode, ICanGetPayload|string $payload = '') {
+    $this->payload = new ExceptionPayload($payload);
+    parent::__construct('', $httpIResponseCode);
   }
 
-  public function getPayload(): array {
-    if ($this->payload) {
-      return $this->payload->getPayload();
-    } else {
-      return [];
-    }
+  public function getPayloadKey(): VO_PayloadKey {
+    return $this->payload->getPayloadKey();
+  }
+
+  public function getPayloadData(): array {
+    return $this->payload->getPayloadData();
   }
 }

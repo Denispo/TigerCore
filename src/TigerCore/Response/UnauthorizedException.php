@@ -5,8 +5,8 @@ namespace TigerCore\Response;
 use Nette\Http\IResponse;
 
 class UnauthorizedException extends BaseResponseException {
-  public function __construct(ICanGetPayload|null $payload = null, string $message = '') {
-    parent::__construct($payload, $message, IResponse::S401_UNAUTHORIZED);
+  public function __construct(ICanGetPayload|string $payload = '') {
+    parent::__construct(IResponse::S401_UNAUTHORIZED, $payload);
   }
 
 }

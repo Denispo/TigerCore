@@ -15,7 +15,7 @@ class ExceptionPayload extends BasePayload {
       if (is_string($exceptionPayload)) {
         parent::__construct(['msg' => $exceptionPayload], false);
       } else {
-        parent::__construct($exceptionPayload->getPayload(), false);
+        parent::__construct(['payload' => $exceptionPayload->getPayload()], false);
       }
     } catch (\ReflectionException $e) {
       // Toto by nemelo nikdy nastat, protoze mapFromDbData je vzdy false

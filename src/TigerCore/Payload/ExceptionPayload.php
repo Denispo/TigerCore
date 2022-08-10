@@ -7,6 +7,9 @@ use TigerCore\ValueObject\VO_PayloadKey;
 
 class ExceptionPayload extends BasePayload {
 
+  /**
+   * @param ICanGetPayload|string $exceptionPayload
+   */
   public function __construct(ICanGetPayload|string $exceptionPayload) {
     try {
       if (is_string($exceptionPayload)) {

@@ -10,19 +10,10 @@ class RP_DateTime extends BaseRequestParam implements ICanGetParamValueAsTimesta
   private VO_Timestamp $paramValue;
 
   protected function onSetValue(mixed $paramValue):bool {
-    if (is_int($paramValue) && $paramValue > 0) {
-      $this->paramValue = new VO_Timestamp($paramValue);
-      return true;
-    }
 
     if (is_numeric($paramValue)) {
-      if ($paramValue > 999999999999) {
-        // timestamp je v milisekundach
-        $this->paramValue = new VO_Timestamp(round(((int)$paramValue)/1000));
-      } else {
-        // round musi byt, protoze $paramValue muze byt float
-        $this->paramValue = new VO_Timestamp(round($paramValue));
-      }
+      $paramValue = (int)$paramValue;
+      $this->paramValue = new VO_Timestamp($paramValue);
       return true;
     }
 

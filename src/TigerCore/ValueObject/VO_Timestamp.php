@@ -7,8 +7,12 @@ use JetBrains\PhpStorm\Pure;
 class VO_Timestamp extends BaseValueObject {
 
   #[Pure]
-  public function __construct(int $unixTimestamp) {
-    parent::__construct($unixTimestamp);
+  public function __construct(int $unixTimestampInSecOrMsec) {
+    if ($unixTimestampInSecOrMsec > 999999999999) {
+      // timestamp je v milisekundach
+      $unixTimestampInSecOrMsec = round(($unixTimestampInSecOrMsec)/1000);
+    }
+    parent::__construct($unixTimestampInSecOrMsec);
   }
 
   public function getValue():int {

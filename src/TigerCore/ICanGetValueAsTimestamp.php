@@ -1,11 +1,11 @@
 <?php
 
-namespace TigerCore\Requests;
+namespace TigerCore;
 
 
 use TigerCore\ValueObject\VO_Timestamp;
 
-interface ICanGetParamValueAsTimestamp {
+interface ICanGetValueAsTimestamp {
 
   public function getValueAsTimestamp():VO_Timestamp;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace TigerCore\Requests;
+namespace TigerCore;
 
 
-interface ICanGetParamValueAsInit {
+interface ICanGetValueAsInit {
 
   public function getValueAsInt(int $defaultValue = 0):int;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace TigerCore\Requests;
+namespace TigerCore;
 
 
-interface ICanGetParamValueAsString {
+interface ICanGetValueAsString {
 
   public function getValueAsString(string $defaultValue = ''):string;
 

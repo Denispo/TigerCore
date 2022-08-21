@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace TigerCore\Requests;
 
 
-class RP_Int extends BaseRequestParam implements ICanGetParamValueAsInit {
+use TigerCore\ICanGetValueAsInit;
+
+class RP_Int extends BaseRequestParam implements ICanGetValueAsInit {
 
   private int $paramValue;
 

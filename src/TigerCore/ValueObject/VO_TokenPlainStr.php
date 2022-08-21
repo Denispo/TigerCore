@@ -4,6 +4,7 @@ namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
 use Nette\Http\IRequest;
+use TigerCore\ICanGetValueAsString;
 
 class VO_TokenPlainStr extends BaseValueObject {
 
@@ -20,7 +21,10 @@ class VO_TokenPlainStr extends BaseValueObject {
 
 
   #[Pure]
-  public function __construct(string $tokenPlainStr) {
+  public function __construct(string|ICanGetValueAsString $tokenPlainStr) {
+    if ($tokenPlainStr instanceof ICanGetValueAsString) {
+      $tokenPlainStr = $tokenPlainStr->getValueAsString();
+    }
     parent::__construct(trim($tokenPlainStr));
   }
 

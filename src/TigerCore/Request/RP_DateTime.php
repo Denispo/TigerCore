@@ -3,9 +3,10 @@
 namespace TigerCore\Requests;
 
 
+use TigerCore\ICanGetValueAsTimestamp;
 use TigerCore\ValueObject\VO_Timestamp;
 
-class RP_DateTime extends BaseRequestParam implements ICanGetParamValueAsTimestamp {
+class RP_DateTime extends BaseRequestParam implements ICanGetValueAsTimestamp {
 
   private VO_Timestamp $paramValue;
 

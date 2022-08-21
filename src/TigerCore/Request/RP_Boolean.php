@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace TigerCore\Requests;
 
-class RP_Boolean extends BaseRequestParam implements ICanGetParamValueAsBoolean {
+use TigerCore\ICanGetValueAsBoolean;
+
+class RP_Boolean extends BaseRequestParam implements ICanGetValueAsBoolean {
 
   private bool $paramValue;
 

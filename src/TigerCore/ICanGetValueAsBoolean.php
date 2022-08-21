@@ -1,9 +1,9 @@
 <?php
 
-namespace TigerCore\Requests;
+namespace TigerCore;
 
 
-interface ICanGetParamValueAsBoolean {
+interface ICanGetValueAsBoolean {
 
   public function getValueAsBool(bool $defaultValue = false):bool;
 

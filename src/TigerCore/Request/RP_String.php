@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace TigerCore\Requests;
 
-class RP_String extends BaseRequestParam implements ICanGetParamValueAsString {
+use TigerCore\ICanGetValueAsString;
+
+class RP_String extends BaseRequestParam implements ICanGetValueAsString {
 
   private string $paramValue = '';
 

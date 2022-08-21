@@ -3,11 +3,18 @@
 namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
+use TigerCore\ICanGetValueAsInit;
+use TigerCore\ICanGetValueAsTimestamp;
 
 class VO_Timestamp extends BaseValueObject {
 
   #[Pure]
-  public function __construct(int $unixTimestampInSeconds) {
+  public function __construct(int|ICanGetValueAsTimestamp|ICanGetValueAsInit $unixTimestampInSeconds) {
+    if ($unixTimestampInSeconds instanceof ICanGetValueAsTimestamp) {
+      $unixTimestampInSeconds = $unixTimestampInSeconds->getValueAsTimestamp()->getValue();
+    } elseif ($unixTimestampInSeconds instanceof ICanGetValueAsInit) {
+      $unixTimestampInSeconds = $unixTimestampInSeconds->getValueAsInt();
+    }
     parent::__construct($unixTimestampInSeconds);
   }
 

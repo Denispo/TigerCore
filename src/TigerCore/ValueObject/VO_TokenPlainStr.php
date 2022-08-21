@@ -4,9 +4,8 @@ namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
 use Nette\Http\IRequest;
-use TigerCore\ICanGetValueAsString;
 
-class VO_TokenPlainStr extends BaseValueObject {
+class VO_TokenPlainStr extends VO_String_Trimmed {
 
   public static function createFromBearerRequest(IRequest $request):self {
     $str = $request->getHeader('Authorization') ?? '';
@@ -17,15 +16,6 @@ class VO_TokenPlainStr extends BaseValueObject {
       $str = '';
     }
     return new self($str);
-  }
-
-
-  #[Pure]
-  public function __construct(string|ICanGetValueAsString $tokenPlainStr) {
-    if ($tokenPlainStr instanceof ICanGetValueAsString) {
-      $tokenPlainStr = $tokenPlainStr->getValueAsString();
-    }
-    parent::__construct(trim($tokenPlainStr));
   }
 
   public function getValue():string {

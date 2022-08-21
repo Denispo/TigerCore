@@ -3,17 +3,9 @@
 namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
-use TigerCore\ICanGetValueAsString;
 
-class VO_Password extends BaseValueObject {
+class VO_Password extends VO_String {
 
-    #[Pure]
-    public function __construct(string|ICanGetValueAsString $password) {
-      if ($password instanceof ICanGetValueAsString) {
-        $publicKey = $password->getValueAsString();
-      }
-      parent::__construct($password);
-    }
 
     public function getValue():string {
         return $this->value;

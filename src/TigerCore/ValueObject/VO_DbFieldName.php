@@ -3,17 +3,8 @@
 namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
-use TigerCore\ICanGetValueAsString;
 
-class VO_DbFieldName extends BaseValueObject {
-
-    #[Pure]
-    public function __construct(string|ICanGetValueAsString $dbFieldName) {
-      if ($dbFieldName instanceof ICanGetValueAsString) {
-        $dbFieldName = $dbFieldName->getValueAsString();
-      }
-      parent::__construct(trim($dbFieldName));
-    }
+class VO_DbFieldName extends VO_String_Trimmed {
 
     public function getValue():string {
         return $this->value;

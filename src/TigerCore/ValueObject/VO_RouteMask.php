@@ -4,12 +4,7 @@ namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
 
-class VO_RouteMask extends BaseValueObject {
-
-    #[Pure]
-    public function __construct(string $routeMask) {
-        parent::__construct(trim($routeMask));
-    }
+class VO_RouteMask extends VO_String_Trimmed {
 
     public function getValue():string {
         return $this->value;

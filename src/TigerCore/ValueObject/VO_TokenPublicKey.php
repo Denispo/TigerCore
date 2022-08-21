@@ -3,17 +3,8 @@
 namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
-use TigerCore\ICanGetValueAsString;
 
-class VO_TokenPublicKey extends BaseValueObject {
-
-    #[Pure]
-    public function __construct(string|ICanGetValueAsString $publicKey) {
-      if ($publicKey instanceof ICanGetValueAsString) {
-        $publicKey = $publicKey->getValueAsString();
-      }
-      parent::__construct($publicKey);
-    }
+class VO_TokenPublicKey extends VO_String_Trimmed {
 
     public function getValue():string {
         return $this->value;

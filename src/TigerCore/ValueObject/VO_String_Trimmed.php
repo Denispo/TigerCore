@@ -5,16 +5,13 @@ namespace TigerCore\ValueObject;
 
 use TigerCore\ICanGetValueAsString;
 
-abstract class VO_String extends BaseValueObject {
+abstract class VO_String_Trimmed extends BaseValueObject {
 
-  public function __construct(int|ICanGetValueAsString $value, bool $trim = false) {
+  public function __construct(int|ICanGetValueAsString $value) {
     if ($value instanceof ICanGetValueAsString) {
       $value = $value->getValueAsString();
     }
-    if ($trim) {
-      $value = trim($trim);
-    }
-    parent::__construct($value);
+    parent::__construct($value, true);
   }
 
   public function getValue():string {

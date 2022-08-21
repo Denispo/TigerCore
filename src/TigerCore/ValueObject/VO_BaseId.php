@@ -11,7 +11,7 @@ class VO_BaseId extends BaseValueObject {
       if (is_int($id)) {
         parent::__construct((int)$id);
       } else {
-        parent::__construct(strtolower(trim($id)));
+        parent::__construct(trim($id));
       }
     }
 
@@ -26,6 +26,6 @@ class VO_BaseId extends BaseValueObject {
 
     #[pure]
     function isEmpty(): bool {
-        return $this->getValue() === 0 || $this->getValue() == '';
+        return $this->getValue() === 0 || $this->getValue() === '';
     }
 }

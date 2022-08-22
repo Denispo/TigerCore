@@ -4,7 +4,8 @@
   "autoload": {
     "psr-4": {
       "Denispo\\TigerCore\\": "src/"
-    }
+    },
+    "classmap": ["src/"]
   },
   "minimum-stability": "dev",
   "prefer-stable": true,

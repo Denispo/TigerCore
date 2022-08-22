@@ -77,12 +77,6 @@ class CurrentUser implements ICurrentUser
 
 class RestRouter extends BaseRestRouter
 {
-
-    protected function onGetRoutes(ICanAddRequest $r)
-    {
-        $r->addRequest('GET', new Request());
-    }
-
     protected function onGetCurrentUser(): ICurrentUser
     {
         return new CurrentUser();
@@ -101,4 +95,5 @@ $request = new \Nette\Http\Request(new UrlScript('http://www.test.com/test/12345
 $currentUser = new CurrentUser();
 
 $router = new RestRouter();
+$router->addRequest('GET', new Request());
 $router->match($request, $currentUser);

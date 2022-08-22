@@ -23,7 +23,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
   /**
    * @var array
    */
-  private array $routes;
+  private array $routes = [];
 
   private function mapData(object $class, array $data):void {
 
@@ -69,11 +69,6 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
 
   }
 
-  /**
-   * @param ICanAddRequest $r
-   */
-  protected abstract function onGetRoutes(ICanAddRequest $r);
-
   protected abstract function onGetPayloadContainer():ICanAddPayload;
 
   public function addRequest(string|array $method, ICanGetRequestMask $request):void {
@@ -87,8 +82,6 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
    * @throws BaseResponseException
    */
   public function match(IRequest $httpRequest, ICanGetCurrentUser $currentUser):void {
-
-    $this->onGetRoutes($this);
 
     /**
      * @var $dispatcher Dispatcher\GroupCountBased

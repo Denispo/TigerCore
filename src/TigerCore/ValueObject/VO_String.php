@@ -7,7 +7,7 @@ use TigerCore\ICanGetValueAsString;
 
 abstract class VO_String extends BaseValueObject {
 
-  public function __construct(int|ICanGetValueAsString $value, bool $trim = false) {
+  public function __construct(string|ICanGetValueAsString $value, bool $trim = false) {
     if ($value instanceof ICanGetValueAsString) {
       $value = $value->getValueAsString();
     }

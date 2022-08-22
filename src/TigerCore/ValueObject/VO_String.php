@@ -12,7 +12,7 @@ abstract class VO_String extends BaseValueObject {
       $value = $value->getValueAsString();
     }
     if ($trim) {
-      $value = trim($trim);
+      $value = trim($value);
     }
     parent::__construct($value);
   }

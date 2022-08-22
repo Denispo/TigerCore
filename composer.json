@@ -2,16 +2,20 @@
   "name": "denispo/tigercore",
   "description": "tiger core for tiger app",
   "autoload": {
-    "classmap": ["src/"]
+    "psr-4": {
+      "Denispo\\TigerCore\\": "src/"
+    }
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
     "php": ">=8.0",
+    "nette/routing": "^3.0",
     "nette/http": "^3.1",
     "nette/robot-loader": "^3.4",
     "nette/database": "^3.1",
     "nette/utils": "^3.2",
-    "firebase/php-jwt": "^6.1"
+    "firebase/php-jwt": "^6.1",
+    "nikic/fast-route": "^1.3"
   }
 }

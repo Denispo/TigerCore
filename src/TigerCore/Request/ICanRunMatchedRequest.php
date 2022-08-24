@@ -3,13 +3,13 @@
 namespace TigerCore\Request;
 
 use TigerCore\Response\BaseResponseException;
-use TigerCore\Response\ICanGetPayload;
+use TigerCore\Response\ICanGetPayloadData;
 
 interface ICanRunMatchedRequest {
 
   /**
    * @throws BaseResponseException
    */
-  public function runMatchedRequest(MatchedRequestData $requestData):ICanGetPayload;
+  public function runMatchedRequest(MatchedRequestData $requestData):ICanGetPayloadData;
 
 }

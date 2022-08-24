@@ -13,6 +13,7 @@ use TigerCore\Requests\BaseRequestParam;
 use TigerCore\Response\BaseResponseException;
 use TigerCore\Response\ICanAddPayload;
 use Nette\Http\IRequest;
+use TigerCore\Response\ICanGetPayloadData;
 use TigerCore\Response\MethodNotAllowedException;
 use TigerCore\Response\NotFoundException;
 use TigerCore\ValueObject\BaseValueObject;
@@ -78,10 +79,10 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
   /**
    * @param IRequest $httpRequest
    * @param ICanGetCurrentUser $currentUser
-   * @return void
+   * @return ICanGetPayloadData
    * @throws BaseResponseException
    */
-  public function match(IRequest $httpRequest, ICanGetCurrentUser $currentUser):void {
+  public function match(IRequest $httpRequest, ICanGetCurrentUser $currentUser):ICanGetPayloadData {
 
     /**
      * @var $dispatcher Dispatcher\GroupCountBased

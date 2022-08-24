@@ -10,7 +10,7 @@ class BaseResponseException extends \Exception implements IBasePayload {
 
   private ExceptionPayload $payload;
 
-  public function __construct(int $httpIResponseCode, ICanGetPayload|string $payload = '') {
+  public function __construct(int $httpIResponseCode, ICanGetPayloadData|string $payload = '') {
     $this->payload = new ExceptionPayload($payload);
     parent::__construct('', $httpIResponseCode);
   }

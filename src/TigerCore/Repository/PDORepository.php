@@ -7,10 +7,19 @@ use TigerCore\ValueObject\VO_LastInsertedId;
 
 class PDORepository {
 
-  public function __construct(private Connection $db) {
+  private Connection|null $dbConnection = null;
+
+  public function __construct(private ICanGetDbConnection $db) {
 
   }
 
+
+  private function getDb():Connection {
+    if (!$this->dbConnection) {
+      $this->dbConnection = $this->db->GetDbConnection();
+    }
+    return $this->dbConnection;
+  }
 
 
   /**
@@ -19,7 +28,7 @@ class PDORepository {
    * @return SqlResult
    */
   protected function select(string $sql, ...$params): SqlResult {
-    return new SqlResult($this->db->fetchAll($sql, ...$params));
+    return new SqlResult($this->getDb()->fetchAll($sql, ...$params));
   }
 
   /**
@@ -28,9 +37,10 @@ class PDORepository {
    * @return VO_LastInsertedId Last inserted id
    */
   protected function insert(string $sql, ...$params):VO_LastInsertedId {
-    $this->db->query($sql, ...$params);
-    $lastInsertedId = new VO_LastInsertedId($this->db->getInsertId());
-    $this->db->commit();
+    $db = $this->getDb();
+    $db->query($sql, ...$params);
+    $lastInsertedId = new VO_LastInsertedId($this->getDb()->getInsertId());
+    $db->commit();
     return $lastInsertedId;
   }
 
@@ -40,9 +50,10 @@ class PDORepository {
    * @return int Affected rows count
    */
   protected function update(string $sql, ...$params):int {
-    $resultset = $this->db->query($sql, ...$params);
+    $db = $this->getDb();
+    $resultset = $db->query($sql, ...$params);
     $rowsCount = $resultset->getRowCount() ?? 0;
-    $this->db->commit();
+    $db->commit();
     return $rowsCount;
   }
 }

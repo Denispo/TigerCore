@@ -6,6 +6,6 @@ use Nette\Database\Connection;
 
 interface ICanGetDbConnection {
 
-  public function GetDbConnection():Connection;
+  public function getDbConnection():Connection;
 
 }

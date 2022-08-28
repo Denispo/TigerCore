@@ -16,7 +16,7 @@ class PDORepository {
 
   private function getDb():Connection {
     if (!$this->dbConnection) {
-      $this->dbConnection = $this->db->GetDbConnection();
+      $this->dbConnection = $this->db->getDbConnection();
     }
     return $this->dbConnection;
   }

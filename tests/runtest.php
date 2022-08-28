@@ -8,14 +8,17 @@ require_once __DIR__.'/../vendor/autoload.php';
 use Nette\Http\IRequest;
 use Nette\Http\UrlScript;
 use Nette\Loaders\RobotLoader;
+use TigerCore\Auth\ICanGetCurrentUser;
 use TigerCore\Auth\ICurrentUser;
 use TigerCore\BaseRestRouter;
 use TigerCore\ICanAddRequest;
 use TigerCore\Payload\BasePayload;
 use TigerCore\Payload\IBasePayload;
 use TigerCore\Request\BaseRequest;
+use TigerCore\Request\MatchedRequestData;
 use TigerCore\Request\RequestParam;
 use TigerCore\Response\ICanAddPayload;
+use TigerCore\Response\ICanGetPayloadData;
 use TigerCore\ValueObject\VO_BaseId;
 use TigerCore\ValueObject\VO_PayloadKey;
 use TigerCore\ValueObject\VO_RouteMask;
@@ -47,21 +50,17 @@ class Payload extends BasePayload
 class Request extends BaseRequest
 {
 
-    #[RequestParam('testparam')]
-    public VO_Timestamp $testParam;
 
-    public function getMask(): VO_RouteMask
-    {
-        return new VO_RouteMask('/test/<testparam>[/]');
-    }
+  public function getMask(): VO_RouteMask {
+    return new VO_RouteMask('')
+  }
 
-    public function runMatchedRequest(ICurrentUser $currentUser, ICanAddPayload $payload, IRequest $httpRequest): void
-    {
-        $payload->addPayload(new Payload(['data' => $this->testParam->getValue()]));
-    }
+  public function runMatchedRequest(MatchedRequestData $requestData): ICanGetPayloadData {
+    // TODO: Implement runMatchedRequest() method.
+  }
 }
 
-class CurrentUser implements ICurrentUser
+class CurrentUser implements ICurrentUser, ICanGetCurrentUser
 {
 
     public function isLoggedIn(): bool
@@ -73,21 +72,18 @@ class CurrentUser implements ICurrentUser
   {
     return new VO_BaseId(0);
   }
+
+  public function getCurrentUser(): ICurrentUser {
+    return $this;
+  }
 }
 
 class RestRouter extends BaseRestRouter
 {
-    protected function onGetCurrentUser(): ICurrentUser
-    {
-        return new CurrentUser();
-    }
 
-    public function addPayload(IBasePayload $payload)
-    {
-
-        echo($payload->getPayloadKey()->getValue().PHP_EOL);
-        print_r($payload->getPayloadData());
-    }
+  protected function onGetPayloadContainer(): ICanAddPayload {
+    // TODO: Implement onGetPayloadContainer() method.
+  }
 }
 
 $request = new \Nette\Http\Request(new UrlScript('http://www.test.com/test/123456'));

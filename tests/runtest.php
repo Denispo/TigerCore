@@ -52,7 +52,7 @@ class Request extends BaseRequest
 
 
   public function getMask(): VO_RouteMask {
-    return new VO_RouteMask('')
+    return new VO_RouteMask('');
   }
 
   public function runMatchedRequest(MatchedRequestData $requestData): ICanGetPayloadData {

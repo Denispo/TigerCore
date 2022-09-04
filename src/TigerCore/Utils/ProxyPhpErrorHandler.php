@@ -5,7 +5,7 @@ namespace TigerCore\Utils;
 
 class ProxyPhpErrorHandler{
 
-  private string|null $oldErrorHandler = null;
+  private mixed $oldErrorHandler = null;
   private bool $isCapturing = false;
 
   /**

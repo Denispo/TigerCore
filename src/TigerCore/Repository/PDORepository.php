@@ -3,6 +3,7 @@
 namespace TigerCore\Repository;
 
 use Nette\Database\Connection;
+use TigerCore\ValueObject\VO_BaseId;
 use TigerCore\ValueObject\VO_LastInsertedId;
 
 class PDORepository {
@@ -29,6 +30,10 @@ class PDORepository {
    */
   protected function select(string $sql, ...$params): SqlResult {
     return new SqlResult($this->getDb()->fetchAll($sql, ...$params));
+  }
+
+  protected function selectId(string $sql, ...$params): VO_BaseId {
+    return new VO_BaseId($this->getDb()->fetchField($sql, ...$params));
   }
 
   /**

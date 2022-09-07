@@ -33,7 +33,7 @@ class PDORepository {
   }
 
   protected function selectId(string $sql, ...$params): VO_BaseId {
-    return new VO_BaseId($this->getDb()->fetchField($sql, ...$params));
+    return new VO_BaseId($this->getDb()->fetchField($sql, ...$params) ?? 0);
   }
 
   /**

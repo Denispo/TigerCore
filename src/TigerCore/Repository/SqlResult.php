@@ -101,7 +101,7 @@ class SqlResult {
         if ($oneTmpProp['exists']) {
 
           if ($oneTmpProp['is_vo']) {
-            $obj->{$oneTmpProp['propname']} = new $oneTmpProp['vo_classname']($oneData[$oneTmpProp['field']]);
+            $obj->{$oneTmpProp['propname']} = new $oneTmpProp['vo_classname']($oneData[$oneTmpProp['field']] ?? $oneTmpProp['default']);
           } else {
             $obj->{$oneTmpProp['propname']} = $oneData[$oneTmpProp['field']] ?? $oneTmpProp['default'];
           }

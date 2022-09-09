@@ -105,7 +105,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
 
     switch ($routeInfo[0]) {
       case Dispatcher::NOT_FOUND:
-        throw new NotFoundException();
+        throw new NotFoundException('path not found');
         break;
       case Dispatcher::METHOD_NOT_ALLOWED:
         throw new MethodNotAllowedException($routeInfo[1], 'Allowed methods: '.implode(', ',$routeInfo[1]));

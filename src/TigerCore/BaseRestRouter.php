@@ -71,6 +71,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
   }
 
   protected abstract function onGetPayloadContainer():ICanAddPayload;
+  protected abstract function onGetCurrentUser():ICanGetCurrentUser;
 
   public function addRequest(string|array $method, ICanGetRequestMask $request):void {
     $this->routes[] = ['method' => $method,'request' => $request];

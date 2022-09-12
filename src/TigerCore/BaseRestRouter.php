@@ -58,7 +58,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
             // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject ani BaseRequestParam
           }
         } else {
-          // Parametr je obycejneho PHP typy (int, string, mixed atd.)
+          // Parametr je obycejneho PHP typu (int, string, mixed atd.)
           $oneProp->setValue($class, $value);
         }
 

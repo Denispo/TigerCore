@@ -2,9 +2,6 @@
 
 namespace TigerCore\Payload;
 
-
-interface IBasePayload extends ICanGetPayloadRawData {
-
+interface ICanGetPayloadRawData {
   public function getPayloadRawData():array;
-
 }

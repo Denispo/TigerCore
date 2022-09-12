@@ -2,20 +2,19 @@
 
 namespace TigerCore\Payload;
 
-use TigerCore\Response\ICanGetPayloadData;
 use TigerCore\ValueObject\VO_PayloadKey;
 
 class ExceptionPayload extends BasePayload {
 
   /**
-   * @param ICanGetPayloadData|string $exceptionPayload
+   * @param ICanGetPayloadRawData|string $exceptionPayload
    */
-  public function __construct(ICanGetPayloadData|string $exceptionPayload) {
+  public function __construct(ICanGetPayloadRawData|string $exceptionPayload) {
     try {
       if (is_string($exceptionPayload)) {
-        parent::__construct(['msg' => $exceptionPayload], false);
+        parent::__construct(['msg' => $exceptionPayload]);
       } else {
-        parent::__construct(['payload' => $exceptionPayload->getPayloadData()], false);
+        parent::__construct(['payload' => $exceptionPayload->getPayloadRawData()]);
       }
     } catch (\ReflectionException $e) {
       // Toto by nemelo nikdy nastat, protoze mapFromDbData je vzdy false

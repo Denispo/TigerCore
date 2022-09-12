@@ -4,13 +4,14 @@ namespace TigerCore\Response;
 
 use TigerCore\Payload\ExceptionPayload;
 use TigerCore\Payload\IBasePayload;
+use TigerCore\Payload\ICanGetPayloadRawData;
 use TigerCore\ValueObject\VO_PayloadKey;
 
 class BaseResponseException extends \Exception implements IBasePayload {
 
   private ExceptionPayload $payload;
 
-  public function __construct(int $httpIResponseCode, ICanGetPayloadData|string $payload = '') {
+  public function __construct(int $httpIResponseCode, ICanGetPayloadRawData|string $payload = '') {
     $this->payload = new ExceptionPayload($payload);
     parent::__construct('', $httpIResponseCode);
   }
@@ -19,7 +20,7 @@ class BaseResponseException extends \Exception implements IBasePayload {
     return $this->payload->getPayloadKey();
   }
 
-  public function getPayloadData(): array {
-    return $this->payload->getPayloadData();
+  public function getPayloadRawData(): array {
+    return $this->payload->getPayloadRawData();
   }
 }

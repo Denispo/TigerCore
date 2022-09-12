@@ -2,14 +2,15 @@
 
 namespace TigerCore\Payload;
 
+use TigerCore\DataTransferObject\BaseDTO;
 use TigerCore\DataTransferObject\ToPayloadField;
 use TigerCore\ValueObject\BaseValueObject;
 
-abstract class BasePayload implements IBasePayload{
+abstract class BasePayload implements ICanGetPayloadRawData{
 
   /**
    * @template T
-   * @param array<T> $data Array of classes. Each class has to be exactly the same type
+   * @param array<T> $data Array of classes. Each class has to be exactly the same type extended from BaseDTO class
    * @return array Payload data mapped from $data object
    * @throws \ReflectionException
    */
@@ -77,12 +78,18 @@ abstract class BasePayload implements IBasePayload{
   private array $payload;
 
   /**
-   * @template T
-   * @param array|array<T> $data
-   * @param bool $mapFromDbData
+   * If $data is array of the same classes extended from BaseDTO, automatic data mapping will be performed on each #[ToPayloadField] public property. Othervise $data will be considered as final array of raw payload data.
+   * @param array|BaseDTO[] $data
    * @throws \ReflectionException
    */
-  public function __construct(array $data, bool $mapFromDbData) {
+  public function __construct(array $data) {
+    $mapFromDbData = false;
+    foreach ($data as $oneData) {
+      $mapFromDbData = $oneData instanceof BaseDTO;
+      if (!$mapFromDbData) {
+        break;
+      }
+    }
     if ($mapFromDbData) {
       $this->payload = $this->mapFromData($data);
     } else {
@@ -90,7 +97,7 @@ abstract class BasePayload implements IBasePayload{
     }
   }
 
-  public function getPayloadData():array {
+  public function getPayloadRawData():array {
     return $this->payload;
   }
 

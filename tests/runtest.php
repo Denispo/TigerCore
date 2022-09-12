@@ -18,7 +18,7 @@ use TigerCore\Request\BaseRequest;
 use TigerCore\Request\MatchedRequestData;
 use TigerCore\Request\RequestParam;
 use TigerCore\Response\ICanAddPayload;
-use TigerCore\Response\ICanGetPayloadData;
+use TigerCore\Payload\ICanGetPayloadRawData;
 use TigerCore\ValueObject\VO_BaseId;
 use TigerCore\ValueObject\VO_PayloadKey;
 use TigerCore\ValueObject\VO_RouteMask;
@@ -55,7 +55,7 @@ class Request extends BaseRequest
     return new VO_RouteMask('');
   }
 
-  public function runMatchedRequest(MatchedRequestData $requestData): ICanGetPayloadData {
+  public function runMatchedRequest(MatchedRequestData $requestData): ICanGetPayloadRawData {
     // TODO: Implement runMatchedRequest() method.
   }
 }

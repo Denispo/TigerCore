@@ -10,7 +10,7 @@ class BaseApp {
 
   }
 
-  protected function getRequest():IRequest {
+  protected function getHttpRequest():IRequest {
     return $this->request;
   }
 

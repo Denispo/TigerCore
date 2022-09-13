@@ -4,6 +4,7 @@ namespace TigerCore;
 
 use Nette\Http\IRequest;
 use TigerCore\Auth\ICanGetCurrentUser;
+use TigerCore\Payload\ICanGetPayloadRawData;
 use TigerCore\Response\BaseResponseException;
 
 interface ICanMatchRoutes  {
@@ -11,10 +12,10 @@ interface ICanMatchRoutes  {
   /**
    * @param IRequest $httpRequest
    * @param ICanGetCurrentUser $currentUser
-   * @return array raw payload
+   * @return ICanGetPayloadRawData
    * @throws BaseResponseException
    */
-  public function match(IRequest $httpRequest, ICanGetCurrentUser $currentUser):array;
+  public function match(IRequest $httpRequest, ICanGetCurrentUser $currentUser):ICanGetPayloadRawData;
 
 
 }

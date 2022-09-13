@@ -5,6 +5,7 @@ namespace TigerCore;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use TigerCore\Auth\ICanGetCurrentUser;
+use TigerCore\Payload\IAmPayloadContainer;
 use TigerCore\Request\ICanGetRequestMask;
 use TigerCore\Request\ICanRunMatchedRequest;
 use TigerCore\Request\MatchedRequestData;
@@ -70,7 +71,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
 
   }
 
-  protected abstract function onGetPayloadContainer():ICanAddPayload;
+  protected abstract function onGetPayloadContainer():IAmPayloadContainer;
 
   public function addRequest(string|array $method, ICanGetRequestMask $request):void {
     $this->routes[] = ['method' => $method,'request' => $request];
@@ -79,10 +80,10 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
   /**
    * @param IRequest $httpRequest
    * @param ICanGetCurrentUser $currentUser
-   * @return array Raw payload
+   * @return ICanGetPayloadRawData
    * @throws BaseResponseException
    */
-  public function match(IRequest $httpRequest, ICanGetCurrentUser $currentUser):array {
+  public function match(IRequest $httpRequest, ICanGetCurrentUser $currentUser):ICanGetPayloadRawData {
 
     /**
      * @var $dispatcher Dispatcher\GroupCountBased
@@ -129,7 +130,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
           payloadContainer: $this->onGetPayloadContainer(),
           httpRequest: $httpRequest
         );
-        return $oneRequest->runMatchedRequest($requestData)->getPayloadRawData();
+        return $oneRequest->runMatchedRequest($requestData);
       };
 
     }

@@ -3,7 +3,9 @@
 namespace TigerCore\Response;
 
 
-abstract class BaseResponse implements ICanAddPayload{
+use TigerCore\Payload\IAmPayloadContainer;
+
+abstract class BaseResponse implements IAmPayloadContainer {
 
   protected array $payload = [];
 

@@ -3,6 +3,8 @@
 namespace TigerCore\ValueObject;
 
 
+use JetBrains\PhpStorm\NoReturn;
+
 abstract class BaseValueObject {
 
     protected mixed $value;
@@ -16,5 +18,14 @@ abstract class BaseValueObject {
     abstract function isValid():bool;
 
     abstract function isEmpty():bool;
+
+  /**
+   * @return void
+   * @throws \Exception
+   */
+  #[NoReturn]
+  public function __toString() {
+    throw new \Exception('getValue() must be called');
+  }
 
 }

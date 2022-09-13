@@ -121,19 +121,22 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
     }
 
 
+    $container = $this->onGetPayloadContainer();
+
     if (isset($oneRequest) && is_object($oneRequest)) {
       $this->mapData($oneRequest, $params);
 
       if ($oneRequest instanceof ICanRunMatchedRequest) {
         $requestData = new MatchedRequestData(
           currentUser: $currentUser,
-          payloadContainer: $this->onGetPayloadContainer(),
+          payloadContainer: $container,
           httpRequest: $httpRequest
         );
-        return $oneRequest->runMatchedRequest($requestData);
+        $oneRequest->runMatchedRequest($requestData);
+        return $container;
       };
 
     }
-    return [];
+    return $container;
   }
 }

@@ -5,24 +5,19 @@ namespace tests;
 require_once __DIR__.'/../vendor/autoload.php';
 
 
-use Nette\Http\IRequest;
 use Nette\Http\UrlScript;
 use Nette\Loaders\RobotLoader;
 use TigerCore\Auth\ICanGetCurrentUser;
 use TigerCore\Auth\ICurrentUser;
 use TigerCore\BaseRestRouter;
-use TigerCore\ICanAddRequest;
 use TigerCore\Payload\BasePayload;
-use TigerCore\Payload\IBasePayload;
 use TigerCore\Request\BaseRequest;
 use TigerCore\Request\MatchedRequestData;
-use TigerCore\Request\RequestParam;
 use TigerCore\Response\ICanAddPayload;
 use TigerCore\Payload\ICanGetPayloadRawData;
 use TigerCore\ValueObject\VO_BaseId;
 use TigerCore\ValueObject\VO_PayloadKey;
 use TigerCore\ValueObject\VO_RouteMask;
-use TigerCore\ValueObject\VO_Timestamp;
 
 date_default_timezone_set('Europe/Prague');
 

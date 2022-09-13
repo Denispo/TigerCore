@@ -2,25 +2,14 @@
 
 namespace TigerCore\Response;
 
-use TigerCore\Payload\ExceptionPayload;
-use TigerCore\Payload\IBasePayload;
-use TigerCore\Payload\ICanGetPayloadRawData;
-use TigerCore\ValueObject\VO_PayloadKey;
+class BaseResponseException extends \Exception {
 
-class BaseResponseException extends \Exception implements IBasePayload {
-
-  private ExceptionPayload $payload;
-
-  public function __construct(int $httpIResponseCode, ICanGetPayloadRawData|string $payload = '') {
-    $this->payload = new ExceptionPayload($payload);
-    parent::__construct('', $httpIResponseCode);
+  public function __construct(int $httpIResponseCode, string $message = '', private array $customData = []) {
+    parent::__construct($message, $httpIResponseCode);
   }
 
-  public function getPayloadKey(): VO_PayloadKey {
-    return $this->payload->getPayloadKey();
+  public function getCustomdata():array {
+    return $this->customData;
   }
 
-  public function getPayloadRawData(): array {
-    return $this->payload->getPayloadRawData();
-  }
 }

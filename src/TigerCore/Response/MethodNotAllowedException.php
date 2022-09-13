@@ -3,11 +3,10 @@
 namespace TigerCore\Response;
 
 use Nette\Http\IResponse;
-use TigerCore\Payload\ICanGetPayloadRawData;
 
 class MethodNotAllowedException extends BaseResponseException {
-  public function __construct(private array $allowedMethods, ICanGetPayloadRawData|string $payload = '') {
-    parent::__construct(IResponse::S405_METHOD_NOT_ALLOWED, $payload);
+  public function __construct(private array $allowedMethods = [], string $message = '', array $customData = []) {
+    parent::__construct(IResponse::S405_METHOD_NOT_ALLOWED, $message, $customData);
   }
 
   /**

@@ -4,7 +4,7 @@ namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
 
-class VO_Password extends VO_String {
+class VO_PasswordPlainText extends VO_String {
 
 
     public function getValue():string {

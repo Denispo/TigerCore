@@ -8,7 +8,7 @@ use TigerCore\ValueObject\VO_PasswordPlainText;
 
 interface ICanVerifyPasswordAgainstHash {
 
-  
+
   public function verifyPassword(VO_PasswordPlainText $passwordPlainText, VO_PasswordHash $passwordHash):PasswordValidity;
 
 }

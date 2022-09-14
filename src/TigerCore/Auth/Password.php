@@ -9,10 +9,19 @@ use TigerCore\ValueObject\VO_PasswordPlainText;
 class Password implements ICanVerifyPasswordAgainstHash, ICanGeneratePasswordHash{
 
 
+  /**
+   * @param VO_PasswordPlainText $passwordPlainText
+   * @return VO_PasswordHash
+   */
   public function generatePasswordHash(VO_PasswordPlainText $passwordPlainText): VO_PasswordHash {
     return new VO_PasswordHash(password_hash($passwordPlainText->getValue(), PASSWORD_DEFAULT));
   }
 
+  /**
+   * @param VO_PasswordPlainText $passwordPlainText
+   * @param VO_PasswordHash $passwordHash
+   * @return PasswordValidity
+   */
   public function verifyPassword(VO_PasswordPlainText $passwordPlainText, VO_PasswordHash $passwordHash): PasswordValidity {
     $result = password_verify($passwordPlainText->getValue(), $passwordHash->getValue());
     if ($result) {

@@ -4,7 +4,13 @@ namespace TigerCore\Response;
 
 use Nette\Http\IResponse;
 
-class UnprocessableEntityException extends BaseResponseException {
+class S422_UnprocessableEntityException extends BaseResponseException {
+
+  /**
+   * The request was well-formed but was unable to be followed due to semantic errors.
+   * @param string $message
+   * @param array $customData
+   */
   public function __construct(string $message = '', array $customData = []) {
     parent::__construct(IResponse::S422_UNPROCESSABLE_ENTITY, $message, $customData);
   }

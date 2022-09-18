@@ -6,6 +6,11 @@ class Crypt {
 
   private const AVAILABLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
+  /** Generate Initialization vector (string with $length characters)
+   * @param string $asciiString
+   * @param int $length
+   * @return string
+   */
   private static function generateIV(string $asciiString, int $length = 16): string {
     $chars = str_split($asciiString);
     $result = '';
@@ -62,7 +67,7 @@ class Crypt {
     $options = 0;
 
     // Non-NULL Initialization Vector for encryption
-    $decryption_iv = self::generateIV(substr($encryptedData,0,4));
+    $decryption_iv = self::generateIV(substr($encryptedData,0,4),$iv_length);
 
     // Store the encryption key
     $decryption_key = $password;
@@ -71,6 +76,10 @@ class Crypt {
     // Use openssl_decrypt() function to decrypt the data
     $decryption = openssl_decrypt (substr($encryptedData,4), $ciphering,
       $decryption_key, $options, $decryption_iv);
+
+    if ($decryption === false) {
+      $decryption = '';
+    }
 
     return $decryption;
   }

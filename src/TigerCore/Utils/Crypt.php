@@ -8,13 +8,13 @@ class Crypt {
 
   private const AVAILABLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-  /** Generate Initialization vector (string with $length characters)
-   * @param string $asciiString
+  /** Generate Initialization vector based on $asciiStringSeed
+   * @param string $asciiStringSeed
    * @param int $length
    * @return string
    */
-  private static function generateIV(string $asciiString, int $length = 16): string {
-    $chars = str_split($asciiString);
+  private static function generateIV(string $asciiStringSeed, int $length = 16): string {
+    $chars = str_split($asciiStringSeed);
     $result = '';
     foreach ($chars as $oneChar) {
       $result = $result.(string)ord($oneChar);

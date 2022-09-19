@@ -2,8 +2,6 @@
 
 namespace TigerCore\Email;
 
-use TigerApi\Email\BaseMailMessage;
-
 interface ICanSendEmail {
 
   /**

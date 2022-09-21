@@ -8,7 +8,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 use Nette\Http\UrlScript;
 use Nette\Loaders\RobotLoader;
 use TigerCore\Auth\ICanGetCurrentUser;
-use TigerCore\Auth\ICurrentUser;
+use TigerCore\Auth\IAmCurrentUser;
 use TigerCore\BaseRestRouter;
 use TigerCore\Payload\BasePayload;
 use TigerCore\Request\BaseRequest;
@@ -55,7 +55,7 @@ class Request extends BaseRequest
   }
 }
 
-class CurrentUser implements ICurrentUser, ICanGetCurrentUser
+class CurrentUser implements IAmCurrentUser, ICanGetCurrentUser
 {
 
     public function isLoggedIn(): bool
@@ -68,7 +68,7 @@ class CurrentUser implements ICurrentUser, ICanGetCurrentUser
     return new VO_BaseId(0);
   }
 
-  public function getCurrentUser(): ICurrentUser {
+  public function getCurrentUser(): IAmCurrentUser {
     return $this;
   }
 }

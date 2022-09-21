@@ -5,7 +5,7 @@ namespace TigerCore\Request;
 
 use Nette\Http\IRequest;
 use TigerCore\Auth\ICanGetCurrentUser;
-use TigerCore\Auth\ICurrentUser;
+use TigerCore\Auth\IAmCurrentUser;
 use TigerCore\Payload\IAmPayloadContainer;
 
 class MatchedRequestData {
@@ -26,7 +26,7 @@ class MatchedRequestData {
     return $this->payloadContainer;
   }
 
-  public function getCurrentUser():ICurrentUser {
+  public function getCurrentUser():IAmCurrentUser {
     return $this->currentUser->getCurrentUser();
 
   }

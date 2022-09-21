@@ -4,7 +4,7 @@ namespace TigerCore\Auth;
 
 use TigerCore\ValueObject\VO_BaseId;
 
-interface ICurrentUser {
+interface IAmCurrentUser {
 
   public function isLoggedIn():bool;
 

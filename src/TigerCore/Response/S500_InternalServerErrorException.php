@@ -4,7 +4,7 @@ namespace TigerCore\Response;
 
 use Nette\Http\IResponse;
 
-class S500_InternalServerErrorException extends BaseResponseException {
+class S500_InternalServerErrorException extends Base_5xx_RequestException {
 
   /**
    * A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.

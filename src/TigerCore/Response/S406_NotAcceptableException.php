@@ -4,7 +4,7 @@ namespace TigerCore\Response;
 
 use Nette\Http\IResponse;
 
-class S406_NotAcceptableException extends BaseResponseException {
+class S406_NotAcceptableException extends Base_4xx_RequestException {
 
   /**
    * The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.

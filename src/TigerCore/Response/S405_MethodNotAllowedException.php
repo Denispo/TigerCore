@@ -4,7 +4,7 @@ namespace TigerCore\Response;
 
 use Nette\Http\IResponse;
 
-class S405_MethodNotAllowedException extends BaseResponseException {
+class S405_MethodNotAllowedException extends Base_4xx_RequestException {
 
   /**
    * A request method is not supported for the requested resource; for example, a GET request on a form that requires data to be presented via POST, or a PUT request on a read-only resource.

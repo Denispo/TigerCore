@@ -4,7 +4,7 @@ namespace TigerCore\Response;
 
 use Nette\Http\IResponse;
 
-class S404_NotFoundException extends BaseResponseException {
+class S404_NotFoundException extends Base_4xx_RequestException {
   /**
    * The requested resource could not be found but may be available in the future. Subsequent requests by the client are permissible.
    * @param string $message

@@ -4,7 +4,7 @@ namespace TigerCore\Response;
 
 use Nette\Http\IResponse;
 
-class S422_UnprocessableEntityException extends BaseResponseException {
+class S422_UnprocessableEntityException extends Base_4xx_RequestException {
 
   /**
    * The request was well-formed but was unable to be followed due to semantic errors. The client should not repeat this request without modification.

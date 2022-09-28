@@ -4,7 +4,8 @@ namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
 
-class VO_PasswordHash extends VO_Hash {
+class VO_Hash extends VO_String_Trimmed {
+
 
 
     public function getValue():string {

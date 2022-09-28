@@ -49,6 +49,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
         if ($type && !$type->isBuiltin()) {
           if (is_a($type->getName(), BaseValueObject::class, true)) {
             // Parametr je BaseValueObject
+            echo('SHIT: '.$type->getName());
             $oneProp->setValue($class, new ($type->getName())($value));
 
           } elseif (is_a($type->getName(), BaseRequestParam::class, true))  {
@@ -61,6 +62,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
           }
         } else {
           // Parametr je obycejneho PHP typu (int, string, mixed atd.)
+          echo('DOPR: ' .$type->getName());
           $oneProp->setValue($class, $value);
         }
 

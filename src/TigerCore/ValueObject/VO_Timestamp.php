@@ -8,6 +8,10 @@ use TigerCore\ICanGetValueAsTimestamp;
 
 class VO_Timestamp extends BaseValueObject {
 
+  public static function createAsNow():self {
+    return new self(time());
+  }
+
   #[Pure]
   public function __construct(int|ICanGetValueAsTimestamp|ICanGetValueAsInit $unixTimestampInSeconds) {
     if ($unixTimestampInSeconds instanceof ICanGetValueAsTimestamp) {

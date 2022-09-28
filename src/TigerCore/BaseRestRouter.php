@@ -12,7 +12,6 @@ use TigerCore\Request\MatchedRequestData;
 use TigerCore\Request\RequestParam;
 use TigerCore\Requests\BaseRequestParam;
 use TigerCore\Response\BaseResponseException;
-use TigerCore\Response\ICanAddPayload;
 use Nette\Http\IRequest;
 use TigerCore\Payload\ICanGetPayloadRawData;
 use TigerCore\Response\S405_MethodNotAllowedException;
@@ -57,6 +56,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
 
           } else {
             // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject ani BaseRequestParam
+            echo('NE: '.$type->getName());
           }
         } else {
           // Parametr je obycejneho PHP typu (int, string, mixed atd.)

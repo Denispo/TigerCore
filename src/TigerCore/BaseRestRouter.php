@@ -52,6 +52,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
             $oneProp->setValue($class, new ($type->getName())($value));
 
           } elseif (is_a($type->getName(), BaseRequestParam::class, true))  {
+            echo('SET: '.$type->getName().':'.$paramName.'-'.$value.' ');
             $oneProp->setValue($class, new ($type->getName())($paramName, $value));
 
           } else {

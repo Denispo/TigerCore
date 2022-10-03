@@ -12,11 +12,6 @@ class VO_PasswordHash extends VO_Hash {
     }
 
     #[pure]
-    function isValid(): bool {
-        return !$this->isEmpty();
-    }
-
-    #[pure]
     function isEmpty(): bool {
         return $this->getValue() == '';
     }

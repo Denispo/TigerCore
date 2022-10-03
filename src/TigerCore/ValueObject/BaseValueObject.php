@@ -15,8 +15,6 @@ abstract class BaseValueObject {
 
     abstract function getValue():mixed;
 
-    abstract function isValid():bool;
-
     abstract function isEmpty():bool;
 
   /**

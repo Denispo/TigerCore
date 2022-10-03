@@ -4,7 +4,7 @@ namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
 
-class VO_LastInsertedId extends BaseValueObject {
+class VO_LastInsertedId extends BaseValueObject implements ICanCheckSelfValidity{
 
     #[Pure]
     public function __construct(string|int $id) {

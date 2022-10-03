@@ -6,15 +6,8 @@ use JetBrains\PhpStorm\Pure;
 
 class VO_Hash extends VO_String_Trimmed {
 
-
-
     public function getValue():string {
         return $this->value;
-    }
-
-    #[pure]
-    function isValid(): bool {
-        return !$this->isEmpty();
     }
 
     #[pure]

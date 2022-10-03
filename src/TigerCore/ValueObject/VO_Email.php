@@ -5,7 +5,7 @@ namespace TigerCore\ValueObject;
 use JetBrains\PhpStorm\Pure;
 use TigerCore\ICanGetValueAsString;
 
-class VO_Email extends VO_String_Trimmed {
+class VO_Email extends VO_String_Trimmed implements ICanCheckSelfValidity{
 
   private bool $isValid;
 

@@ -11,11 +11,6 @@ class VO_PayloadKey extends VO_String_Trimmed {
     }
 
     #[pure]
-    function isValid(): bool {
-        return !$this->isEmpty();
-    }
-
-    #[pure]
     function isEmpty(): bool {
         return $this->getValue() == '';
     }

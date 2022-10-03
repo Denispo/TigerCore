@@ -29,11 +29,6 @@ class VO_Duration extends BaseValueObject {
   }
 
   #[pure]
-  function isValid(): bool {
-    return !$this->isEmpty();
-  }
-
-  #[pure]
   function isEmpty(): bool {
     return false;
   }

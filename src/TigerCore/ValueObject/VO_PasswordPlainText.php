@@ -12,11 +12,6 @@ class VO_PasswordPlainText extends VO_String {
     }
 
     #[pure]
-    function isValid(): bool {
-        return !$this->isEmpty();
-    }
-
-    #[pure]
     function isEmpty(): bool {
         return $this->getValue() == '';
     }

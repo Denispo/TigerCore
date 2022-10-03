@@ -6,7 +6,7 @@ use JetBrains\PhpStorm\Pure;
 use TigerCore\ICanGetValueAsInit;
 use TigerCore\ICanGetValueAsTimestamp;
 
-class VO_Timestamp extends BaseValueObject {
+class VO_Timestamp extends BaseValueObject implements ICanCheckSelfValidity{
 
   public static function createAsNow():self {
     return new self(time());

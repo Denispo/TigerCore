@@ -27,8 +27,4 @@ class VO_TokenPlainStr extends VO_String_Trimmed {
     return $this->value == '';
   }
 
-  public function isValid(): bool {
-    // TODO: Implement isValid() method.
-    return !$this->isEmpty();
-  }
 }

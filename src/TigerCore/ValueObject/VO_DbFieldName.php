@@ -12,7 +12,11 @@ class VO_DbFieldName extends VO_String_Trimmed implements ICanCheckSelfValidity{
     #[pure]
     function isValid(): bool {
       if ($this->isValid === null) {
-        $this->isValid = preg_match('/[a-zA-Z0-9_]+/',$this->getValue()) !== false;
+        /**
+         * \A     Start of string
+         * \z     End of string
+         */
+        $this->isValid = preg_match('/\A([a-zA-Z0-9_]+)\z/',$this->getValue()) !== false;
       }
         return !$this->isEmpty();
     }

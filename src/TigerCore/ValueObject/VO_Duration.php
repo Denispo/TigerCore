@@ -4,7 +4,7 @@ namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
 
-class VO_Duration extends BaseValueObject {
+class VO_Duration extends VO_Int {
 
   #[Pure]
   public function __construct(int $seconds = 0, int $minutes = 0, int $hours = 0, int $days = 0) {
@@ -24,12 +24,4 @@ class VO_Duration extends BaseValueObject {
     return new self($this->getValue()+($days*24*60*60));
   }
 
-  public function getValue():int {
-    return $this->value;
-  }
-
-  #[pure]
-  function isEmpty(): bool {
-    return false;
-  }
 }

@@ -6,7 +6,7 @@ namespace TigerCore\Requests;
 
 abstract class BaseRequestParam {
 
-  private bool $isSet = false;
+  private bool $isSet;
 
   public function __construct(private string $paramName, mixed $paramValue) {
     $this->isSet = $this->onSetValue($paramValue);

@@ -12,11 +12,7 @@ class RP_Int extends BaseRequestParam implements ICanGetValueAsInit {
   private int $paramValue;
 
   public function getValueAsInt(int $defaultValue = 0): int {
-    if ($this->isSet()) {
-      return $this->paramValue;
-    } else {
-      return $defaultValue;
-    }
+    return $this->isSet() ? $this->paramValue : $defaultValue;
   }
 
   protected function onSetValue(mixed $paramValue):bool {

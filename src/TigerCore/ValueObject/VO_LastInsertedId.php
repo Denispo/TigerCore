@@ -3,15 +3,16 @@
 namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
+use TigerCore\ICanCheckSelfEmptiness;
 
-class VO_LastInsertedId extends BaseValueObject implements ICanCheckSelfValidity{
+class VO_LastInsertedId extends BaseValueObject implements ICanCheckSelfEmptiness {
 
     #[Pure]
     public function __construct(string|int $id) {
       if (is_int($id)) {
-        parent::__construct((int)$id);
+        parent::__construct($id);
       } else {
-        parent::__construct(strtolower(trim($id)));
+        parent::__construct($id);
       }
     }
 
@@ -20,12 +21,7 @@ class VO_LastInsertedId extends BaseValueObject implements ICanCheckSelfValidity
     }
 
     #[pure]
-    function isValid(): bool {
-        return !$this->isEmpty();
-    }
-
-    #[pure]
     function isEmpty(): bool {
-        return $this->getValue() === 0 || $this->getValue() == '';
+        return $this->getValue() === 0 || $this->getValue() === '';
     }
 }

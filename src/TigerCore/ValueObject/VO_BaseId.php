@@ -3,8 +3,9 @@
 namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
+use TigerCore\ICanCheckSelfEmptiness;
 
-class VO_BaseId extends BaseValueObject {
+class VO_BaseId extends BaseValueObject implements ICanCheckSelfEmptiness {
 
     #[Pure]
     public function __construct(string|int $id) {

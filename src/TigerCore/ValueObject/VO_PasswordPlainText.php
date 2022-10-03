@@ -3,13 +3,9 @@
 namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
+use TigerCore\ICanCheckSelfEmptiness;
 
-class VO_PasswordPlainText extends VO_String {
-
-
-    public function getValue():string {
-        return $this->value;
-    }
+class VO_PasswordPlainText extends VO_String implements ICanCheckSelfEmptiness {
 
     #[pure]
     function isEmpty(): bool {

@@ -15,8 +15,6 @@ abstract class BaseValueObject {
 
     abstract function getValue():mixed;
 
-    abstract function isEmpty():bool;
-
   /**
    * @return void
    * @throws \Exception

@@ -1,6 +1,6 @@
 <?php
 
-namespace TigerCore\ValueObject;
+namespace TigerCore;
 
 interface ICanCheckSelfValidity {
 

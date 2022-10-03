@@ -2,7 +2,6 @@
 
 namespace TigerCore\ValueObject;
 
-use JetBrains\PhpStorm\Pure;
 use Nette\Http\IRequest;
 
 class VO_TokenPlainStr extends VO_String_Trimmed {
@@ -18,13 +17,5 @@ class VO_TokenPlainStr extends VO_String_Trimmed {
     return new self($str);
   }
 
-  public function getValue():string {
-    return $this->value;
-  }
-
-  #[pure]
-  function isEmpty(): bool {
-    return $this->value == '';
-  }
 
 }

@@ -2,7 +2,6 @@
 
 namespace TigerCore\ValueObject;
 
-use JetBrains\PhpStorm\Pure;
 use TigerCore\ICanGetValueAsString;
 
 class VO_RouteMask extends VO_String_Trimmed {
@@ -21,12 +20,4 @@ class VO_RouteMask extends VO_String_Trimmed {
     parent::__construct($value);
   }
 
-    public function getValue():string {
-        return $this->value;
-    }
-
-    #[pure]
-    function isEmpty(): bool {
-        return $this->getValue() == '';
-    }
 }

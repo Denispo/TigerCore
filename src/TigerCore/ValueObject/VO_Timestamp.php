@@ -3,10 +3,11 @@
 namespace TigerCore\ValueObject;
 
 use JetBrains\PhpStorm\Pure;
+use TigerCore\ICanCheckSelfValidity;
 use TigerCore\ICanGetValueAsInit;
 use TigerCore\ICanGetValueAsTimestamp;
 
-class VO_Timestamp extends BaseValueObject implements ICanCheckSelfValidity{
+class VO_Timestamp extends VO_Int implements ICanCheckSelfValidity {
 
   public static function createAsNow():self {
     return new self(time());
@@ -16,24 +17,13 @@ class VO_Timestamp extends BaseValueObject implements ICanCheckSelfValidity{
   public function __construct(int|ICanGetValueAsTimestamp|ICanGetValueAsInit $unixTimestampInSeconds) {
     if ($unixTimestampInSeconds instanceof ICanGetValueAsTimestamp) {
       $unixTimestampInSeconds = $unixTimestampInSeconds->getValueAsTimestamp()->getValue();
-    } elseif ($unixTimestampInSeconds instanceof ICanGetValueAsInit) {
-      $unixTimestampInSeconds = $unixTimestampInSeconds->getValueAsInt();
     }
     parent::__construct($unixTimestampInSeconds);
-  }
-
-  public function getValue():int {
-    return $this->value;
   }
 
   #[pure]
   function isValid(): bool {
     return $this->value > 0;
-  }
-
-  #[pure]
-  function isEmpty(): bool {
-    return $this->value == 0;
   }
 
   public function addDays(int $daysCount):self{

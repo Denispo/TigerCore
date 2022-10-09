@@ -39,9 +39,10 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
    */
   private array $invalidParams = [];
 
-  private function validateParam(\ReflectionProperty $property):BaseParamErrorCode|null
+  private function validateParam(object $class, \ReflectionProperty $property):BaseParamErrorCode|null
   {
     $attributes = $property->getAttributes(BaseRequestParamValidator::class, \ReflectionAttribute::IS_INSTANCEOF);
+    $requestParam = $property->getValue($class);
     foreach ($attributes as $oneAttribute) {
 
       /**
@@ -50,13 +51,13 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
       $attrInstance = $oneAttribute->newInstance();
 
       if (
-        ($property instanceof ICanGetValueAsInit && $attrInstance instanceof ICanValidateIntRequestParam) ||
-        ($property instanceof ICanGetValueAsString && $attrInstance instanceof ICanValidateStrRequestParam) ||
-        ($property instanceof ICanGetValueAsFloat && $attrInstance instanceof ICanValidateFloatRequestParam) ||
-        ($property instanceof ICanGetValueAsTimestamp && $attrInstance instanceof ICanValidateTimestampRequestParam) ||
-        ($property instanceof ICanGetValueAsBoolean && $attrInstance instanceof ICanValidateBooleanRequestParam)
+        ($requestParam instanceof ICanGetValueAsInit && $attrInstance instanceof ICanValidateIntRequestParam) ||
+        ($requestParam instanceof ICanGetValueAsString && $attrInstance instanceof ICanValidateStrRequestParam) ||
+        ($requestParam instanceof ICanGetValueAsFloat && $attrInstance instanceof ICanValidateFloatRequestParam) ||
+        ($requestParam instanceof ICanGetValueAsTimestamp && $attrInstance instanceof ICanValidateTimestampRequestParam) ||
+        ($requestParam instanceof ICanGetValueAsBoolean && $attrInstance instanceof ICanValidateBooleanRequestParam)
       ){
-        $result = $attrInstance->checkRequestParamValidity($property);
+        $result = $attrInstance->checkRequestParamValidity($requestParam);
         if ($result) {
           return $result;
         }
@@ -92,8 +93,9 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
 
           } elseif (is_a($type->getName(), BaseRequestParam::class, true))  {
             // Parametr je potomkem BaseRequestParam
-            $oneProp->setValue($class, new ($type->getName())($paramName, $value));
-            $result = $this->validateParam($oneProp);
+            $tmpProp = new ($type->getName())($paramName, $value);
+            $oneProp->setValue($class, $tmpProp);
+            $result = $this->validateParam($class, $oneProp);
             if ($result) {
               $this->invalidParams[] = new InvalidRequestParam($paramName, $result);
             }

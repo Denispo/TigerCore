@@ -2,11 +2,13 @@
 
 namespace TigerCore\Request\Validator;
 
+use TigerCore\ValueObject\VO_RequestParamErrorCode;
+
 class ParamErrorCode_TooHigh extends BaseParamErrorCode {
 
 
-  public function getErrorCodeValue(): int|string
+  public function getErrorCodeValue(): VO_RequestParamErrorCode
   {
-    return 'TOO_HIGH';
+    return new VO_RequestParamErrorCode('TOO_HIGH');
   }
 }

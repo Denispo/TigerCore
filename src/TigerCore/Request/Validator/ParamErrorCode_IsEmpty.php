@@ -2,11 +2,13 @@
 
 namespace TigerCore\Request\Validator;
 
+use TigerCore\ValueObject\VO_RequestParamErrorCode;
+
 class ParamErrorCode_IsEmpty extends BaseParamErrorCode {
 
 
-  public function getErrorCodeValue(): int|string
+  public function getErrorCodeValue(): VO_RequestParamErrorCode
   {
-    return 'IS_EMPTY';
+    return new VO_RequestParamErrorCode('IS_EMPTY');
   }
 }

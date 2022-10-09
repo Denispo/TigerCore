@@ -2,8 +2,10 @@
 
 namespace TigerCore\Request;
 
+use TigerCore\Requests\ICanGetRequestParamName;
+
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class RequestParam {
+class RequestParam implements ICanGetRequestParamName {
   private string $paramParam;
 
   public function __construct( string $paramName, private $defaultValue = null) {

@@ -80,7 +80,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
          * @var RequestParam $attr
          */
         $attr = $oneAttribute->newInstance();
-        $paramName = $attr->getParamName();
+        $paramName = $attr->getParamName()->getValue();
 
 
         $value = $data[strtolower($paramName)] ?? null;

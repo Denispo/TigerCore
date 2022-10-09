@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace TigerCore\Requests;
 
+use TigerCore\ValueObject\VO_RequestParamName;
+
 abstract class BaseRequestParam implements ICanGetRequestParamName {
 
   private bool $isSet;
 
-  public function __construct(private string $paramName, mixed $paramValue) {
+  public function __construct(private VO_RequestParamName $paramName, mixed $paramValue) {
     $this->isSet = $this->onSetValue($paramValue);
   }
 
@@ -18,7 +20,7 @@ abstract class BaseRequestParam implements ICanGetRequestParamName {
     return $this->isSet;
   }
 
-  public function getParamName():string
+  public function getParamName():VO_RequestParamName
   {
     return $this->paramName;
   }

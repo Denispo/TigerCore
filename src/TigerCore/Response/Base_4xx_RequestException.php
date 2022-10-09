@@ -9,7 +9,7 @@ abstract class Base_4xx_RequestException extends BaseResponseException {
   public function __construct(string|int $customErrorId = '', array $customData = [])
   {
     $this->customErrorId = trim((string)$customErrorId);
-    parent::__construct();
+    parent::__construct($this->customErrorId, $customData);
   }
 
   public function getCustomErrorId():string

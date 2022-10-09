@@ -7,11 +7,8 @@ use TigerCore\ICanGetValueAsInit;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class RPCheck_PositiveNumber extends BaseRequestParamValidator implements ICanValidateIntRequestParam {
 
-  public function __construct() {
-  }
-
-  public function isRequestParamValid(ICanGetValueAsInit $requestParam): bool
+  public function checkRequestParamValidity(ICanGetValueAsInit $requestParam): BaseParamErrorCode|null
   {
-    return $requestParam->getValueAsInt() > 0;
+    return $requestParam->getValueAsInt() > 0 ? null : new ParamErrorCode_TooLow();
   }
 }

@@ -2,11 +2,11 @@
 
 namespace TigerCore\Request\Validator;
 
-class ParamErrorCode_Empty extends BaseParamErrorCode {
+class ParamErrorCode_InvalidEmailAddress extends BaseParamErrorCode {
 
 
   public function getErrorCodeValue(): int|string
   {
-    return 'EMPTY';
+    return 'INVALID_EMAIL_ADDRESS';
   }
 }

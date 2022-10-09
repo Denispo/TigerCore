@@ -10,14 +10,17 @@ class RPCheck_InRange extends BaseRequestParamValidator implements ICanValidateI
   public function __construct(private int|float $min, private int|float $max ) {
   }
 
-  public function isRequestParamValid(ICanGetValueAsInit $requestParam): bool
+  public function checkRequestParamValidity(ICanGetValueAsInit $requestParam): BaseParamErrorCode|null
   {
     $value = $requestParam->getValueAsInt();
-    return $value >= $this->min && $value <= $this->max;
+    $errorCode = null;
+    if ($value < $this->min) {
+      $errorCode = new ParamErrorCode_TooLow();
+    }
+    if ($value > $this->max) {
+      $errorCode = new ParamErrorCode_TooHigh();
+    }
+    return $errorCode;
   }
 
-  public function getCustomErrorCode(): BaseParamErrorCode
-  {
-    // TODO: Implement getCustomErrorCode() method.
-  }
 }

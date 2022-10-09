@@ -6,6 +6,6 @@ use TigerCore\ICanGetValueAsInit;
 
 interface ICanValidateIntRequestParam {
 
-  public function isRequestParamValid(ICanGetValueAsInit $requestParam):bool;
+  public function checkRequestParamValidity(ICanGetValueAsInit $requestParam):BaseParamErrorCode|null;
 
 }

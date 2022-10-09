@@ -49,9 +49,10 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
         ($property instanceof ICanGetValueAsTimestamp && $attrInstance instanceof ICanValidateTimestampRequestParam) ||
         ($property instanceof ICanGetValueAsBoolean && $attrInstance instanceof ICanValidateBooleanRequestParam)
       ){
-        if (!$attrInstance->isRequestParamValid($property)) {
-          return $attrInstance->getCustomErrorCode();
-        };
+        $result = $attrInstance->checkRequestParamValidity($property);
+        if ($result) {
+          return $result->getErrorCodeValue();
+        }
       }
     }
     return '';

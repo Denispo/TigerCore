@@ -6,6 +6,6 @@ use TigerCore\ICanGetValueAsBoolean;
 
 interface ICanValidateBooleanRequestParam {
 
-  public function isRequestParamValid(ICanGetValueAsBoolean $requestParam):bool;
+  public function checkRequestParamValidity(ICanGetValueAsBoolean $requestParam):BaseParamErrorCode|null;
 
 }

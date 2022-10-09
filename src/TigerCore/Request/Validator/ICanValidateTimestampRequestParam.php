@@ -6,6 +6,6 @@ use TigerCore\ICanGetValueAsTimestamp;
 
 interface ICanValidateTimestampRequestParam {
 
-  public function isRequestParamValid(ICanGetValueAsTimestamp $requestParam):bool;
+  public function checkRequestParamValidity(ICanGetValueAsTimestamp $requestParam):BaseParamErrorCode|null;
 
 }

@@ -6,6 +6,6 @@ use TigerCore\ICanGetValueAsString;
 
 interface ICanValidateStrRequestParam {
 
-  public function isRequestParamValid(ICanGetValueAsString $requestParam):bool;
+  public function checkRequestParamValidity(ICanGetValueAsString $requestParam):BaseParamErrorCode|null;
 
 }

@@ -6,6 +6,6 @@ use TigerCore\ICanGetValueAsFloat;
 
 interface ICanValidateFloatRequestParam {
 
-  public function isRequestParamValid(ICanGetValueAsFloat $requestParam):bool;
+  public function checkRequestParamValidity(ICanGetValueAsFloat $requestParam):BaseParamErrorCode|null;
 
 }

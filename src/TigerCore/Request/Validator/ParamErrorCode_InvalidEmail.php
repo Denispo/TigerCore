@@ -4,11 +4,11 @@ namespace TigerCore\Request\Validator;
 
 use TigerCore\ValueObject\VO_RequestParamErrorCode;
 
-class ParamErrorCode_InvalidEmailAddress extends BaseParamErrorCode {
+class ParamErrorCode_InvalidEmail extends BaseParamErrorCode {
 
 
   public function getErrorCodeValue(): VO_RequestParamErrorCode
   {
-    return new VO_RequestParamErrorCode('INVALID_EMAIL_ADDRESS');
+    return new VO_RequestParamErrorCode('INVALID_EMAIL');
   }
 }

@@ -9,6 +9,6 @@ class RPCheck_EmailAddress extends BaseRequestParamValidator implements ICanVali
 
   public function checkRequestParamValidity(ICanGetValueAsString $requestParam): BaseParamErrorCode|null
   {
-    return filter_var($requestParam->getValueAsString(), FILTER_VALIDATE_EMAIL) === false ? new ParamErrorCode_InvalidEmailAddress() : null;
+    return filter_var($requestParam->getValueAsString(), FILTER_VALIDATE_EMAIL) === false ? new ParamErrorCode_InvalidEmail() : null;
   }
 }

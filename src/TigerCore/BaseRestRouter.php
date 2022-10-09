@@ -32,10 +32,14 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
    */
   private array $routes = [];
 
-  private function validateParam(\ReflectionProperty $property)
+  private function validateParam(\ReflectionProperty $property):int|string
   {
     $attributes = $property->getAttributes(BaseRequestParamValidator::class, \ReflectionAttribute::IS_INSTANCEOF);
     foreach ($attributes as $oneAttribute) {
+
+      /**
+       * @var BaseRequestParamValidator $attrInstance
+       */
       $attrInstance = $oneAttribute->newInstance();
 
       if (
@@ -45,10 +49,12 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
         ($property instanceof ICanGetValueAsTimestamp && $attrInstance instanceof ICanValidateTimestampRequestParam) ||
         ($property instanceof ICanGetValueAsBoolean && $attrInstance instanceof ICanValidateBooleanRequestParam)
       ){
-
-        $attrInstance->isRequestParamValid($property);
+        if (!$attrInstance->isRequestParamValid($property)) {
+          return $attrInstance->getCustomErrorCode();
+        };
       }
     }
+    return '';
   }
 
   private function mapData(object $class, array $data):void {

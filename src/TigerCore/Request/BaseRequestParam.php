@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TigerCore\Requests;
 
-abstract class BaseRequestParam {
+abstract class BaseRequestParam implements ICanGetRequestParamName {
 
   private bool $isSet;
 

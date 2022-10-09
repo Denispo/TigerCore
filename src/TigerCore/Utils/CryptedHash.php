@@ -49,7 +49,7 @@ class CryptedHash {
    * @throws InvalidArgumentException|ExpiredException|\Exception
    */
   public function getUserIdFromHash(VO_Hash $hash, VO_Duration $hashDuration):VO_BaseId {
-    if (!$hash->isValid()) {
+    if ($hash->isEmpty()) {
       throw new InvalidArgumentException();
     }
     $binary = Crypt::decode($hash->getValue(), $this->passphrase);

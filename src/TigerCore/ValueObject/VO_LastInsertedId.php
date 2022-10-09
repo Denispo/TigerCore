@@ -9,11 +9,7 @@ class VO_LastInsertedId extends BaseValueObject implements ICanCheckSelfEmptines
 
     #[Pure]
     public function __construct(string|int $id) {
-      if (is_int($id)) {
-        parent::__construct($id);
-      } else {
-        parent::__construct($id);
-      }
+      parent::__construct($id);
     }
 
     public function getValue():string|int {

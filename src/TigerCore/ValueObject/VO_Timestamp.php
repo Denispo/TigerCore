@@ -13,7 +13,6 @@ class VO_Timestamp extends VO_Int implements ICanCheckSelfValidity {
     return new self(time());
   }
 
-  #[Pure]
   public function __construct(int|ICanGetValueAsTimestamp|ICanGetValueAsInit $unixTimestampInSeconds) {
     if ($unixTimestampInSeconds instanceof ICanGetValueAsTimestamp) {
       $unixTimestampInSeconds = $unixTimestampInSeconds->getValueAsTimestamp()->getValue();

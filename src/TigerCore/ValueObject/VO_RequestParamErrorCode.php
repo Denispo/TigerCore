@@ -9,7 +9,6 @@ use TigerCore\ICanGetValueAsString;
 
 class VO_RequestParamErrorCode extends BaseValueObject implements ICanCheckSelfEmptiness {
 
-    #[Pure]
     public function __construct(string|int|ICanGetValueAsString|ICanGetValueAsInit $errorCode) {
       if ($errorCode instanceof ICanGetValueAsInit) {
         $errorCode = $errorCode->getValueAsInt();

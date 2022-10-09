@@ -39,7 +39,7 @@ class SqlResult {
   }
   
   /**
-   * @template T of BaseDbData
+   * @template T
    * @param BaseDTO<T> $dbData
    * @return array<BaseDTO<T>>
    */

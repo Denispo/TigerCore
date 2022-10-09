@@ -6,7 +6,6 @@ use JetBrains\PhpStorm\Pure;
 
 class VO_Duration extends VO_Int {
 
-  #[Pure]
   public function __construct(int $seconds = 0, int $minutes = 0, int $hours = 0, int $days = 0) {
     parent::__construct($seconds + ($minutes * 60) + ($hours * 60 * 60) + ($days * 24 * 60 * 60));
 

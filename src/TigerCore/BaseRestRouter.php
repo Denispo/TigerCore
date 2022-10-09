@@ -178,7 +178,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
         );
         $oneRequest->runMatchedRequest($requestData);
         return $container;
-      };
+      }
 
     }
     return $container;

@@ -12,7 +12,6 @@ class VO_DbFieldName extends VO_String_Trimmed implements ICanCheckSelfValidity{
 
   private bool|null $isValid = null;
 
-    #[pure]
     function isValid(): bool {
       if ($this->isValid === null) {
         /**

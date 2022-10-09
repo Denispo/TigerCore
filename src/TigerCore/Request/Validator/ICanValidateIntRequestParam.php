@@ -2,10 +2,10 @@
 
 namespace TigerCore\Request\Validator;
 
-use TigerCore\Requests\RP_Int;
+use TigerCore\ICanGetValueAsInit;
 
 interface ICanValidateIntRequestParam {
 
-  public function isIntRequestParamValid(RP_Int $requestParam):bool;
+  public function isRequestParamValid(ICanGetValueAsInit $requestParam):bool;
 
 }

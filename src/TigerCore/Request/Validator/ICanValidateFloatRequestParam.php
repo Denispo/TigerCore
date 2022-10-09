@@ -2,10 +2,10 @@
 
 namespace TigerCore\Request\Validator;
 
-use TigerCore\Requests\RP_Float;
+use TigerCore\ICanGetValueAsFloat;
 
 interface ICanValidateFloatRequestParam {
 
-  public function isFloatRequestParamValid(RP_Float $requestParam):bool;
+  public function isRequestParamValid(ICanGetValueAsFloat $requestParam):bool;
 
 }

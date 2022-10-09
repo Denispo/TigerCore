@@ -10,6 +10,12 @@ use TigerCore\Request\ICanGetRequestMask;
 use TigerCore\Request\ICanRunMatchedRequest;
 use TigerCore\Request\MatchedRequestData;
 use TigerCore\Request\RequestParam;
+use TigerCore\Request\Validator\BaseRequestParamValidator;
+use TigerCore\Request\Validator\ICanValidateBooleanRequestParam;
+use TigerCore\Request\Validator\ICanValidateFloatRequestParam;
+use TigerCore\Request\Validator\ICanValidateIntRequestParam;
+use TigerCore\Request\Validator\ICanValidateStrRequestParam;
+use TigerCore\Request\Validator\ICanValidateTimestampRequestParam;
 use TigerCore\Requests\BaseRequestParam;
 use TigerCore\Response\BaseResponseException;
 use Nette\Http\IRequest;
@@ -25,6 +31,25 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
    * @var array
    */
   private array $routes = [];
+
+  private function validateParam(\ReflectionProperty $property)
+  {
+    $attributes = $property->getAttributes(BaseRequestParamValidator::class, \ReflectionAttribute::IS_INSTANCEOF);
+    foreach ($attributes as $oneAttribute) {
+      $attrInstance = $oneAttribute->newInstance();
+
+      if (
+        ($property instanceof ICanGetValueAsInit && $attrInstance instanceof ICanValidateIntRequestParam) ||
+        ($property instanceof ICanGetValueAsString && $attrInstance instanceof ICanValidateStrRequestParam) ||
+        ($property instanceof ICanGetValueAsFloat && $attrInstance instanceof ICanValidateFloatRequestParam) ||
+        ($property instanceof ICanGetValueAsTimestamp && $attrInstance instanceof ICanValidateTimestampRequestParam) ||
+        ($property instanceof ICanGetValueAsBoolean && $attrInstance instanceof ICanValidateBooleanRequestParam)
+      ){
+
+        $attrInstance->isRequestParamValid($property);
+      }
+    }
+  }
 
   private function mapData(object $class, array $data):void {
 
@@ -52,7 +77,9 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
             $oneProp->setValue($class, new ($type->getName())($value));
 
           } elseif (is_a($type->getName(), BaseRequestParam::class, true))  {
+            // Parametr je potomkem BaseRequestParam
             $oneProp->setValue($class, new ($type->getName())($paramName, $value));
+            $this->validateParam($oneProp);
 
           } else {
             // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject ani BaseRequestParam

@@ -2,7 +2,7 @@
 
 namespace TigerCore\Request\Validator;
 
-use TigerCore\Requests\RP_Int;
+use TigerCore\ICanGetValueAsInit;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class RPCheck_InRange extends BaseRequestParamValidator implements ICanValidateIntRequestParam {
@@ -10,8 +10,9 @@ class RPCheck_InRange extends BaseRequestParamValidator implements ICanValidateI
   public function __construct(private int|float $min, private int|float $max) {
   }
 
-  public function isIntRequestParamValid(RP_Int $requestParam): bool
+  public function isRequestParamValid(ICanGetValueAsInit $requestParam): bool
   {
-    // TODO: Implement isIntRequestParamValid() method.
+    $value = $requestParam->getValueAsInt();
+    return $value >= $this->min && $value <= $this->max;
   }
 }

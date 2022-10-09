@@ -9,6 +9,6 @@ class ParamErrorCode_IsEmpty extends BaseParamErrorCode {
 
   public function getErrorCodeValue(): VO_RequestParamErrorCode
   {
-    return new VO_RequestParamErrorCode('IS_EMPTY');
+    return new VO_RequestParamErrorCode('EMPTY');
   }
 }

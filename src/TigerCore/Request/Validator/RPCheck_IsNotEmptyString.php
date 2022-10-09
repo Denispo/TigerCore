@@ -5,7 +5,7 @@ namespace TigerCore\Request\Validator;
 use TigerCore\ICanGetValueAsString;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class RPCheck_NoEmptyString extends BaseRequestParamValidator implements ICanValidateStrRequestParam {
+class RPCheck_IsNotEmptyString extends BaseRequestParamValidator implements ICanValidateStrRequestParam {
 
   public function checkRequestParamValidity(ICanGetValueAsString $requestParam): BaseParamErrorCode|null
   {

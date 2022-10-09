@@ -5,7 +5,7 @@ namespace TigerCore\Request\Validator;
 use TigerCore\ICanGetValueAsInit;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class RPCheck_PositiveNumber extends BaseRequestParamValidator implements ICanValidateIntRequestParam {
+class RPCheck_IsPositiveNumber extends BaseRequestParamValidator implements ICanValidateIntRequestParam {
 
   public function checkRequestParamValidity(ICanGetValueAsInit $requestParam): BaseParamErrorCode|null
   {

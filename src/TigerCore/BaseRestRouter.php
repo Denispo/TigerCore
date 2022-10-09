@@ -10,6 +10,7 @@ use TigerCore\Request\ICanGetRequestMask;
 use TigerCore\Request\ICanRunMatchedRequest;
 use TigerCore\Request\MatchedRequestData;
 use TigerCore\Request\RequestParam;
+use TigerCore\Request\Validator\BaseParamErrorCode;
 use TigerCore\Request\Validator\BaseRequestParamValidator;
 use TigerCore\Request\Validator\ICanValidateBooleanRequestParam;
 use TigerCore\Request\Validator\ICanValidateFloatRequestParam;
@@ -32,7 +33,13 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
    */
   private array $routes = [];
 
-  private function validateParam(\ReflectionProperty $property):int|string
+  /**
+   * Key is requst param name
+   * @var BaseParamErrorCode[]
+   */
+  private array $invalidParams = [];
+
+  private function validateParam(\ReflectionProperty $property):BaseParamErrorCode|null
   {
     $attributes = $property->getAttributes(BaseRequestParamValidator::class, \ReflectionAttribute::IS_INSTANCEOF);
     foreach ($attributes as $oneAttribute) {
@@ -51,11 +58,11 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
       ){
         $result = $attrInstance->checkRequestParamValidity($property);
         if ($result) {
-          return $result->getErrorCodeValue();
+          return $result;
         }
       }
     }
-    return '';
+    return null;
   }
 
   private function mapData(object $class, array $data):void {
@@ -86,7 +93,10 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
           } elseif (is_a($type->getName(), BaseRequestParam::class, true))  {
             // Parametr je potomkem BaseRequestParam
             $oneProp->setValue($class, new ($type->getName())($paramName, $value));
-            $this->validateParam($oneProp);
+            $result = $this->validateParam($oneProp);
+            if ($result) {
+              $this->invalidParams[$paramName] = $result;
+            }
 
           } else {
             // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject ani BaseRequestParam
@@ -163,7 +173,8 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
         $requestData = new MatchedRequestData(
           currentUser: $currentUser,
           payloadContainer: $container,
-          httpRequest: $httpRequest
+          httpRequest: $httpRequest,
+          invalidParams: $this->invalidParams
         );
         $oneRequest->runMatchedRequest($requestData);
         return $container;

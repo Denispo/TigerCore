@@ -9,7 +9,7 @@ use TigerCore\ValueObject\VO_RequestParamName;
 class RequestParam implements ICanGetRequestParamName {
   private VO_RequestParamName $paramName;
 
-  public function __construct( string $paramName, private $defaultValue = null) {
+  public function __construct(string $paramName, private $defaultValue = null) {
     $this->paramName = new VO_RequestParamName($paramName);
   }
 

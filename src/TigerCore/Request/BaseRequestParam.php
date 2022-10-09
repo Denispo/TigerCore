@@ -9,8 +9,10 @@ use TigerCore\ValueObject\VO_RequestParamName;
 abstract class BaseRequestParam implements ICanGetRequestParamName {
 
   private bool $isSet;
+  private VO_RequestParamName $paramName;
 
-  public function __construct(private VO_RequestParamName $paramName, mixed $paramValue) {
+  public function __construct(ICanGetRequestParamName $paramName, mixed $paramValue) {
+    $this->paramName = $paramName->getParamName();
     $this->isSet = $this->onSetValue($paramValue);
   }
 

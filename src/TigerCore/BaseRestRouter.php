@@ -17,6 +17,7 @@ use TigerCore\Request\Validator\ICanValidateFloatRequestParam;
 use TigerCore\Request\Validator\ICanValidateIntRequestParam;
 use TigerCore\Request\Validator\ICanValidateStrRequestParam;
 use TigerCore\Request\Validator\ICanValidateTimestampRequestParam;
+use TigerCore\Request\Validator\InvalidRequestParam;
 use TigerCore\Requests\BaseRequestParam;
 use TigerCore\Response\BaseResponseException;
 use Nette\Http\IRequest;
@@ -34,8 +35,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
   private array $routes = [];
 
   /**
-   * Key is requst param name
-   * @var BaseParamErrorCode[]
+   * @var InvalidRequestParam[]
    */
   private array $invalidParams = [];
 
@@ -80,10 +80,10 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
          * @var RequestParam $attr
          */
         $attr = $oneAttribute->newInstance();
-        $paramName = $attr->getParamName()->getValue();
+        $paramName = $attr->getParamName();
 
 
-        $value = $data[strtolower($paramName)] ?? null;
+        $value = $data[$paramName->getValue()] ?? null;
         $type = $oneProp->getType();
         if ($type && !$type->isBuiltin()) {
           if (is_a($type->getName(), BaseValueObject::class, true)) {
@@ -95,7 +95,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
             $oneProp->setValue($class, new ($type->getName())($paramName, $value));
             $result = $this->validateParam($oneProp);
             if ($result) {
-              $this->invalidParams[$paramName] = $result;
+              $this->invalidParams[] = new InvalidRequestParam($paramName, $result);
             }
 
           } else {

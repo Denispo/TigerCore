@@ -7,7 +7,7 @@ use Nette\Http\IRequest;
 use TigerCore\Auth\ICanGetCurrentUser;
 use TigerCore\Auth\IAmCurrentUser;
 use TigerCore\Payload\IAmPayloadContainer;
-use TigerCore\Request\Validator\BaseParamErrorCode;
+use TigerCore\Request\Validator\InvalidRequestParam;
 
 class MatchedRequestData {
 
@@ -15,7 +15,7 @@ class MatchedRequestData {
    * @param ICanGetCurrentUser $currentUser
    * @param IAmPayloadContainer $payloadContainer
    * @param IRequest $httpRequest
-   * @param BaseParamErrorCode[] $invalidParams
+   * @param InvalidRequestParam[] $invalidParams
    */
   public function __construct(
     private ICanGetCurrentUser    $currentUser,
@@ -41,7 +41,7 @@ class MatchedRequestData {
 
   /**
    * Key is param name
-   * @return BaseParamErrorCode[]
+   * @return InvalidRequestParam[]
    */
   public function getInvalidParams(): array
   {

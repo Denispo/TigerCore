@@ -27,7 +27,7 @@ use TigerCore\ValueObject\BaseValueObject;
 use TigerCore\ValueObject\VO_RouteMask;
 use function FastRoute\simpleDispatcher;
 
-abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRoute {
+abstract class BaseRestRouter implements ICanMatchRoutes {
 
   /**
    * @var array

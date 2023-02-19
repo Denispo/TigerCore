@@ -6,6 +6,6 @@ use TigerCore\ValueObject\VO_RouteMask;
 
 interface ICanHandleMatchedRoute  {
 
-  public function handleMatchedRoute():void;
+  public function handleMatchedRoute(array $params):void;
 
 }

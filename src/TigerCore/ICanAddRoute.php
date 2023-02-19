@@ -10,9 +10,9 @@ interface ICanAddRoute  {
   /**
    * @param string|array $method
    * @param VO_RouteMask $mask
-   * @param ICanHandleMatchedRoute $handler
+   * @param ICanHandleMatchedRoute $controller
    * @return void
    */
-  public function addRoute(string|array $method, VO_RouteMask $mask, ICanHandleMatchedRoute $handler):void;
+  public function addRoute(string|array $method, VO_RouteMask $mask, ICanHandleMatchedRoute $controller):void;
 
 }

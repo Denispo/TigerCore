@@ -120,8 +120,8 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRoute {
 
   protected abstract function onMatch():void;
 
-  public function addRoute(string|array $method, VO_RouteMask $mask, ICanHandleMatchedRoute $handler):void {
-    $this->routes[] = ['method' => $method, 'mask' => $mask, 'handler' => $handler];
+  public function addRoute(string|array $method, VO_RouteMask $mask, ICanHandleMatchedRoute $controller):void {
+    $this->routes[] = ['method' => $method, 'mask' => $mask, 'handler' => $controller];
   }
 
   /**

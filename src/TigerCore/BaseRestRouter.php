@@ -118,8 +118,6 @@ abstract class BaseRestRouter implements ICanMatchRoutes {
 
   protected abstract function onGetPayloadContainer():IAmPayloadContainer;
 
-  protected abstract function onMatch():void;
-
   protected function addRoute(string|array $method, VO_RouteMask $mask, ICanHandleMatchedRoute $controller):void {
     $this->routes[] = ['method' => $method, 'mask' => $mask, 'handler' => $controller];
   }
@@ -174,8 +172,6 @@ abstract class BaseRestRouter implements ICanMatchRoutes {
     if ($matchedRoute) {
       if (isset($matchedRoute['data']) && is_object($matchedRoute['data'])) {
         $this->mapData($matchedRoute['data'], $params);
-
-        $this->onMatch();
 
         if ($oneRequest instanceof ICanRunMatchedRequest) {
           $requestData = new MatchedRequestData(

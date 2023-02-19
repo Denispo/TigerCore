@@ -5,12 +5,12 @@ namespace TigerCore\Request\Validator;
 use TigerCore\ICanGetValueAsInit;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class RPCheck_IsInRange extends BaseRequestParamValidator implements ICanValidateIntRequestParam {
+class Guard_IsInRange extends BaseRequestParamValidator implements ICanGuardIntRequestParam {
 
   public function __construct(private int|float $min, private int|float $max ) {
   }
 
-  public function checkRequestParamValidity(ICanGetValueAsInit $requestParam): BaseParamErrorCode|null
+  public function runGuard(ICanGetValueAsInit $requestParam): BaseParamErrorCode|null
   {
     $value = $requestParam->getValueAsInt();
     $errorCode = null;

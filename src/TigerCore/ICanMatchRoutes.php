@@ -15,7 +15,7 @@ interface ICanMatchRoutes  {
    * @return ICanGetPayloadRawData
    * @throws BaseResponseException
    */
-  public function match(IRequest $httpRequest, ICanGetCurrentUser $currentUser):ICanGetPayloadRawData;
+  public function runMatch(IRequest $httpRequest, ICanGetCurrentUser $currentUser):ICanGetPayloadRawData;
 
 
 }

@@ -6,17 +6,16 @@ use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use TigerCore\Auth\ICanGetCurrentUser;
 use TigerCore\Payload\IAmPayloadContainer;
-use TigerCore\Request\ICanGetRequestMask;
 use TigerCore\Request\ICanRunMatchedRequest;
 use TigerCore\Request\MatchedRequestData;
 use TigerCore\Request\RequestParam;
 use TigerCore\Request\Validator\BaseParamErrorCode;
 use TigerCore\Request\Validator\BaseRequestParamValidator;
-use TigerCore\Request\Validator\ICanValidateBooleanRequestParam;
-use TigerCore\Request\Validator\ICanValidateFloatRequestParam;
-use TigerCore\Request\Validator\ICanValidateIntRequestParam;
-use TigerCore\Request\Validator\ICanValidateStrRequestParam;
-use TigerCore\Request\Validator\ICanValidateTimestampRequestParam;
+use TigerCore\Request\Validator\ICanGuardBooleanRequestParam;
+use TigerCore\Request\Validator\ICanGuardFloatRequestParam;
+use TigerCore\Request\Validator\ICanGuardIntRequestParam;
+use TigerCore\Request\Validator\ICanGuardStrRequestParam;
+use TigerCore\Request\Validator\ICanGuardTimestampRequestParam;
 use TigerCore\Request\Validator\InvalidRequestParam;
 use TigerCore\Requests\BaseRequestParam;
 use TigerCore\Response\BaseResponseException;
@@ -25,9 +24,10 @@ use TigerCore\Payload\ICanGetPayloadRawData;
 use TigerCore\Response\S405_MethodNotAllowedException;
 use TigerCore\Response\S404_NotFoundException;
 use TigerCore\ValueObject\BaseValueObject;
+use TigerCore\ValueObject\VO_RouteMask;
 use function FastRoute\simpleDispatcher;
 
-abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
+abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRoute {
 
   /**
    * @var array
@@ -51,13 +51,13 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
       $attrInstance = $oneAttribute->newInstance();
 
       if (
-        ($requestParam instanceof ICanGetValueAsInit && $attrInstance instanceof ICanValidateIntRequestParam) ||
-        ($requestParam instanceof ICanGetValueAsString && $attrInstance instanceof ICanValidateStrRequestParam) ||
-        ($requestParam instanceof ICanGetValueAsFloat && $attrInstance instanceof ICanValidateFloatRequestParam) ||
-        ($requestParam instanceof ICanGetValueAsTimestamp && $attrInstance instanceof ICanValidateTimestampRequestParam) ||
-        ($requestParam instanceof ICanGetValueAsBoolean && $attrInstance instanceof ICanValidateBooleanRequestParam)
+        ($requestParam instanceof ICanGetValueAsInit && $attrInstance instanceof ICanGuardIntRequestParam) ||
+        ($requestParam instanceof ICanGetValueAsString && $attrInstance instanceof ICanGuardStrRequestParam) ||
+        ($requestParam instanceof ICanGetValueAsFloat && $attrInstance instanceof ICanGuardFloatRequestParam) ||
+        ($requestParam instanceof ICanGetValueAsTimestamp && $attrInstance instanceof ICanGuardTimestampRequestParam) ||
+        ($requestParam instanceof ICanGetValueAsBoolean && $attrInstance instanceof ICanGuardBooleanRequestParam)
       ){
-        $result = $attrInstance->checkRequestParamValidity($requestParam);
+        $result = $attrInstance->runGuard($requestParam);
         if ($result) {
           return $result;
         }
@@ -118,8 +118,10 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
 
   protected abstract function onGetPayloadContainer():IAmPayloadContainer;
 
-  public function addRequest(string|array $method, ICanGetRequestMask $request):void {
-    $this->routes[] = ['method' => $method,'request' => $request];
+  protected abstract function onMatch():void;
+
+  public function addRoute(string|array $method, VO_RouteMask $mask, ICanHandleMatchedRoute $handler):void {
+    $this->routes[] = ['method' => $method, 'mask' => $mask, 'handler' => $handler];
   }
 
   /**
@@ -128,7 +130,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
    * @return ICanGetPayloadRawData
    * @throws BaseResponseException
    */
-  public function match(IRequest $httpRequest, ICanGetCurrentUser $currentUser):ICanGetPayloadRawData {
+  public function runMatch(IRequest $httpRequest, ICanGetCurrentUser $currentUser):ICanGetPayloadRawData {
 
     /**
      * @var $dispatcher Dispatcher\GroupCountBased
@@ -139,8 +141,8 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
       // $r->addRoute('GET', '/user/{id:\d+}', 'get_user_handler');
       // The /{title} suffix is optional
       //$r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
-      foreach ($this->routes as $oneRoute) {
-        $r->addRoute($oneRoute['method'],$oneRoute['request']->getMask()->getValue(), $oneRoute['request']);
+      foreach ($this->routes as $index => $oneRoute) {
+        $r->addRoute($oneRoute['method'],$oneRoute['mask']->getValue(), $index);
       }
     });
 
@@ -148,6 +150,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
     $routeInfo = $dispatcher->dispatch($requestMethod, $httpRequest->getUrl()->getPath());
 
     $params = [];
+    $matchedRoute = [];
 
     switch ($routeInfo[0]) {
       case Dispatcher::NOT_FOUND:
@@ -157,7 +160,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
         throw new S405_MethodNotAllowedException($routeInfo[1], 'Allowed methods: '.implode(', ',$routeInfo[1]));
         break;
       case Dispatcher::FOUND:
-        $oneRequest = $routeInfo[1];
+        $matchedRoute = $this->routes[$routeInfo[1]];
         $params = $routeInfo[2];
         if ($requestMethod === 'POST' || $requestMethod === 'PUT') {
           $params = array_merge($params, $httpRequest->getPost());
@@ -168,20 +171,24 @@ abstract class BaseRestRouter implements ICanMatchRoutes, ICanAddRequest {
 
     $container = $this->onGetPayloadContainer();
 
-    if (isset($oneRequest) && is_object($oneRequest)) {
-      $this->mapData($oneRequest, $params);
+    if ($matchedRoute) {
+      if (isset($matchedRoute['data']) && is_object($matchedRoute['data'])) {
+        $this->mapData($matchedRoute['data'], $params);
 
-      if ($oneRequest instanceof ICanRunMatchedRequest) {
-        $requestData = new MatchedRequestData(
-          currentUser: $currentUser,
-          payloadContainer: $container,
-          httpRequest: $httpRequest,
-          invalidParams: $this->invalidParams
-        );
-        $oneRequest->runMatchedRequest($requestData);
-        return $container;
+        $this->onMatch();
+
+        if ($oneRequest instanceof ICanRunMatchedRequest) {
+          $requestData = new MatchedRequestData(
+            currentUser: $currentUser,
+            payloadContainer: $container,
+            httpRequest: $httpRequest,
+            invalidParams: $this->invalidParams
+          );
+          $oneRequest->runMatchedRequest($requestData);
+          return $container;
+        }
+
       }
-
     }
     return $container;
   }

@@ -11,7 +11,7 @@ use TigerCore\Auth\ICanGetCurrentUser;
 use TigerCore\Auth\IAmCurrentUser;
 use TigerCore\BaseRestRouter;
 use TigerCore\Payload\BasePayload;
-use TigerCore\Request\BaseRequest;
+use TigerCore\Request\BaseRoutet;
 use TigerCore\Request\MatchedRequestData;
 use TigerCore\Response\ICanAddPayload;
 use TigerCore\Payload\ICanGetPayloadRawData;
@@ -42,7 +42,7 @@ class Payload extends BasePayload
 
 }
 
-class Request extends BaseRequest
+class Request extends BaseRoutet
 {
 
 
@@ -87,4 +87,4 @@ $currentUser = new CurrentUser();
 
 $router = new RestRouter();
 $router->addRequest('GET', new Request());
-$router->match($request, $currentUser);
+$router->runMatch($request, $currentUser);

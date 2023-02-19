@@ -4,7 +4,7 @@ namespace TigerCore\Request;
 
 use TigerCore\ValueObject\VO_RouteMask;
 
-interface ICanGetRequestMask {
+interface ICanGetRoutetMask {
 
   public function getMask():VO_RouteMask;
 

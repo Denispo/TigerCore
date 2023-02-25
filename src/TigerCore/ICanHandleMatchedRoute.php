@@ -2,8 +2,16 @@
 
 namespace TigerCore;
 
+use TigerCore\Payload\ICanGetPayloadRawData;
+use TigerCore\Response\BaseResponseException;
+
 interface ICanHandleMatchedRoute  {
 
-  public function handleMatchedRoute(array $params):void;
+  /**
+   * @param array $params
+   * @return ICanGetPayloadRawData
+   * @throws BaseResponseException
+   */
+  public function handleMatchedRoute(array $params):ICanGetPayloadRawData;
 
 }

@@ -43,10 +43,10 @@ abstract class BaseRestRouter implements ICanMatchRoutes {
   /**
    * @param IRequest $httpRequest
    * @param ICanGetCurrentUser $currentUser
-   * @return void
+   * @return ICanGetPayloadRawData
    * @throws BaseResponseException
    */
-  public function runMatch(IRequest $httpRequest, ICanGetCurrentUser $currentUser):void
+  public function runMatch(IRequest $httpRequest, ICanGetCurrentUser $currentUser):ICanGetPayloadRawData
   {
 
     /**

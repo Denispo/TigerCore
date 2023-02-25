@@ -23,6 +23,7 @@ use Nette\Http\IRequest;
 use TigerCore\Payload\ICanGetPayloadRawData;
 use TigerCore\Response\S405_MethodNotAllowedException;
 use TigerCore\Response\S404_NotFoundException;
+use TigerCore\Response\S500_InternalServerErrorException;
 use TigerCore\ValueObject\BaseValueObject;
 use TigerCore\ValueObject\VO_RouteMask;
 use function FastRoute\simpleDispatcher;
@@ -66,9 +67,6 @@ abstract class BaseRestRouter implements ICanMatchRoutes {
     $requestMethod = strtoupper($httpRequest->getMethod());
     $routeInfo = $dispatcher->dispatch($requestMethod, $httpRequest->getUrl()->getPath());
 
-    $params = [];
-    $matchedRoute = [];
-
     switch ($routeInfo[0]) {
       case Dispatcher::NOT_FOUND:
         throw new S404_NotFoundException('path not found');
@@ -77,6 +75,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes {
         throw new S405_MethodNotAllowedException($routeInfo[1], 'Allowed methods: ' . implode(', ', $routeInfo[1]));
         break;
       case Dispatcher::FOUND:
+      default:
         $matchedRoute = $this->routes[$routeInfo[1]];
         $params = $routeInfo[2];
         if ($requestMethod === 'POST' || $requestMethod === 'PUT') {
@@ -87,7 +86,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes {
          * @var $handler ICanHandleMatchedRoute
          */
         $handler = $matchedRoute['handler'];
-        $handler->handleMatchedRoute($params);
+        return $handler->handleMatchedRoute($params);
         break;
     }
   }

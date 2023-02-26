@@ -86,7 +86,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes {
          * @var $handler ICanHandleMatchedRoute
          */
         $handler = $matchedRoute['handler'];
-        return $handler->handleMatchedRoute($params);
+        return $handler->handleMatchedRoute($params, $httpRequest);
         break;
     }
   }

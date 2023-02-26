@@ -4,6 +4,7 @@ namespace TigerCore\Payload;
 
 use TigerCore\DataTransferObject\BaseDTO;
 use TigerCore\DataTransferObject\ToPayloadField;
+use TigerCore\Response\S500_InternalServerErrorException;
 use TigerCore\ValueObject\BaseValueObject;
 
 abstract class BasePayload implements ICanGetPayloadRawData{
@@ -80,7 +81,7 @@ abstract class BasePayload implements ICanGetPayloadRawData{
   /**
    * If $data is array of the same classes extended from BaseDTO, automatic data mapping will be performed on each #[ToPayloadField] public property. Othervise $data will be considered as final array of raw payload data.
    * @param array|BaseDTO[] $data
-   * @throws \ReflectionException
+   * @throws S500_InternalServerErrorException
    */
   public function __construct(array $data) {
     $mapFromDbData = false;
@@ -91,7 +92,11 @@ abstract class BasePayload implements ICanGetPayloadRawData{
       }
     }
     if ($mapFromDbData) {
-      $this->payload = $this->mapFromData($data);
+      try {
+        $this->payload = $this->mapFromData($data);
+      } catch (\ReflectionException $e){
+        throw new S500_InternalServerErrorException('Reflection exception. Can not map data to payload',['data' => var_export($data, true)]);
+      }
     } else {
       $this->payload = $data;
     }

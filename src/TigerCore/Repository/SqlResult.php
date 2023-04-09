@@ -46,7 +46,7 @@ class SqlResult {
    * @return array<BaseDTO<T>>
    *
    * $orderMapValues obsahuje hodnoty Fieldu $orderFieldName v tom poradi v jakem je chceme mit ve vyslednem poli.
-   * Napr. $this->data ma polozky serazene podle "id" [1,2,5,10], ale my je chceme v poradi [5,1,2,10], tak dame do $orderMapValues hodnoty [5,1,2,10] a do $orderFieldName dame hodnotu "id"
+   * Napr. $this->data ma polozky "id" [1,2,5,10], ale my je chceme v poradi [5,1,2,10], tak dame do $orderMapValues hodnoty [5,1,2,10] a do $orderFieldName dame hodnotu "id"
    */
   public function mapToData(BaseDTO $dbData, array $orderMapValues = [], VO_DbFieldName|null $orderFieldName = null):array {
 
@@ -55,9 +55,18 @@ class SqlResult {
       $this->data = [new BaseDTO()];
     }
 
+    $orderMapKeys = [];
+
+    // hodnoty $orderMapValues se stanou Klici a hodnota $orderMapKeys[Klic] je potom index na jakem ma byt dany zaznam v $result.
+    foreach ($orderMapValues as $index => $value){
+      // Pokud je v $orderMapValues vicekrat stejna Hodnota, $orderMapKeys[Hodnota] se prepise a tim padem bude count($orderMapKeys) mensi, nez je count($orderMapValues).
+      $orderMapKeys[$value] = $index;
+    }
+
+
     $orderByMap = false;
-    if (count($this->data) == $orderMapValues && $orderFieldName && $orderFieldName->isValid()) {
-      // Pocet radku "$this->data" musi odpovidat poctu polozek v $orderMapValues
+    if (count($this->data) == count($orderMapKeys) && $orderFieldName && $orderFieldName->isValid()) {
+      // Pocet radku "$this->data" musi odpovidat poctu polozek v $orderMapKeys
       $orderByMap = true;
     }
 
@@ -108,6 +117,11 @@ class SqlResult {
     // ... a pak vytvorime prislusne objekty.
     foreach ($this->data as $oneData) {
       $obj = new $dbData();
+      if ($orderByMap) {
+        // Natvrdo predpokladame, ze vsechny $this->data maji field s nazvem $orderFieldName->getValue()
+        // TODO: asi by se tento prdpoklad mel nejak osetrit?
+        $resultIndex = $orderMapKeys[$oneData[$orderFieldName->getValue()]];
+      }
       foreach ($tmpProps as $oneTmpProp) {
         if ($oneTmpProp['exists']) {
 
@@ -126,10 +140,12 @@ class SqlResult {
           }
         }
       }
-      if (!$orderByMap){
-        $result[] = $obj;
+      if ($orderByMap){
+        // Polozky pridame na pozice podle $orderMapValues
+        $result[$resultIndex] = $obj;
       } else {
-        // Polozky do $result musime prodat podle $orderMapValues
+        // Polozky pridame jednu za druhou tak, jak je zpracovavame
+        $result[] = $obj;
       }
 
 

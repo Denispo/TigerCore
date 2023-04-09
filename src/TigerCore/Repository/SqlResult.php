@@ -37,17 +37,28 @@ class SqlResult {
     return $result;
 
   }
-  
+
   /**
    * @template T
    * @param BaseDTO<T> $dbData
+   * @param array $orderMapValues
+   * @param VO_DbFieldName|null $orderFieldName
    * @return array<BaseDTO<T>>
+   *
+   * $orderMapValues obsahuje hodnoty Fieldu $orderFieldName v tom poradi v jakem je chceme mit ve vyslednem poli.
+   * Napr. $this->data ma polozky serazene podle "id" [1,2,5,10], ale my je chceme v poradi [5,1,2,10], tak dame do $orderMapValues hodnoty [5,1,2,10] a do $orderFieldName dame hodnotu "id"
    */
-  public function mapToData(BaseDTO $dbData):array {
+  public function mapToData(BaseDTO $dbData, array $orderMapValues = [], VO_DbFieldName|null $orderFieldName = null):array {
 
     if (!$this->data) {
       // pokud nejsou data, tak si hrajeme an to, ze data jsou prazny objekt. Diky tomu se vsechny property u T inicializuji a nastavi se jim defaultni hodnota
       $this->data = [new BaseDTO()];
+    }
+
+    $orderByMap = false;
+    if (count($this->data) == $orderMapValues && $orderFieldName && $orderFieldName->isValid()) {
+      // Pocet radku "$this->data" musi odpovidat poctu polozek v $orderMapValues
+      $orderByMap = true;
     }
 
     $tmpProps = []; // [['field' => 'id', 'propname' => 'userId'], [,]]
@@ -115,7 +126,13 @@ class SqlResult {
           }
         }
       }
-      $result[] = $obj;
+      if (!$orderByMap){
+        $result[] = $obj;
+      } else {
+        // Polozky do $result musime prodat podle $orderMapValues
+      }
+
+
     }
 
     return $result;

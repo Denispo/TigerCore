@@ -1,4 +1,4 @@
-FROM php:8.0-fpm-alpine
+FROM php:8.1-fpm-alpine
 RUN apk update; \
     apk upgrade;
 RUN docker-php-ext-install mysqli && \
@@ -8,20 +8,20 @@ RUN docker-php-ext-install mysqli && \
 
 # RUN docker-php-ext-install mbstring
 
-
+RUN apk add --update linux-headers
 
 # This example is extremely barebones and specific to Alpine linux, however in most containers at/below
 # php 7.3, you can just run pecl + docker-php-ext-enable (see below) after you've ensured that you have
 # also installed phpize (necessary for building PHP extensions).
-RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+#RUN apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
      # Important part:
-    && pecl install xdebug \
+#    && pecl install xdebug \
     # Clean up..
-    && docker-php-ext-enable xdebug
+#    && docker-php-ext-enable xdebug
 
 # Copy over our custom xdebug INI configuration which will coexist with the automatically generated
 # $PHP_INI_DIR/conf.d/docker-php-ext-xdebug.ini created by the "docker-php-ext-enable xdebug" command above.
-COPY ./xdebug.ini $PHP_INI_DIR/conf.d
+#COPY ./xdebug.ini $PHP_INI_DIR/conf.d
 
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -35,8 +35,8 @@ ENV LD_PRELOAD /usr/lib/preloadable_libiconv.so php
 
 RUN apk add zlib-dev
 RUN apk add linux-headers
-RUN pecl install grpc
-RUN	docker-php-ext-enable grpc
+#RUN pecl install grpc
+#RUN	docker-php-ext-enable grpc
 
 
 # ----- GD + podpora JPEG
@@ -49,13 +49,9 @@ RUN docker-php-ext-configure gd --with-jpeg
 # 3. Nainstalujeme GD (bez 2. by se nenainstalovala podpora pro JPEG)
 RUN docker-php-ext-install gd
 
-# funguje i bez ...-enabl gd. Asi je gd povolene nekde defaultne v 8.0-fpm-alpine
+# funguje i bez ...-enable gd. Asi je gd povolene nekde defaultne v 8.0-fpm-alpine
 #RUN	docker-php-ext-enable gd
-
-# toto intl rozsireni se musi pridat do PHP jen pro to, aby Laravel Nova umel zobrazit/naformatovat Field typu Currency.
-# Bo na pozadi bezi Symphony a symphony vola funkci tohoto rozireni intl.
-# Mega picovina toto
 RUN apk add icu-dev
 RUN docker-php-ext-configure intl
 RUN docker-php-ext-install intl
-
+RUN docker-php-ext-enable intl

@@ -2,7 +2,7 @@
 
 namespace TigerCore\ValueObject;
 
-use JetBrains\PhpStorm\Pure;
+use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\ICanCheckSelfValidity;
 use TigerCore\ICanGetValueAsString;
 
@@ -15,6 +15,13 @@ class VO_Email extends VO_String_Trimmed implements ICanCheckSelfValidity {
       $email = $email->getValueAsString();
     }
     parent::__construct(strtolower($email));
+    if ($this->isEmpty()){
+      throw new InvalidArgumentException('Empty email address');
+    }
+
+    if (!$this->isValid){
+      throw new InvalidArgumentException('Malformed email address: "'.$this->getValue().'"');
+    }
   }
 
   function isValid(): bool {

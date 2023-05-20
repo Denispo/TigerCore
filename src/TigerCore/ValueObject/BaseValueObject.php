@@ -21,7 +21,7 @@ abstract class BaseValueObject {
    */
   #[NoReturn]
   public function __toString() {
-    throw new \Exception('getValue() must be called');
+    throw new \Exception('getValue() must be called. Value: "'.$this->value.'"');
   }
 
 }

@@ -2,7 +2,6 @@
 
 namespace TigerCore\ValueObject;
 
-use JetBrains\PhpStorm\Pure;
 
 class VO_Duration extends VO_Int {
 
@@ -12,15 +11,15 @@ class VO_Duration extends VO_Int {
   }
 
   public function addMinutes(int $minutes): self {
-    return new self($this->getValue()+($minutes*60));
+    return new self($this->getValueAsInt()+($minutes*60));
   }
 
   public function addHours(int $hours): self {
-    return new self($this->getValue()+($hours*60*60));
+    return new self($this->getValueAsInt()+($hours*60*60));
   }
 
   public function addDays(int $days): self {
-    return new self($this->getValue()+($days*24*60*60));
+    return new self($this->getValueAsInt()+($days*24*60*60));
   }
 
 }

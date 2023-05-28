@@ -25,7 +25,7 @@ abstract class BaseJwtToken{
    */
   protected function doDecodeToken(VO_TokenPlainStr $tokenStr): BaseTokenClaims {
     try {
-      $data = (array) JWT::decode($tokenStr->getValue(), new Key($this->onGetTokenSettings()->getPublicKey()->getValue(), 'RS256'));
+      $data = (array) JWT::decode($tokenStr->getValueAsString(), new Key($this->onGetTokenSettings()->getPublicKey()->getValueAsString(), 'RS256'));
     } catch (\InvalidArgumentException|\DomainException|\UnexpectedValueException|SignatureInvalidException|BeforeValidException|ExpiredException $e) {
       switch (get_class($e)) {
         case \InvalidArgumentException::class:{
@@ -86,10 +86,10 @@ abstract class BaseJwtToken{
         $claims->getClaims(),
         [
           'iat' => time(),
-          'exp' => $expirationDate->getValue(),
+          'exp' => $expirationDate->getValueAsInt(),
         ]
       ),
-      $privateKey->getValue(),
+      $privateKey->getValueAsString(),
       $alg
     );
 

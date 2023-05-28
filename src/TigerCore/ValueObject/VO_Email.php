@@ -10,6 +10,10 @@ class VO_Email extends VO_String_Trimmed implements ICanCheckSelfValidity {
 
   private bool|null $isValid = null;
 
+  /**
+   * @param string|ICanGetValueAsString $email
+   * @throws InvalidArgumentException
+   */
   public function __construct(string|ICanGetValueAsString $email) {
     if ($email instanceof ICanGetValueAsString) {
       $email = $email->getValueAsString();
@@ -20,13 +24,13 @@ class VO_Email extends VO_String_Trimmed implements ICanCheckSelfValidity {
     }
 
     if (!$this->isValid){
-      throw new InvalidArgumentException('Malformed email address: "'.$this->getValue().'"');
+      throw new InvalidArgumentException('Malformed email address: "'.$this->getValueAsString().'"');
     }
   }
 
   function isValid(): bool {
     if ($this->isValid === null) {
-      $this->isValid = filter_var($this->getValue(), FILTER_VALIDATE_EMAIL) !== false;
+      $this->isValid = filter_var($this->getValueAsString(), FILTER_VALIDATE_EMAIL) !== false;
     }
     return $this->isValid;
   }

@@ -2,6 +2,12 @@
 
 namespace TigerCore\ValueObject;
 
-class VO_LastInsertedId extends VO_BaseId {
+use TigerCore\ICanGetValueAsMixed;
 
+class VO_LastInsertedId extends BaseValueObject implements ICanGetValueAsMixed {
+
+  public function getValueAsMixed(): mixed
+  {
+    return $this->getValue();
+  }
 }

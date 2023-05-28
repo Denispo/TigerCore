@@ -5,6 +5,6 @@ namespace TigerCore;
 
 interface ICanGetValueAsString {
 
-  public function getValueAsString(string $defaultValue = ''):string;
+  public function getValueAsString():string;
 
 }

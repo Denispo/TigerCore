@@ -14,7 +14,7 @@ class Password implements ICanVerifyPasswordAgainstHash, ICanGeneratePasswordHas
    * @return VO_PasswordHash
    */
   public function generatePasswordHash(VO_PasswordPlainText $passwordPlainText): VO_PasswordHash {
-    return new VO_PasswordHash(password_hash($passwordPlainText->getValue(), PASSWORD_DEFAULT));
+    return new VO_PasswordHash(password_hash($passwordPlainText->getValueAsString(), PASSWORD_DEFAULT));
   }
 
   /**
@@ -23,7 +23,7 @@ class Password implements ICanVerifyPasswordAgainstHash, ICanGeneratePasswordHas
    * @return PasswordValidity
    */
   public function verifyPassword(VO_PasswordPlainText $passwordPlainText, VO_PasswordHash $passwordHash): PasswordValidity {
-    $result = password_verify($passwordPlainText->getValue(), $passwordHash->getValue());
+    $result = password_verify($passwordPlainText->getValueAsString(), $passwordHash->getValueAsString());
     if ($result) {
       return new PasswordValidity(PasswordValidity::PWD_VALID);
     } else {

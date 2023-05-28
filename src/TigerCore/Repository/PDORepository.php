@@ -4,7 +4,6 @@ namespace TigerCore\Repository;
 
 use Nette\Database\Connection;
 use Nette\Database\DriverException;
-use TigerCore\ValueObject\VO_BaseId;
 use TigerCore\ValueObject\VO_LastInsertedId;
 
 class PDORepository {
@@ -33,8 +32,8 @@ class PDORepository {
     return new SqlResult($this->getDb()->fetchAll($sql, ...$params));
   }
 
-  protected function selectId(string $sql, ...$params): VO_BaseId {
-    return new VO_BaseId($this->getDb()->fetchField($sql, ...$params) ?? 0);
+  protected function selectId(string $sql, ...$params): mixed {
+    return $this->getDb()->fetchField($sql, ...$params) ?? 0;
   }
 
   /**

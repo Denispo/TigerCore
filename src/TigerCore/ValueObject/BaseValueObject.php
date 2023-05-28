@@ -7,13 +7,16 @@ use JetBrains\PhpStorm\NoReturn;
 
 abstract class BaseValueObject {
 
-    protected mixed $value;
+    private mixed $value;
 
     public function __construct(mixed $value) {
         $this->value = $value;
     }
 
-    abstract function getValue():mixed;
+    protected function getValue():mixed{
+      return $this->value;
+    }
+
 
   /**
    * @return void
@@ -21,7 +24,7 @@ abstract class BaseValueObject {
    */
   #[NoReturn]
   public function __toString() {
-    throw new \Exception('getValue() must be called. Value: "'.$this->value.'"');
+    throw new \Exception('method getValueAsMixed() must be called. Value: "'.$this->value.'"');
   }
 
 }

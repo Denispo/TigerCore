@@ -60,7 +60,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes {
       // The /{title} suffix is optional
       //$r->addRoute('GET', '/articles/{id:\d+}[/{title}]', 'get_article_handler');
       foreach ($this->routes as $index => $oneRoute) {
-        $r->addRoute($oneRoute['method'], $oneRoute['mask']->getValue(), $index);
+        $r->addRoute($oneRoute['method'], $oneRoute['mask']->getValueAsString(), $index);
       }
     });
 

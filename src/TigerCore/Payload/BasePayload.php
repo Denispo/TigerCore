@@ -64,7 +64,7 @@ abstract class BasePayload implements ICanGetPayloadRawData{
       $res = [];
       foreach ($tmpProps as $oneTmpProp) {
         if ($oneTmpProp['is_vo']) {
-          $res[$oneTmpProp['fieldname']] = $oneData->{$oneTmpProp['propname']}->getValue();
+          $res[$oneTmpProp['fieldname']] = $oneData->{$oneTmpProp['propname']}->getValueAsString();
         } else {
           $res[$oneTmpProp['fieldname']] = $oneData->{$oneTmpProp['propname']};
         }

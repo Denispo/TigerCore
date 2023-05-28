@@ -27,12 +27,12 @@ class SqlResult {
       return [];
     }
     $result = [];
-    if (!$fieldName->isValid() || !property_exists(current($this->data), $fieldName->getValue())) {
+    if (!$fieldName->isValid() || !property_exists(current($this->data), $fieldName->getValueAsString())) {
       return $result;
     }
 
     foreach ($this->data as $oneData) {
-      $result[] = $oneData[$fieldName->getValue()];
+      $result[] = $oneData[$fieldName->getValueAsString()];
     }
     return $result;
 
@@ -118,9 +118,9 @@ class SqlResult {
     foreach ($this->data as $oneData) {
       $obj = new $dbData();
       if ($orderByMap) {
-        // Natvrdo predpokladame, ze vsechny $this->data maji field s nazvem $orderFieldName->getValue()
+        // Natvrdo predpokladame, ze vsechny $this->data maji field s nazvem $orderFieldName->getValueAsString()
         // TODO: asi by se tento prdpoklad mel nejak osetrit?
-        $resultIndex = $orderMapKeys[$oneData[$orderFieldName->getValue()]];
+        $resultIndex = $orderMapKeys[$oneData[$orderFieldName->getValueAsString()]];
       }
       foreach ($tmpProps as $oneTmpProp) {
         if ($oneTmpProp['exists']) {

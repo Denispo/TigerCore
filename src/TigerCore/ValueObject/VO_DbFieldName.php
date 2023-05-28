@@ -2,7 +2,6 @@
 
 namespace TigerCore\ValueObject;
 
-use JetBrains\PhpStorm\Pure;
 use TigerCore\ICanCheckSelfValidity;
 
 /**
@@ -18,7 +17,7 @@ class VO_DbFieldName extends VO_String_Trimmed implements ICanCheckSelfValidity{
          * \A     Start of string
          * \z     End of string
          */
-        $this->isValid = preg_match('/\A([a-zA-Z0-9_]+)\z/',$this->getValue()) !== false;
+        $this->isValid = preg_match('/\A([a-zA-Z0-9_]+)\z/',$this->getValueAsString()) !== false;
       }
         return !$this->isEmpty();
     }

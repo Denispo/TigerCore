@@ -5,7 +5,7 @@ namespace TigerCore\ValueObject;
 
 use TigerCore\ICanGetValueAsInit;
 
-abstract class VO_Int extends BaseValueObject {
+abstract class VO_Int extends BaseValueObject implements ICanGetValueAsInit{
 
   public function __construct(int|ICanGetValueAsInit $value) {
     if ($value instanceof ICanGetValueAsInit) {
@@ -14,8 +14,8 @@ abstract class VO_Int extends BaseValueObject {
     parent::__construct($value);
   }
 
-  public function getValue():int {
-    return $this->value;
+  public function getValueAsInt():int {
+    return $this->getValue();
   }
 
 }

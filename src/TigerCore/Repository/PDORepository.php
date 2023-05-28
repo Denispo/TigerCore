@@ -3,6 +3,7 @@
 namespace TigerCore\Repository;
 
 use Nette\Database\Connection;
+use Nette\Database\DriverException;
 use TigerCore\ValueObject\VO_BaseId;
 use TigerCore\ValueObject\VO_LastInsertedId;
 
@@ -40,6 +41,7 @@ class PDORepository {
    * @param string $sql
    * @param ...$params
    * @return VO_LastInsertedId Last inserted id
+   * @throws DriverException
    */
   protected function insert(string $sql, ...$params):VO_LastInsertedId {
     $db = $this->getDb();
@@ -53,6 +55,7 @@ class PDORepository {
    * @param string $sql
    * @param ...$params
    * @return int Affected rows count
+   * @throws DriverException
    */
   protected function update(string $sql, ...$params):int {
     $db = $this->getDb();

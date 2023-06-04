@@ -2,24 +2,33 @@
 
 namespace TigerCore\ValueObject;
 
-use TigerCore\ICanCheckSelfValidity;
+use TigerCore\Exceptions\InvalidArgumentException;
+use TigerCore\ICanGetValueAsString;
 
 /**
  * Available characters are a-z A-Z 0-9 and _
  */
-class VO_DbFieldName extends VO_String_Trimmed implements ICanCheckSelfValidity{
+class VO_DbFieldName extends VO_String_Trimmed{
 
-  private bool|null $isValid = null;
-
-    function isValid(): bool {
-      if ($this->isValid === null) {
-        /**
-         * \A     Start of string
-         * \z     End of string
-         */
-        $this->isValid = preg_match('/\A([a-zA-Z0-9_]+)\z/',$this->getValueAsString()) !== false;
+  /**
+   * @param ICanGetValueAsString|string $value
+   * @throws InvalidArgumentException
+   */
+  public function __construct(ICanGetValueAsString|string $value)
+    {
+      parent::__construct($value);
+      if ($this->isEmpty()) {
+        throw new InvalidArgumentException('Database field name can not be empty string');
       }
-        return !$this->isEmpty();
+
+      /**
+       * \A     Start of string
+       * \z     End of string
+       */
+      if (!preg_match('/\A([a-zA-Z0-9_]+)\z/', $this->getValueAsString())) {
+        throw new InvalidArgumentException('Database field name has to contains only this characters: a-z A-Z 0-9 _');
+      }
+
     }
 
 }

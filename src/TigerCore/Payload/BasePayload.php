@@ -83,7 +83,7 @@ abstract class BasePayload implements ICanGetPayloadRawData{
    * @param array|BaseDTO[] $data
    * @throws S500_InternalServerErrorException
    */
-  public function __construct(array $data) {
+  public function __construct(array $data = []) {
     $mapFromDbData = false;
     foreach ($data as $oneData) {
       $mapFromDbData = $oneData instanceof BaseDTO;

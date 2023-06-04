@@ -6,7 +6,7 @@ use TigerCore\ValueObject\VO_RequestParamName;
 
 final class InvalidRequestParam  {
 
-  public function __construct(private VO_RequestParamName $paramName, private BaseParamErrorCode $errorCode){
+  public function __construct(private VO_RequestParamName $paramName, private BaseParamErrorCode|null $errorCode = null){
   }
 
   /**
@@ -20,7 +20,7 @@ final class InvalidRequestParam  {
   /**
    * @return BaseParamErrorCode
    */
-  public function getErrorCode(): BaseParamErrorCode
+  public function getErrorCode(): BaseParamErrorCode|null
   {
     return $this->errorCode;
   }

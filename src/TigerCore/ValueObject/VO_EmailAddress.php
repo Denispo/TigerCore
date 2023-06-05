@@ -5,17 +5,17 @@ namespace TigerCore\ValueObject;
 use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\ICanGetValueAsString;
 
-class VO_Email extends VO_String_Trimmed {
+class VO_EmailAddress extends VO_String_Trimmed {
 
   /**
-   * @param string|ICanGetValueAsString $email
+   * @param string|ICanGetValueAsString $emailAddress
    * @throws InvalidArgumentException
    */
-  public function __construct(string|ICanGetValueAsString $email) {
-    if ($email instanceof ICanGetValueAsString) {
-      $email = $email->getValueAsString();
+  public function __construct(string|ICanGetValueAsString $emailAddress) {
+    if ($emailAddress instanceof ICanGetValueAsString) {
+      $emailAddress = $emailAddress->getValueAsString();
     }
-    parent::__construct(strtolower($email));
+    parent::__construct(strtolower($emailAddress));
     if ($this->isEmpty()){
       throw new InvalidArgumentException('Empty email address');
     }

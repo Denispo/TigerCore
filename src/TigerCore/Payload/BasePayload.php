@@ -4,6 +4,8 @@ namespace TigerCore\Payload;
 
 use TigerCore\DataTransferObject\BaseDTO;
 use TigerCore\DataTransferObject\ToPayloadField;
+use TigerCore\ICanGetValueAsInit;
+use TigerCore\ICanGetValueAsString;
 use TigerCore\Response\S500_InternalServerErrorException;
 use TigerCore\ValueObject\BaseValueObject;
 
@@ -64,7 +66,8 @@ abstract class BasePayload implements ICanGetPayloadRawData{
       $res = [];
       foreach ($tmpProps as $oneTmpProp) {
         if ($oneTmpProp['is_vo']) {
-          $res[$oneTmpProp['fieldname']] = $oneData->{$oneTmpProp['propname']}->getValueAsString();
+          $vo = $oneData->{$oneTmpProp['propname']};
+          $res[$oneTmpProp['fieldname']] = $vo instanceof ICanGetValueAsString ? $vo->getValueAsString() : ($vo instanceof ICanGetValueAsInit ? $vo->getValueAsInt() : '');
         } else {
           $res[$oneTmpProp['fieldname']] = $oneData->{$oneTmpProp['propname']};
         }

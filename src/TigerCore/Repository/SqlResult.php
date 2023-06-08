@@ -27,7 +27,7 @@ class SqlResult {
       return [];
     }
     $result = [];
-    if (!$fieldName->isValid() || !property_exists(current($this->data), $fieldName->getValueAsString())) {
+    if (!property_exists(current($this->data), $fieldName->getValueAsString())) {
       return $result;
     }
 
@@ -65,7 +65,7 @@ class SqlResult {
 
 
     $orderByMap = false;
-    if (count($this->data) == count($orderMapKeys) && $orderFieldName && $orderFieldName->isValid()) {
+    if (count($this->data) == count($orderMapKeys) && $orderFieldName) {
       // Pocet radku "$this->data" musi odpovidat poctu polozek v $orderMapKeys
       $orderByMap = true;
     }

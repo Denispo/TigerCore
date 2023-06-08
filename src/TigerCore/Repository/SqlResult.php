@@ -90,7 +90,7 @@ class SqlResult {
         $attr = $oneAttribute->newInstance();
         $fieldName = $attr->getFieldName();
         if ($oneProp->isPublic()) {
-          $propParams = ['field' => $fieldName, 'default'=> $attr->getDefaultValue() , 'propname' => $oneProp->name, 'is_vo' => false, 'vo_classname' => ''];
+          $propParams = ['field' => $fieldName, 'default'=> $attr->getDefaultValue() , 'propname' => $oneProp->name, 'is_vo' => false, 'vo_classname' => '', 'allows_null' => false];
           $propParams['exists'] = property_exists($tempData, $fieldName);
 
 
@@ -104,6 +104,9 @@ class SqlResult {
               $propParams['vo_classname'] = $type->getName();
             } else {
               // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject
+            }
+            if ($type->allowsNull()) {
+              $propParams['allows_null'] = true;
             }
           }
           $tmpProps[] = $propParams;
@@ -125,11 +128,17 @@ class SqlResult {
       foreach ($tmpProps as $oneTmpProp) {
         if ($oneTmpProp['exists']) {
 
-          if ($oneTmpProp['is_vo']) {
-            $obj->{$oneTmpProp['propname']} = new $oneTmpProp['vo_classname']($oneData[$oneTmpProp['field']] ?? $oneTmpProp['default']);
+          if ($oneTmpProp['allows_null'] && $oneData[$oneTmpProp['field']] === null) {
+            // pokud DB vratila null a zaroven je $oneTmpProp i typu null (napr VO_BaseId|null), ulozime null a dal neresime
+            $obj->{$oneTmpProp['propname']} = null;
           } else {
-            $obj->{$oneTmpProp['propname']} = $oneData[$oneTmpProp['field']] ?? $oneTmpProp['default'];
+            if ($oneTmpProp['is_vo']) {
+              $obj->{$oneTmpProp['propname']} = new $oneTmpProp['vo_classname']($oneData[$oneTmpProp['field']] ?? $oneTmpProp['default']);
+            } else {
+              $obj->{$oneTmpProp['propname']} = $oneData[$oneTmpProp['field']] ?? $oneTmpProp['default'];
+            }
           }
+
 
         } else {
           // TODO: nekde ulozit/nekoho informovat, ze pro tuto property nemame z DB informaci

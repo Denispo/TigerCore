@@ -41,7 +41,7 @@ abstract class BasePayload implements ICanGetPayloadRawData{
         $attr = $oneAttribute->newInstance();
         $fieldName = $attr->getFieldName();
         if ($oneProp->isPublic()) {
-          $propParams = ['fieldname' => $fieldName, 'propname' => $oneProp->name, 'is_vo' => false];
+          $propParams = ['fieldname' => $fieldName, 'propname' => $oneProp->name, 'is_vo' => false, 'allows_null' => false];
 
           $type = $oneProp->getType();
 
@@ -51,6 +51,10 @@ abstract class BasePayload implements ICanGetPayloadRawData{
               $propParams['is_vo'] = true;
             } else {
               // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject
+            }
+            if ($type->allowsNull()) {
+              // Zatim se nikde nepouziva
+              $propParams['allows_null'] = true;
             }
           }
           $tmpProps[] = $propParams;

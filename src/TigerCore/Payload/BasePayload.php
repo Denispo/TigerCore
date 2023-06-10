@@ -53,7 +53,6 @@ abstract class BasePayload implements ICanGetPayloadRawData{
               // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject
             }
             if ($type->allowsNull()) {
-              // Zatim se nikde nepouziva
               $propParams['allows_null'] = true;
             }
           }
@@ -69,11 +68,16 @@ abstract class BasePayload implements ICanGetPayloadRawData{
     foreach ($data as $oneData) {
       $res = [];
       foreach ($tmpProps as $oneTmpProp) {
-        if ($oneTmpProp['is_vo']) {
-          $vo = $oneData->{$oneTmpProp['propname']};
-          $res[$oneTmpProp['fieldname']] = $vo instanceof ICanGetValueAsString ? $vo->getValueAsString() : ($vo instanceof ICanGetValueAsInit ? $vo->getValueAsInt() : '' /*TODO: co s tim, kdyz nelze ziskat ani integer ani string?*/);
+        if ($oneTmpProp['allows_null'] && $oneData->{$oneTmpProp['propname']} === null) {
+          // If property allows to be null (ie: string|null) and value is null, just set null and go
+          $res[$oneTmpProp['fieldname']] = null;
         } else {
-          $res[$oneTmpProp['fieldname']] = $oneData->{$oneTmpProp['propname']};
+          if ($oneTmpProp['is_vo']) {
+            $vo = $oneData->{$oneTmpProp['propname']};
+            $res[$oneTmpProp['fieldname']] = $vo instanceof ICanGetValueAsString ? $vo->getValueAsString() : ($vo instanceof ICanGetValueAsInit ? $vo->getValueAsInt() : '' /*TODO: co s tim, kdyz nelze ziskat ani integer ani string?*/);
+          } else {
+            $res[$oneTmpProp['fieldname']] = $oneData->{$oneTmpProp['propname']};
+          }
         }
       }
       $result[] = $res;

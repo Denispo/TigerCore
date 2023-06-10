@@ -11,11 +11,9 @@ use TigerCore\Auth\ICanGetCurrentUser;
 use TigerCore\Auth\IAmCurrentUser;
 use TigerCore\BaseRestRouter;
 use TigerCore\Payload\BasePayload;
-use TigerCore\Request\BaseRoutet;
 use TigerCore\Request\MatchedRequestData;
 use TigerCore\Response\ICanAddPayload;
 use TigerCore\Payload\ICanGetPayloadRawData;
-use TigerCore\ValueObject\VO_BaseId;
 use TigerCore\ValueObject\VO_PayloadKey;
 use TigerCore\ValueObject\VO_RouteMask;
 

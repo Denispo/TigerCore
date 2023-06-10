@@ -17,7 +17,7 @@ $loader->addDirectory(__DIR__ . '/../tests');
 $loader->setTempDirectory( __DIR__ . '/temp');
 $loader->register(); // Run the RobotLoader
 
-$text = 'Test string';
+$text = "i:2012,h:'MayhnMk45445ad'";
 $password = 'SuperPassword';
 
 $encoded = Crypt::encode($text, $password);

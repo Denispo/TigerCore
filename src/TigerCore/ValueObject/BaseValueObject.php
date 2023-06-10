@@ -24,7 +24,7 @@ abstract class BaseValueObject {
    */
   #[NoReturn]
   public function __toString() {
-    throw new \Exception('method getValueAsMixed() must be called. Value: "'.$this->value.'"');
+    throw new \Exception('method getValue() must be called. Value: "'.$this->value.'"');
   }
 
 }

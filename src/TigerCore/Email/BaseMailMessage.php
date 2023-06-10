@@ -20,5 +20,5 @@ class BaseMailMessage extends Message {
     $this->clearHeader('To');
     $this->addTo($email, $name);
   }
-  
+
 }

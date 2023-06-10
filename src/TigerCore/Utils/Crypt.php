@@ -7,8 +7,6 @@ use TigerCore\ValueObject\VO_CipherMethod;
 
 class Crypt {
 
-  //private const AVAILABLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
   /** Generate Initialization vector based on $asciiStringSeed
    * @param string $asciiStringSeed
    * @param int $length
@@ -51,10 +49,6 @@ class Crypt {
     }
 
     $options = OPENSSL_RAW_DATA;
-
-    //$len = strlen(self::AVAILABLE_CHARS) - 1;
-
-    //$asciiString = self::AVAILABLE_CHARS[random_int(0,$len)].self::AVAILABLE_CHARS[random_int(0,$len)].self::AVAILABLE_CHARS[random_int(0,$len)].self::AVAILABLE_CHARS[random_int(0,$len)];
 
     // Non-NULL Initialization Vector for encryption
     $encryption_iv = random_bytes($iv_length);

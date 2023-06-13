@@ -6,21 +6,20 @@ use TigerCore\Exceptions\ExpiredException;
 use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\ICanGetValueAsInit;
 use TigerCore\ICanGetValueAsString;
-use TigerCore\ValueObject\VO_CryptedHash;
+use TigerCore\ValueObject\VO_Base64Hash;
 use TigerCore\ValueObject\VO_Duration;
+use TigerCore\ValueObject\VO_PasswordPlainText;
 
 class CryptedHash {
 
-  public function __construct(private string $passphrase) {
-
-  }
-
   /**
-   * @param ICanGetValueAsString|ICanGetValueAsInit $value
-   * @return VO_CryptedHash
+   * @param string|int|ICanGetValueAsString|ICanGetValueAsInit $value
+   * @param VO_PasswordPlainText $passphrase
+   * @return VO_Base64Hash
+   * @throws InvalidArgumentException
    * @throws \Exception
    */
-  public function generateCryptedHash(string|int|ICanGetValueAsString|ICanGetValueAsInit $value):VO_CryptedHash {
+  public static function generateCryptedHash(string|int|ICanGetValueAsString|ICanGetValueAsInit $value, VO_PasswordPlainText $passphrase):VO_Base64Hash {
     if ($value instanceof ICanGetValueAsString){
       $value = $value->getValueAsString();
     } elseif ($value instanceof ICanGetValueAsInit){
@@ -44,21 +43,19 @@ class CryptedHash {
         $value = $value . "\x00";
       }
     }
-    $hash = Crypt::encode($timestampPacked.$value, $this->passphrase);
-    return new VO_CryptedHash($hash);
+    return Crypt::encode($timestampPacked.$value, $passphrase);
   }
 
   /**
-   * @param VO_CryptedHash $hash
-   * @param VO_Duration $hashDuration
+   * @param VO_Base64Hash $hash
+   * @param VO_PasswordPlainText $passphrase
+   * @param VO_Duration|null $hashDuration
    * @return string|int
-   * @throws InvalidArgumentException|ExpiredException|\Exception
+   * @throws ExpiredException
+   * @throws InvalidArgumentException
    */
-  public function getValueFromHash(VO_CryptedHash $hash, VO_Duration $hashDuration):string|int {
-    if ($hash->isEmpty()) {
-      throw new InvalidArgumentException();
-    }
-    $binary = Crypt::decode($hash->getValueAsString(), $this->passphrase);
+  public static function getValueFromHash(VO_Base64Hash $hash, VO_PasswordPlainText $passphrase, VO_Duration $hashDuration = null):string|int {
+    $binary = Crypt::decode($hash, $passphrase);
     if (strlen($binary) < 4) {
       // 3 bytes timestamp + 1 byte (at least) UserId
       throw new InvalidArgumentException();
@@ -66,7 +63,7 @@ class CryptedHash {
     //                                          \x00 = we have to add one zero byte, which was removed when timestamp was crypted
     $timestamp = current(unpack('V',"\x00".substr($binary,0,3))) * (60*5);
 
-    if (($timestamp + $hashDuration->getValueAsInt() < time()) || ($timestamp - (5*60) > time())) {
+    if ($hashDuration && (($timestamp + $hashDuration->getValueAsInt() < time()) || ($timestamp - (5*60) > time()))) {
       // $timestamp - (5*60) can not be bigger than time()
       throw new ExpiredException();
     }

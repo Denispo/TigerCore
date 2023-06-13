@@ -3,7 +3,9 @@
 namespace TigerCore\Utils;
 
 use TigerCore\Exceptions\InvalidArgumentException;
+use TigerCore\ValueObject\VO_Base64Hash;
 use TigerCore\ValueObject\VO_CipherMethod;
+use TigerCore\ValueObject\VO_PasswordPlainText;
 
 class Crypt {
 
@@ -29,11 +31,11 @@ class Crypt {
 
   /**
    * @param string $data
-   * @param string $password
-   * @return string Returns encoded string
+   * @param VO_PasswordPlainText $password
+   * @return VO_Base64Hash Returns encoded string
    * @throws \Exception
    */
-  public static function encode(string $data, string $password):string {
+  public static function encode(string $data, VO_PasswordPlainText $password):VO_Base64Hash {
     // Store a string into the variable which
     // need to be Encrypted
     $simple_string = $data;
@@ -54,7 +56,7 @@ class Crypt {
     $encryption_iv = random_bytes($iv_length);
 
     // Store the encryption key
-    $encryption_key = $password;
+    $encryption_key = $password->getValueAsString();
 
     // Use openssl_encrypt() function to encrypt the data
     $encryption = openssl_encrypt($simple_string, $ciphering->getValueAsString(),
@@ -65,22 +67,17 @@ class Crypt {
     }
 
     // Return the encrypted string
-
-    return base64_encode(pack('C',$ciphering->getValueAsInt()).$encryption_iv.$encryption);
+    return new VO_Base64Hash(base64_encode(pack('C',$ciphering->getValueAsInt()).$encryption_iv.$encryption));
   }
 
   /**
-   * @param string $encryptedData
-   * @param string $password
+   * @param VO_Base64Hash $encryptedData
+   * @param VO_PasswordPlainText $password
    * @return string
    * @throws InvalidArgumentException
    * @throws \Exception
    */
-  public static function decode(string $encryptedData, string $password):string {
-    if ($password == '' || $encryptedData == '') {
-      return '';
-    }
-
+  public static function decode(VO_Base64Hash $encryptedData, VO_PasswordPlainText $password):string {
     $encryptedData = base64_decode($encryptedData);
 
     if ($encryptedData === false) {
@@ -126,8 +123,13 @@ class Crypt {
 
 
     // Use openssl_decrypt() function to decrypt the data
-    $decryption = openssl_decrypt($encryptedData, $cipherMethod->getValueAsString(),
-      $decryption_key, $options, $decryption_iv);
+    $decryption = openssl_decrypt(
+      $encryptedData,
+      $cipherMethod->getValueAsString(),
+      $decryption_key,
+      $options,
+      $decryption_iv
+    );
 
     if ($decryption === false) {
       throw new InvalidArgumentException();

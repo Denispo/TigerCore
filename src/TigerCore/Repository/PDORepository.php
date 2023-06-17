@@ -46,7 +46,7 @@ class PDORepository {
     $db = $this->getDb();
     $db->query($sql, ...$params);
     $lastInsertedId = new VO_LastInsertedId($this->getDb()->getInsertId());
-    $db->commit();
+    //$db->commit(); // Throws error "there is no active transaction". Nette  or autocommit or whatever)
     return $lastInsertedId;
   }
 

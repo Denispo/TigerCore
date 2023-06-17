@@ -56,9 +56,4 @@ abstract class BaseMappedType extends BaseValueObject implements ICanGetValueAsS
     return $this->map[$this->getValueAsInt()];
   }
 
-  public function _getMap(): array
-  {
-    return $this->map;
-  }
-
 }

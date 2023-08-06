@@ -1,6 +1,6 @@
 <?php
 
-namespace TigerCore\Requests;
+namespace TigerCore\Request;
 
 
 use TigerCore\ICanGetValueAsTimestamp;

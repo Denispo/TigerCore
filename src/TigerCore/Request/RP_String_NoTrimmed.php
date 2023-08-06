@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TigerCore\Requests;
+namespace TigerCore\Request;
 
 use TigerCore\ICanGetValueAsString;
 

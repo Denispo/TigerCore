@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TigerCore\Requests;
+namespace TigerCore\Request;
 
 
 class RP_String extends RP_String_NoTrimmed {

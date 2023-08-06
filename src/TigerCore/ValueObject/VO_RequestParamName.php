@@ -4,7 +4,7 @@ namespace TigerCore\ValueObject;
 
 
 use TigerCore\ICanGetValueAsString;
-use TigerCore\Requests\ICanGetRequestParamName;
+use TigerCore\Request\ICanGetRequestParamName;
 
 class VO_RequestParamName extends VO_String_Trimmed implements ICanGetRequestParamName{
 

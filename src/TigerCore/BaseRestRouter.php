@@ -17,7 +17,7 @@ use TigerCore\Request\Validator\ICanGuardIntRequestParam;
 use TigerCore\Request\Validator\ICanGuardStrRequestParam;
 use TigerCore\Request\Validator\ICanGuardTimestampRequestParam;
 use TigerCore\Request\Validator\InvalidRequestParam;
-use TigerCore\Requests\BaseRequestParam;
+use TigerCore\Request\BaseRequestParam;
 use TigerCore\Response\BaseResponseException;
 use Nette\Http\IRequest;
 use TigerCore\Payload\ICanGetPayloadRawData;

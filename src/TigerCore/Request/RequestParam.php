@@ -2,7 +2,7 @@
 
 namespace TigerCore\Request;
 
-use TigerCore\Requests\ICanGetRequestParamName;
+use TigerCore\Request\ICanGetRequestParamName;
 use TigerCore\ValueObject\VO_RequestParamName;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]

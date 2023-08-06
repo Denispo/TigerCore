@@ -9,7 +9,7 @@ use TigerCore\Response\BaseResponseException;
 interface ICanHandleMatchedRoute  {
 
   /**
-   * @param array $params
+   * @param array $params Route mask params
    * @param IRequest $request
    * @return ICanGetPayloadRawData
    * @throws BaseResponseException

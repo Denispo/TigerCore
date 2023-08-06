@@ -2,6 +2,6 @@
 
 namespace TigerCore\Validator;
 
-class BaseValidator {
+class BaseAssertableObject {
 
 }

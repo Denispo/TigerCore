@@ -2,12 +2,12 @@
 
 namespace TigerCore\Request\Validator;
 
-use BaseJsonRequest;
+use TigerCore\Validator\BaseAssertableObject;
 
 interface ICanGuardArrayOfObjectsRequestparam {
 
   /**
-   * @param BaseJsonRequest[] $requestParam
+   * @param BaseAssertableObject[] $requestParam
    * @return BaseParamErrorCode|null
    */
   public function runGuard(array $requestParam):BaseParamErrorCode|null;

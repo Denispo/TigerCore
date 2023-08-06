@@ -5,9 +5,9 @@ namespace TigerCore\Request\Validator;
 use TigerCore\ICanGetValueAsInit;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class Guard_IsPositiveNumber extends BaseRequestParamValidator implements ICanGuardIntRequestParam {
+class Assert_IsPositiveNumber extends BaseRequestParamValidator implements ICanAssertIntValue {
 
-  public function runGuard(ICanGetValueAsInit $requestParam): BaseParamErrorCode|null
+  public function runAssertion(ICanGetValueAsInit $requestParam): BaseParamErrorCode|null
   {
     return $requestParam->getValueAsInt() > 0 ? null : new ParamErrorCode_TooLow();
   }

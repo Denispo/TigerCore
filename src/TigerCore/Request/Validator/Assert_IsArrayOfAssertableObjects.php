@@ -3,7 +3,7 @@
 namespace TigerCore\Request\Validator;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class Guard_IsArrayOfObjects extends BaseRequestParamValidator implements ICanGuardArrayOfObjectsRequestparam {
+class Assert_IsArrayOfAssertableObjects extends BaseRequestParamValidator implements ICanAssertArrayOfAssertableObjects {
 
   /**
    * @param class-string $className
@@ -12,7 +12,7 @@ class Guard_IsArrayOfObjects extends BaseRequestParamValidator implements ICanGu
   {
   }
 
-  public function runGuard(array $requestParam): BaseParamErrorCode|null
+  public function runAssertion(array $requestParam): BaseParamErrorCode|null
   {
     return null;
   }

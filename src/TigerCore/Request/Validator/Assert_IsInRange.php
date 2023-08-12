@@ -5,7 +5,7 @@ namespace TigerCore\Request\Validator;
 use TigerCore\ICanGetValueAsInit;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class Assert_IsInRange extends BaseRequestParamValidator implements ICanAssertIntValue {
+class Assert_IsInRange extends BaseAssertion implements ICanAssertIntValue {
 
   public function __construct(private int|float $min, private int|float $max ) {
   }

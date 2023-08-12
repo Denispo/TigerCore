@@ -2,14 +2,11 @@
 
 namespace TigerCore\Request\Validator;
 
-use TigerCore\Validator\BaseAssertableObject;
-
 interface ICanAssertArrayOfAssertableObjects {
 
   /**
-   * @param BaseAssertableObject[] $requestParam
-   * @return BaseParamErrorCode|null
+   * @return class-string BaseAssertableObject class name
    */
-  public function runAssertion(array $requestParam):BaseParamErrorCode|null;
+  public function getAssertableObjectName(): string;
 
 }

@@ -10,7 +10,7 @@ use TigerCore\Request\ICanRunMatchedRequest;
 use TigerCore\Request\MatchedRequestData;
 use TigerCore\Request\RequestParam;
 use TigerCore\Request\Validator\BaseParamErrorCode;
-use TigerCore\Request\Validator\BaseRequestParamValidator;
+use TigerCore\Request\Validator\BaseAssertion;
 use TigerCore\Request\Validator\ICanAssertBooleanValue;
 use TigerCore\Request\Validator\ICanAssertFloatValue;
 use TigerCore\Request\Validator\ICanAssertIntValue;

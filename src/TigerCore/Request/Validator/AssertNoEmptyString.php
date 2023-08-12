@@ -5,7 +5,7 @@ namespace TigerCore\Request\Validator;
 use TigerCore\ICanGetValueAsString;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class AssertNoEmptyString extends BaseRequestParamValidator implements ICanAssertStringValue {
+class AssertNoEmptyString extends BaseAssertion implements ICanAssertStringValue {
 
   public function runAssertion(ICanGetValueAsString $requestParam): BaseParamErrorCode|null
   {

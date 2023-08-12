@@ -3,17 +3,17 @@
 namespace TigerCore\Request\Validator;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class Assert_IsArrayOfAssertableObjects extends BaseRequestParamValidator implements ICanAssertArrayOfAssertableObjects {
+class Assert_IsArrayOfAssertableObjects extends BaseAssertionArray implements ICanAssertArrayOfAssertableObjects {
 
   /**
-   * @param class-string $className
+   * @param class-string $assertableObjectClassName
    */
-  public function __construct(string $className)
+  public function __construct(private string $assertableObjectClassName)
   {
   }
 
-  public function runAssertion(array $requestParam): BaseParamErrorCode|null
+  public function getAssertableObjectName(): string
   {
-    return null;
+    return $this->assertableObjectClassName;
   }
 }

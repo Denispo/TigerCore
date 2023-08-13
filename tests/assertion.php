@@ -39,10 +39,15 @@ $loader->register(); // Run the RobotLoader
 
 $rawData = [
   'name' => 'pepik',
-  'id' => 5,
+  'id' => 'name',
   'idlist' => [
     ['caption' => 'super'],
-    ['caption' => 'veci'],
+    [
+      'caption' => 'veci',
+      'subList' => [
+        ['captiON' => 'subveci']
+      ]
+    ],
   ]
 ];
 
@@ -53,15 +58,22 @@ class MyData2 extends BaseAssertableObject {
   #[RequestParam('caption')]
   public string $caption;
 
+  #[RequestParam('subList')]
+  #[Assert_IsArrayOfAssertableObjects(MyData2::class)]
+  public array|null $subList;
+
 }
 
-class MyData extends BaseAssertableObject {
-
+class Neco extends BaseAssertableObject {
   #[RequestParam('name')]
   public string $name;
 
-  #[RequestParam('id')]
-  public int $id;
+}
+
+
+class MyData extends Neco {
+
+
 
   #[RequestParam('idlist')]
   #[Assert_IsArrayOfAssertableObjects(MyData2::class)]
@@ -69,6 +81,10 @@ class MyData extends BaseAssertableObject {
    * @var MyData2[] $idList
    */
   public array $idList;
+
+  #[RequestParam('id')]
+  public Neco $id;
+
 
 }
 

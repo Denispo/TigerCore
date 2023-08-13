@@ -75,7 +75,7 @@ class DataMapper
     $property->setValue($object,[]);
     if (!is_array($valueToAssign)) {
       // $valueToAssign neni typu pole, takze nelze priradit do array
-      throw new InvalidArgumentException("Assertable object expects array but got no iterable value. ".$propPathName.'.'.$property->getName().'[]');
+      throw new InvalidArgumentException("Assertable object expects array but got no iterable value. ".$propPathName.'->'.$property->getName().'[]');
     }
 
     $attributes = $property->getAttributes(BaseAssertionArray::class, \ReflectionAttribute::IS_INSTANCEOF);
@@ -89,7 +89,7 @@ class DataMapper
       if ($attrInstance instanceof ICanAssertArrayOfAssertableObjects) {
         $result = [];
         foreach ($valueToAssign as $index => $oneValueToAssign) {
-          $result[] = $this->runMapping($attrInstance->getAssertableObjectName(),$oneValueToAssign,$propPathName.'.'.$property->getName().'['.$index.']');
+          $result[] = $this->runMapping($attrInstance->getAssertableObjectName(),$oneValueToAssign,$propPathName.'->'.$property->getName().'['.$index.']');
         }
         $property->setValue($object,$result);
       }
@@ -100,13 +100,22 @@ class DataMapper
 
   /**
    * @param class-string $assertableObjectClassName
-   * @param array $data Key->Value pairs of ParamName->ValueToBeMapped
+   * @param array $data Key->Value pairs of ParamName->ValueToBeMapped.
    * @param string $propPathName
    * @return BaseAssertableObject Object with $data mapped on
    * @throws InvalidArgumentException|TypeNotDefinedException
    */
-  private function runMapping(string $assertableObjectClassName, array $data, string $propPathName = ''):BaseAssertableObject
+  // $data je typu mixed, protoze $data nemame pod kontrolou ($data jdou od klienta) a kdyby $data byly jine nez array,
+  // tak PHP vyhodi vyjimku o nekompatibilnich typech (napr. array expected but string given) a vubec se nedostaneme do tela
+  // metody na $data = array_change_key_case($data, CASE_LOWER); na nasi vzjimku s nasim textem
+  private function runMapping(string $assertableObjectClassName, mixed $data, string $propPathName = ''):BaseAssertableObject
   {
+
+    try {
+      $data = array_change_key_case($data, CASE_LOWER);
+    } catch (\Throwable) {
+      throw new InvalidArgumentException('Parameter $data has to be an array. Path: '.$propPathName);
+    }
 
     /**
      * @var BaseAssertableObject $object
@@ -133,50 +142,65 @@ class DataMapper
         $valueToAssign = $data[$paramName->getValueAsString()] ?? null;
         $type = $oneProp->getType();
         if (!$type) {
-          throw new TypeNotDefinedException('Assertable object property has no type definition. '.$propPathName.'.'.$oneProp->getName());
+          throw new TypeNotDefinedException('Assertable object property has no type definition.  Path: '.$propPathName.'->'.$oneProp->getName());
         }
-        if ($type->isBuiltin())   {
-          // Parametr je obycejneho PHP typu (int, string, mixed, array atd.)
-          if ($type->getName() === 'array') {
-            // Parametr je typu array
-            $this->mapArray($object, $oneProp, $valueToAssign, $propPathName);
+        if ($valueToAssign === null) {
+          if ($type->allowsNull()) {
+            $oneProp->setValue($object, null);
           } else {
-            // Parametr je nejakeho obycejneho PHP typu krome array
-            $oneProp->setValue($object, $valueToAssign);
+            if (array_key_exists($paramName->getValueAsString(), $data)) {
+              // Klic v array existuje a ma hodnotu null
+              throw new InvalidArgumentException('Null can not be assigned to.  Path: '.$propPathName.'->'.$oneProp->getName());
+            } else {
+              // Klic v array vubec neexistuje
+              throw new InvalidArgumentException('Key "'.$paramName->getValueAsString().'" do not exists in $data and Null can not be assigned to.  Path: '.$propPathName.'->'.$oneProp->getName());
+            }
           }
 
         } else {
-
-          if (is_a($type->getName(), BaseValueObject::class, true)) {
-            // Parametr je BaseValueObject
-            try {
-              $valueObject = new ($type->getName())($valueToAssign);
-              $oneProp->setValue($object, $valueObject);
-            } catch (InvalidArgumentException) {
-              // Value object se nepodarilo vytvorit (asi nelze vytvorit nevalidni)
-              $this->invalidParams[] = new InvalidRequestParam($paramName, $propPathName);
+          // $valueToAssign neni Null
+          if ($type->isBuiltin()) {
+            // Parametr je obycejneho PHP typu (int, string, mixed, array atd.)
+            if ($type->getName() === 'array') {
+              // Parametr je typu array
+              $this->mapArray($object, $oneProp, $valueToAssign, $propPathName);
+            } else {
+              // Parametr je nejakeho obycejneho PHP typu krome array
+              $oneProp->setValue($object, $valueToAssign);
             }
 
-
-          } elseif (is_a($type->getName(), BaseRequestParam::class, true)) {
-            // Parametr je potomkem BaseRequestParam
-            $propValue = new ($type->getName())($paramName, $valueToAssign);
-            $oneProp->setValue($object, $propValue);
-            $result = $this->validateProperty($propValue, $oneProp);
-            if ($result) {
-              $this->invalidParams[] = new InvalidRequestParam($paramName, $propPathName, $result);
-            }
-          } elseif (is_a($type->getName(), BaseAssertableObject::class, true)) {
-            // Parametr je potomkem BaseAssertableObject
-            $propValue = new ($type->getName())();
-            $oneProp->setValue($object, $propValue);
-            // rekurzivne zavolame mapping na property $oneProp, protoze je typu BaseAssertableObject
-            $this->runMapping($propValue, $valueToAssign, $propPathName . $paramName->getValueAsString() . '.');
           } else {
-            // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject ani BaseRequestParam
+
+            if (is_a($type->getName(), BaseValueObject::class, true)) {
+              // Parametr je BaseValueObject
+              try {
+                $valueObject = new ($type->getName())($valueToAssign);
+                $oneProp->setValue($object, $valueObject);
+              } catch (InvalidArgumentException) {
+                // Value object se nepodarilo vytvorit (asi nelze vytvorit nevalidni)
+                $this->invalidParams[] = new InvalidRequestParam($paramName, $propPathName);
+              }
+
+
+            } elseif (is_a($type->getName(), BaseRequestParam::class, true)) {
+              // Parametr je potomkem BaseRequestParam
+              $propValue = new ($type->getName())($paramName, $valueToAssign);
+              $oneProp->setValue($object, $propValue);
+              $result = $this->validateProperty($propValue, $oneProp);
+              if ($result) {
+                $this->invalidParams[] = new InvalidRequestParam($paramName, $propPathName, $result);
+              }
+            } elseif (is_a($type->getName(), BaseAssertableObject::class, true)) {
+              // Parametr je potomkem BaseAssertableObject
+              // rekurzivne zavolame mapping na property $oneProp, protoze je typu BaseAssertableObject
+              $newObject = $this->runMapping($type->getName(), $valueToAssign, $propPathName.'->'.$paramName->getValueAsString());
+              $oneProp->setValue($object, $newObject);
+            } else {
+              // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject ani BaseRequestParam a tim padem ji neumime zpracovat
+              throw new InvalidArgumentException('DataMapper can not handle this property type: '.$type->getName().'.  Path: '.$propPathName.'->'.$oneProp->getName());
+            }
           }
         }
-
 
 
 
@@ -189,13 +213,14 @@ class DataMapper
    * @param class-string $assertableObjectClassName
    * @return BaseAssertableObject
    * @throws InvalidArgumentException
+   * @throws TypeNotDefinedException
    */
   public function mapTo(string $assertableObjectClassName):BaseAssertableObject
   {
 
     $this->invalidParams = [];
 
-    return $this->runMapping($assertableObjectClassName, array_change_key_case($this->rawData,CASE_LOWER));
+    return $this->runMapping($assertableObjectClassName, $this->rawData, $assertableObjectClassName);
 
   }
 

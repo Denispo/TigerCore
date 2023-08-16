@@ -26,8 +26,6 @@ use TigerCore\ValueObject\BaseValueObject;
 class DataMapper
 {
 
-  private array $invalidParams = [];
-
   public function __construct(private array $rawData)
   {
   }
@@ -52,14 +50,6 @@ class DataMapper
         $errorCode = $attrInstance->runAssertion($valueToValidate);
         if ($errorCode) {
           return $errorCode;
-        }
-      }
-
-      if ($attrInstance instanceof ICanAssertArrayOfAssertableObjects && is_array($valueToValidate)) {
-        foreach ($valueToValidate as $oneValueToValidate) {
-          $object = new ($attrInstance->getAssertableObjectName());
-
-          $this->runMapping();
         }
       }
     }
@@ -217,8 +207,6 @@ class DataMapper
    */
   public function mapTo(string $assertableObjectClassName):BaseAssertableObject
   {
-
-    $this->invalidParams = [];
 
     return $this->runMapping($assertableObjectClassName, $this->rawData, $assertableObjectClassName);
 

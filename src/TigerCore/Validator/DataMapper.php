@@ -60,7 +60,7 @@ class DataMapper
    * @throws InvalidArgumentException
    * @throws TypeNotDefinedException
    */
-  private function mapArray(BaseAssertableObject $object, \ReflectionProperty $property, mixed $valueToAssign, string $propPathName = '')
+  private function mapArray(BaseAssertableObject $object, \ReflectionProperty $property, mixed $valueToAssign, string $propPathName = ''):void
   {
     $property->setValue($object,[]);
     if (!is_array($valueToAssign)) {
@@ -89,16 +89,16 @@ class DataMapper
   }
 
   /**
-   * @param class-string $assertableObjectClassName
+   * @param class-string|BaseAssertableObject $assertableObjectOrClassName
    * @param array $data Key->Value pairs of ParamName->ValueToBeMapped.
    * @param string $propPathName
    * @return BaseAssertableObject Object with $data mapped on
    * @throws InvalidArgumentException|TypeNotDefinedException
    */
-  // $data je typu mixed, protoze $data nemame pod kontrolou ($data jdou od klienta) a kdyby $data byly jine nez array,
+  // $data je typu mixed i kdyz ocekavame $data pouze jako array, protoze $data nemame pod kontrolou ($data jdou od klienta) a kdyby $data byly jine nez array,
   // tak PHP vyhodi vyjimku o nekompatibilnich typech (napr. array expected but string given) a vubec se nedostaneme do tela
-  // metody na $data = array_change_key_case($data, CASE_LOWER); na nasi vzjimku s nasim textem
-  private function runMapping(string $assertableObjectClassName, mixed $data, string $propPathName = ''):BaseAssertableObject
+  // metody na $data = array_change_key_case($data, CASE_LOWER); na nasi vyjimku s nasim textem
+  private function runMapping(string|BaseAssertableObject $assertableObjectOrClassName, mixed $data, string $propPathName = ''):BaseAssertableObject
   {
 
     try {
@@ -107,12 +107,18 @@ class DataMapper
       throw new InvalidArgumentException('Parameter $data has to be an array. Path: '.$propPathName);
     }
 
+
     /**
      * @var BaseAssertableObject $object
      */
-    $object = new $assertableObjectClassName;
+    if (is_string($assertableObjectOrClassName)) {
+      $object = new $assertableObjectOrClassName;
+    } else {
+      $object = $assertableObjectOrClassName;
+    }
+
     if (!($object instanceof BaseAssertableObject)) {
-      throw new InvalidArgumentException('Parameter $assertableObjectClassName has to extends BaseAssertableObject::class');
+      throw new InvalidArgumentException('Parameter $assertableObjectOrClassName has to extends BaseAssertableObject::class');
     }
 
     $reflection = new \ReflectionClass($object);

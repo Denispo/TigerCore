@@ -4,6 +4,7 @@ namespace TigerCore;
 
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
+use Nette\Http\Response;
 use TigerCore\Auth\ICanGetCurrentUser;
 use TigerCore\Payload\IAmPayloadContainer;
 use TigerCore\Request\ICanRunMatchedRequest;
@@ -76,7 +77,15 @@ abstract class BaseRestRouter implements ICanMatchRoutes {
         throw new S404_NotFoundException('path not found');
         break;
       case Dispatcher::METHOD_NOT_ALLOWED:
-        throw new S405_MethodNotAllowedException($routeInfo[1], 'Allowed methods: ' . implode(', ', $routeInfo[1]));
+        if ($httpRequest->getMethod() === 'OPTIONS') {
+          // preflight
+          $httpResponse = new Response();
+          $httpResponse->setHeader('Access-Control-Allow-Methods', implode(', ',$routeInfo[1]));
+          $httpResponse->setCode(200);
+          exit;
+        } else {
+          throw new S405_MethodNotAllowedException($routeInfo[1], 'Allowed methods: ' . implode(', ', $routeInfo[1]));
+        }
         break;
       case Dispatcher::FOUND:
       default:

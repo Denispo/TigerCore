@@ -20,13 +20,12 @@ use TigerCore\Request\Validator\ICanAssertFloatValue;
 use TigerCore\Request\Validator\ICanAssertIntValue;
 use TigerCore\Request\Validator\ICanAssertStringValue;
 use TigerCore\Request\Validator\ICanAssertTimestampValue;
-use TigerCore\Request\Validator\InvalidRequestParam;
 use TigerCore\ValueObject\BaseValueObject;
 
 class DataMapper
 {
 
-  public function __construct(private array $rawData)
+  public function __construct(private readonly array $rawData)
   {
   }
 
@@ -172,10 +171,15 @@ class DataMapper
               try {
                 $valueObject = new ($type->getName())($valueToAssign);
                 $oneProp->setValue($object, $valueObject);
+                $result = $this->validateProperty($valueObject, $oneProp);
               } catch (InvalidArgumentException) {
                 // Value object se nepodarilo vytvorit (asi nelze vytvorit nevalidni)
-                $this->invalidParams[] = new InvalidRequestParam($paramName, $propPathName);
+                throw new InvalidArgumentException('BaseValueObject can not be created. Invalid param value.  Path: '.$propPathName.'->'.$oneProp->getName());
               }
+              if ($result) {
+                throw new InvalidArgumentException('Value violated guard rules. ErorCode:'.$result->getErrorCodeValue()->getValueAsString().'.  Path: '.$propPathName.'->'.$oneProp->getName());
+              }
+
 
 
             } elseif (is_a($type->getName(), BaseRequestParam::class, true)) {
@@ -184,7 +188,7 @@ class DataMapper
               $oneProp->setValue($object, $propValue);
               $result = $this->validateProperty($propValue, $oneProp);
               if ($result) {
-                $this->invalidParams[] = new InvalidRequestParam($paramName, $propPathName, $result);
+                throw new InvalidArgumentException('Value violated guard rules. ErorCode:'.$result->getErrorCodeValue()->getValueAsString().'.  Path: '.$propPathName.'->'.$oneProp->getName());
               }
             } elseif (is_a($type->getName(), BaseAssertableObject::class, true)) {
               // Parametr je potomkem BaseAssertableObject

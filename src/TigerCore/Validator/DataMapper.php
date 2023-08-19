@@ -210,15 +210,23 @@ class DataMapper
   }
 
   /**
-   * @param class-string $assertableObjectClassName
+   * @param class-string|BaseAssertableObject $assertableObjectOrClassName
    * @return BaseAssertableObject
    * @throws InvalidArgumentException
    * @throws TypeNotDefinedException
    */
-  public function mapTo(string $assertableObjectClassName):BaseAssertableObject
+  public function mapTo(string|BaseAssertableObject $assertableObjectOrClassName):BaseAssertableObject
   {
 
-    return $this->runMapping($assertableObjectClassName, $this->rawData, $assertableObjectClassName);
+    $rootElementName = '';
+    if (is_object($assertableObjectOrClassName)) {
+      $rootElementName = $assertableObjectOrClassName::class;
+      }
+    elseif (is_string($assertableObjectOrClassName)) {
+      $rootElementName = $assertableObjectOrClassName;
+    }
+
+    return $this->runMapping($assertableObjectOrClassName, $this->rawData, $rootElementName);
 
   }
 

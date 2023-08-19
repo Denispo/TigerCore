@@ -210,24 +210,17 @@ class DataMapper
   }
 
   /**
-   * @param class-string|BaseAssertableObject $assertableObjectOrClassName
-   * @return BaseAssertableObject
+   * @param BaseAssertableObject $assertableObject
+   * @return void
    * @throws InvalidArgumentException
    * @throws TypeNotDefinedException
    */
-  public function mapTo(string|BaseAssertableObject $assertableObjectOrClassName):BaseAssertableObject
+  public function mapTo(BaseAssertableObject $assertableObject):void
   {
-
-    $rootElementName = '';
-    if (is_object($assertableObjectOrClassName)) {
-      $rootElementName = $assertableObjectOrClassName::class;
-      }
-    elseif (is_string($assertableObjectOrClassName)) {
-      $rootElementName = $assertableObjectOrClassName;
-    }
-
-    return $this->runMapping($assertableObjectOrClassName, $this->rawData, $rootElementName);
-
+    // Pokud jako prvni parametr runMapping() dame instanci objektu, data se namapuji primo na tento objekt a proto
+    // nas nezajima navratova hodnota runMapping();
+    // Resp. navratova hodnota runMapping() nam vrati stejny objekt, jako je $assertableObject. Snad se tak PHP k objektum chova, doufam... :)
+    $this->runMapping($assertableObject, $this->rawData, $assertableObject::class);
   }
 
 }

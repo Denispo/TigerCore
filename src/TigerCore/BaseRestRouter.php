@@ -61,7 +61,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes {
         throw new S404_NotFoundException('path not found');
         break;
       case Dispatcher::METHOD_NOT_ALLOWED:
-        if ($httpRequest->getMethod() === 'OPTIONS') {
+        if ($httpRequest->getMethod() === IRequest::Options /*OPTIONS*/) {
           // preflight
           $httpResponse = new Response();
           $httpResponse->setHeader('Access-Control-Allow-Methods', implode(', ',$routeInfo[1]));

@@ -4,11 +4,11 @@ namespace TigerCore\ValueObject;
 
 
 use TigerCore\Exceptions\InvalidArgumentException;
+use TigerCore\IAmMappedValueObject;
 use TigerCore\ICanGetValueAsInit;
 use TigerCore\ICanGetValueAsString;
-use TigerCore\ValueObject\BaseValueObject;
 
-abstract class BaseMappedType extends BaseValueObject implements ICanGetValueAsString, ICanGetValueAsInit {
+abstract class BaseMappedValueObject extends BaseValueObject implements IAmMappedValueObject {
 
   private array $map = [];
 

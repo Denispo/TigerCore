@@ -4,7 +4,7 @@ namespace TigerCore\Utils;
 
 use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\ValueObject\VO_Base64Hash;
-use TigerCore\ValueObject\VO_CipherMethod;
+use TigerCore\ValueObject\VOM_CipherMethod;
 use TigerCore\ValueObject\VO_PasswordPlainText;
 
 class Crypt {
@@ -41,7 +41,7 @@ class Crypt {
     $simple_string = $data;
 
     // Store the cipher method
-    $ciphering = new VO_CipherMethod(VO_CipherMethod::CIPHER_METHOD_AES_128_CTR);
+    $ciphering = new VOM_CipherMethod(VOM_CipherMethod::CIPHER_METHOD_AES_128_CTR);
 
     // Use OpenSSl Encryption method
     $iv_length = openssl_cipher_iv_length($ciphering->getValueAsString());
@@ -92,7 +92,7 @@ class Crypt {
     $cipherMethod = current(unpack('C',substr($encryptedData,0,1)));
 
     try {
-      $cipherMethod = new VO_CipherMethod($cipherMethod);
+      $cipherMethod = new VOM_CipherMethod($cipherMethod);
     } catch (\Exception) {
       throw new \Exception('Invalid cipher method: '.$cipherMethod);
     }

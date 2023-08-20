@@ -2,11 +2,12 @@
 
 namespace TigerCore\ValueObject;
 
-class VO_CipherMethod extends BaseMappedType {
+// Value Object Mapped
+class VOM_CipherMethod extends BaseMappedValueObject {
 
   const CIPHER_METHOD_AES_128_CTR = 1;
 
-  private $map = [self::CIPHER_METHOD_AES_128_CTR => 'AES-128-CTR'];
+  private array $map = [self::CIPHER_METHOD_AES_128_CTR => 'AES-128-CTR'];
 
   protected function onGetMap(): array
   {

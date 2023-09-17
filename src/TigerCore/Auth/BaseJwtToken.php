@@ -3,6 +3,7 @@
 namespace TigerCore\Auth;
 
 use TigerCore\Constants\TokenError;
+use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\Exceptions\InvalidTokenException;
 use TigerCore\ValueObject\VO_Duration;
 use TigerCore\ValueObject\VO_Timestamp;
@@ -12,21 +13,23 @@ use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Firebase\JWT\SignatureInvalidException;
+use TigerCore\ValueObject\VO_TokenPrivateKey;
+use TigerCore\ValueObject\VO_TokenPublicKey;
 
-abstract class BaseJwtToken{
+class BaseJwtToken{
 
-  protected abstract function onGetTokenSettings():JwtTokenSettings;
-
+  private const ALGORITHM = 'RS256';
 
   /**
+   * @param VO_TokenPublicKey $publicKey
    * @param VO_TokenPlainStr $tokenStr
    * @return BaseTokenClaims
    * @throws InvalidTokenException
    */
-  protected function doDecodeToken(VO_TokenPlainStr $tokenStr): BaseTokenClaims {
+  protected function decodeToken(VO_TokenPublicKey $publicKey, VO_TokenPlainStr $tokenStr): BaseTokenClaims {
     try {
-      $data = (array) JWT::decode($tokenStr->getValueAsString(), new Key($this->onGetTokenSettings()->getPublicKey()->getValueAsString(), 'RS256'));
-    } catch (\InvalidArgumentException|\DomainException|\UnexpectedValueException|SignatureInvalidException|BeforeValidException|ExpiredException $e) {
+      $data = (array) JWT::decode($tokenStr->getValueAsString(), new Key($publicKey, self::ALGORITHM));
+    } catch (\InvalidArgumentException|\DomainException|\UnexpectedValueException|SignatureInvalidException|BeforeValidException|ExpiredException|\TypeError $e) {
       switch (get_class($e)) {
         case \InvalidArgumentException::class:{
           $error = new TokenError(TokenError::ERR_INVALID_ARGUMENT);
@@ -64,34 +67,32 @@ abstract class BaseJwtToken{
   }
 
   /**
+   * @param VO_TokenPrivateKey $privateKey
    * @param ICanGetTokenClaims $claims
    * @param VO_Duration $duration
    * @return VO_TokenPlainStr
-   * @throws \DomainException Unsupported algorithm or bad key was specified
+   * @throws InvalidArgumentException
    */
-  protected function doEncodeToken(ICanGetTokenClaims $claims, VO_Duration $duration):VO_TokenPlainStr {
-
-    $privateKey = $this->onGetTokenSettings()->getPrivateKey();
-
-    if ($privateKey->isEmpty()) {
-      return new VO_TokenPlainStr('');
-    }
-
-    $alg = 'RS256';
+  protected function encodeToken(VO_TokenPrivateKey $privateKey, ICanGetTokenClaims $claims, VO_Duration $duration):VO_TokenPlainStr {
 
     $expirationDate = (new VO_Timestamp(time()))->addDuration($duration);
 
-    $tokenStr = JWT::encode(
-      array_merge(
-        $claims->getClaims(),
-        [
-          'iat' => time(),
-          'exp' => $expirationDate->getValueAsInt(),
-        ]
-      ),
-      $privateKey->getValueAsString(),
-      $alg
-    );
+    try {
+      $tokenStr = JWT::encode(
+        array_merge(
+          $claims->getClaims(),
+          [
+            'iat' => time(), // issued at
+            'exp' => $expirationDate->getValueAsInt(), // epiration time
+          ]
+        ),
+        $privateKey,
+        self::ALGORITHM
+      );
+    } catch (\DomainException $e) {
+      throw new  InvalidArgumentException();
+    }
+
 
     return new VO_TokenPlainStr($tokenStr);
 

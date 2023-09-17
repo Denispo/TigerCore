@@ -56,7 +56,7 @@ class Request extends BaseRoutet
 class CurrentUser implements IAmCurrentUser, ICanGetCurrentUser
 {
 
-    public function isLoggedIn(): bool
+    public function isAuthenticated(): bool
     {
        return true;
     }

@@ -25,10 +25,11 @@ abstract class BaseRestRouter implements ICanMatchRoutes {
    * @param 'PUT'|'GET'|'POST'|'DELETE'|'PATCH'|('PUT'|'GET'|'POST'|'DELETE'|'PATCH')[] $method
    * @param VO_RouteMask $mask
    * @param ICanHandleMatchedRoute $controller
+   * @param mixed|null $customData Any data you want to pass to handleMatchedRoute()
    * @return void
    */
-  public function addRoute(string|array $method, VO_RouteMask $mask, ICanHandleMatchedRoute $controller):void {
-    $this->routes[] = ['method' => $method, 'mask' => $mask, 'handler' => $controller];
+  public function addRoute(string|array $method, VO_RouteMask $mask, ICanHandleMatchedRoute $controller, mixed $customData = null):void {
+    $this->routes[] = ['method' => $method, 'mask' => $mask, 'handler' => $controller, 'customData' => $customData];
   }
 
   /**
@@ -80,7 +81,7 @@ abstract class BaseRestRouter implements ICanMatchRoutes {
          * @var $handler ICanHandleMatchedRoute
          */
         $handler = $matchedRoute['handler'];
-        return $handler->handleMatchedRoute($params, $httpRequest);
+        return $handler->handleMatchedRoute($params, $httpRequest, $matchedRoute['customData']);
         break;
     }
   }

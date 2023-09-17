@@ -26,7 +26,7 @@ class BaseJwtToken{
    * @return BaseTokenClaims
    * @throws InvalidTokenException
    */
-  protected function decodeToken(VO_TokenPublicKey $publicKey, VO_TokenPlainStr $tokenStr): BaseTokenClaims {
+  public function decodeToken(VO_TokenPublicKey $publicKey, VO_TokenPlainStr $tokenStr): BaseTokenClaims {
     try {
       $data = (array) JWT::decode($tokenStr->getValueAsString(), new Key($publicKey, self::ALGORITHM));
     } catch (\InvalidArgumentException|\DomainException|\UnexpectedValueException|SignatureInvalidException|BeforeValidException|ExpiredException|\TypeError $e) {
@@ -73,7 +73,7 @@ class BaseJwtToken{
    * @return VO_TokenPlainStr
    * @throws InvalidArgumentException
    */
-  protected function encodeToken(VO_TokenPrivateKey $privateKey, ICanGetTokenClaims $claims, VO_Duration $duration):VO_TokenPlainStr {
+  public function encodeToken(VO_TokenPrivateKey $privateKey, ICanGetTokenClaims $claims, VO_Duration $duration):VO_TokenPlainStr {
 
     $expirationDate = (new VO_Timestamp(time()))->addDuration($duration);
 

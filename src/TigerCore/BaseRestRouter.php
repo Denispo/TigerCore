@@ -13,7 +13,7 @@ use TigerCore\Response\S404_NotFoundException;
 use TigerCore\ValueObject\VO_RouteMask;
 use function FastRoute\simpleDispatcher;
 
-abstract class BaseRestRouter implements ICanMatchRoutes {
+class BaseRestRouter implements ICanMatchRoutes {
 
   /**
    * @var array

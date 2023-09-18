@@ -6,7 +6,7 @@ use Nette\Http\IRequest;
 use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\ICanGetValueAsString;
 
-abstract class VO_HttpRequestMethod extends BaseValueObject implements ICanGetValueAsString {
+class VO_HttpRequestMethod extends BaseValueObject implements ICanGetValueAsString {
 
   /**
    * One of Http request method. 'PUT', 'GET', 'POST', 'DELETE', 'PATCH' or 'OPTIONS'

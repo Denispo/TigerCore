@@ -6,10 +6,10 @@ use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Nette\Http\Response;
 use TigerCore\Response\BaseResponseException;
-use Nette\Http\IRequest;
 use TigerCore\Payload\ICanGetPayloadRawData;
 use TigerCore\Response\S405_MethodNotAllowedException;
 use TigerCore\Response\S404_NotFoundException;
+use TigerCore\ValueObject\VO_HttpRequestMethod;
 use TigerCore\ValueObject\VO_RouteMask;
 use function FastRoute\simpleDispatcher;
 
@@ -33,11 +33,12 @@ class BaseRestRouter implements ICanMatchRoutes {
   }
 
   /**
-   * @param IRequest $httpRequest
+   * @param VO_HttpRequestMethod $requestMethod IRequest->getMethod()
+   * @param string $requestUrlPath IRequest->getUrl()->getPath()
    * @return ICanGetPayloadRawData
    * @throws BaseResponseException
    */
-  public function runMatch(IRequest $httpRequest):ICanGetPayloadRawData
+  public function runMatch(VO_HttpRequestMethod $requestMethod, string $requestUrlPath):ICanGetPayloadRawData
   {
 
     /**
@@ -54,15 +55,14 @@ class BaseRestRouter implements ICanMatchRoutes {
       }
     });
 
-    $requestMethod = strtoupper($httpRequest->getMethod());
-    $routeInfo = $dispatcher->dispatch($requestMethod, $httpRequest->getUrl()->getPath());
+    $routeInfo = $dispatcher->dispatch($requestMethod->getValueAsString(), $requestUrlPath);
 
     switch ($routeInfo[0]) {
       case Dispatcher::NOT_FOUND:
         throw new S404_NotFoundException('path not found');
         break;
       case Dispatcher::METHOD_NOT_ALLOWED:
-        if ($httpRequest->getMethod() === IRequest::Options /*OPTIONS*/) {
+        if ($requestMethod->isOPTIONS()) {
           // preflight
           $httpResponse = new Response();
           $httpResponse->setHeader('Access-Control-Allow-Methods', implode(', ',$routeInfo[1]));
@@ -81,7 +81,7 @@ class BaseRestRouter implements ICanMatchRoutes {
          * @var $handler ICanHandleMatchedRoute
          */
         $handler = $matchedRoute['handler'];
-        return $handler->handleMatchedRoute($params, $httpRequest, $matchedRoute['customData']);
+        return $handler->handleMatchedRoute($params, $matchedRoute['customData']);
         break;
     }
   }

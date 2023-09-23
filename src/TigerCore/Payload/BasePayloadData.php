@@ -9,7 +9,7 @@ use TigerCore\ICanGetValueAsString;
 use TigerCore\Response\S500_InternalServerErrorException;
 use TigerCore\ValueObject\BaseValueObject;
 
-abstract class BasePayload implements ICanGetPayloadRawData{
+class BasePayloadData implements ICanGetPayloadRawData{
 
   private array $payload;
 

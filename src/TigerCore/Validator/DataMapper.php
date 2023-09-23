@@ -131,10 +131,13 @@ class DataMapper
          * @var RequestParam $attr
          */
         $attr = $oneAttribute->newInstance();
-        $paramName = $attr->getParamName();
+        $paramName = $attr->getCustomParamName();
+        if ($paramName === '') {
+          $paramName = $oneProp->getName();
+        }
 
 
-        $valueToAssign = $data[$paramName->getValueAsString()] ?? null;
+        $valueToAssign = $data[$paramName] ?? null;
         $type = $oneProp->getType();
         if (!$type) {
           throw new TypeNotDefinedException('Assertable object property has no type definition.  Path: '.$propPathName.'->'.$oneProp->getName());
@@ -143,12 +146,12 @@ class DataMapper
           if ($type->allowsNull()) {
             $oneProp->setValue($object, null);
           } else {
-            if (array_key_exists($paramName->getValueAsString(), $data)) {
+            if (array_key_exists($paramName, $data)) {
               // Klic v array existuje a ma hodnotu null
               throw new InvalidArgumentException('Null can not be assigned to.  Path: '.$propPathName.'->'.$oneProp->getName());
             } else {
               // Klic v array vubec neexistuje
-              throw new InvalidArgumentException('Key "'.$paramName->getValueAsString().'" do not exists in $data and Null can not be assigned to.  Path: '.$propPathName.'->'.$oneProp->getName());
+              throw new InvalidArgumentException('Key "'.$paramName.'" do not exists in $data and Null can not be assigned to.  Path: '.$propPathName.'->'.$oneProp->getName());
             }
           }
 
@@ -193,7 +196,7 @@ class DataMapper
             } elseif (is_a($type->getName(), BaseAssertableObject::class, true)) {
               // Parametr je potomkem BaseAssertableObject
               // rekurzivne zavolame mapping na property $oneProp, protoze je typu BaseAssertableObject
-              $newObject = $this->runMapping($type->getName(), $valueToAssign, $propPathName.'->'.$paramName->getValueAsString());
+              $newObject = $this->runMapping($type->getName(), $valueToAssign, $propPathName.'->'.$paramName);
               $oneProp->setValue($object, $newObject);
             } else {
               // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject ani BaseRequestParam a tim padem ji neumime zpracovat
@@ -217,9 +220,9 @@ class DataMapper
    */
   public function mapTo(BaseAssertableObject $assertableObject):void
   {
-    // Pokud jako prvni parametr runMapping() dame instanci objektu, data se namapuji primo na tento objekt a proto
+    // Pokud je prvni parametr runMapping() instance objektu, data se namapuji primo na tento objekt a proto
     // nas nezajima navratova hodnota runMapping();
-    // Resp. navratova hodnota runMapping() nam vrati stejny objekt, jako je $assertableObject. Snad se tak PHP k objektum chova, doufam... :)
+    // Navratova hodnota runMapping() nam totiz vrati stejny objekt, jako je $assertableObject.
     $this->runMapping($assertableObject, $this->rawData, $assertableObject::class);
   }
 

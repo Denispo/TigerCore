@@ -11,6 +11,8 @@ use TigerCore\ValueObject\BaseValueObject;
 
 abstract class BasePayload implements ICanGetPayloadRawData{
 
+  private array $payload;
+
   /**
    * @template T
    * @param array<T> $data Array of classes. Each class has to be exactly the same type extended from BaseDTO class
@@ -86,8 +88,6 @@ abstract class BasePayload implements ICanGetPayloadRawData{
     return $result;
 
   }
-
-  private array $payload;
 
   /**
    * If $data is array of the same classes extended from BaseDTO, automatic data mapping will be performed on each #[ToPayloadField] public property. Othervise $data will be considered as final array of raw payload data.

@@ -6,15 +6,19 @@ use TigerCore\Request\ICanGetRequestParamName;
 use TigerCore\ValueObject\VO_RequestParamName;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class RequestParam implements ICanGetRequestParamName {
-  private VO_RequestParamName $paramName;
+class RequestParam {
+  private string $customParamName;
 
-  public function __construct(string $paramName, private $defaultValue = null) {
-    $this->paramName = new VO_RequestParamName($paramName);
+  /**
+   * @param string $customParamName If empty string, real property name will be used as the key name in requst JSON
+   * @param $defaultValue
+   */
+  public function __construct(string $customParamName = '', private $defaultValue = null) {
+    $this->customParamName = trim($customParamName);
   }
 
-  public function getParamName():VO_RequestParamName {
-    return $this->paramName;
+  public function getCustomParamName():string {
+    return $this->customParamName;
   }
 
   public function getDefaultValue() {

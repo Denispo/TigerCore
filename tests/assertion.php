@@ -10,7 +10,7 @@ use Nette\Loaders\RobotLoader;
 use TigerCore\Auth\ICanGetCurrentUser;
 use TigerCore\Auth\IAmCurrentUser;
 use TigerCore\BaseRestRouter;
-use TigerCore\Payload\BasePayloadData;
+use TigerCore\Payload\PayloadDataMapper;
 use TigerCore\Request\MatchedRequestData;
 use TigerCore\Request\RequestParam;
 use TigerCore\Request\Validator\Assert_IsArrayOfAssertableObjects;

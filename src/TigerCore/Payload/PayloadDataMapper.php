@@ -4,14 +4,13 @@ namespace TigerCore\Payload;
 
 use TigerCore\DataTransferObject\BaseDTO;
 use TigerCore\DataTransferObject\ToPayloadField;
+use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\ICanGetValueAsInit;
 use TigerCore\ICanGetValueAsString;
 use TigerCore\Response\S500_InternalServerErrorException;
 use TigerCore\ValueObject\BaseValueObject;
 
-class BasePayloadData implements ICanGetPayloadRawData{
-
-  private array $payload;
+class PayloadDataMapper{
 
   /**
    * @template T
@@ -42,6 +41,9 @@ class BasePayloadData implements ICanGetPayloadRawData{
          */
         $attr = $oneAttribute->newInstance();
         $fieldName = $attr->getFieldName();
+        if ($fieldName === '') {
+          $fieldName = $oneProp->getName();
+        }
         if ($oneProp->isPublic()) {
           $propParams = ['fieldname' => $fieldName, 'propname' => $oneProp->name, 'is_vo' => false, 'allows_null' => false];
 
@@ -91,30 +93,26 @@ class BasePayloadData implements ICanGetPayloadRawData{
 
   /**
    * If $data is array of the same classes extended from BaseDTO, automatic data mapping will be performed on each #[ToPayloadField] public property. Othervise $data will be considered as final array of raw payload data.
-   * @param array|BaseDTO[] $data
-   * @throws S500_InternalServerErrorException
+   * @param BaseDTO|BaseDTO[] $data
+   * @throws S500_InternalServerErrorException|InvalidArgumentException
    */
-  public function __construct(array $data = []) {
-    $mapFromDbData = false;
+  public function getPayloadDataFromDTO(array|BaseDTO $data = []):array {
+    if (!is_array($data)) {
+      $data = [$data];
+    }
     foreach ($data as $oneData) {
-      $mapFromDbData = $oneData instanceof BaseDTO;
-      if (!$mapFromDbData) {
-        break;
+      if (!($oneData instanceof BaseDTO)) {
+        throw new InvalidArgumentException('All prams has to be instance of BaseDTO');
       }
     }
-    if ($mapFromDbData) {
-      try {
-        $this->payload = $this->mapFromData($data);
-      } catch (\ReflectionException $e){
-        throw new S500_InternalServerErrorException('Reflection exception. Can not map data to payload',['data' => var_export($data, true)]);
-      }
-    } else {
-      $this->payload = $data;
-    }
-  }
 
-  public function getPayloadRawData():array {
-    return $this->payload;
+    try {
+      $payload = $this->mapFromData($data);
+    } catch (\ReflectionException $e){
+      throw new S500_InternalServerErrorException('Reflection exception. Can not map data to payload',['data' => var_export($data, true)]);
+    }
+
+    return $payload;
   }
 
 }

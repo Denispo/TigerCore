@@ -10,7 +10,7 @@ use Nette\Loaders\RobotLoader;
 use TigerCore\Auth\ICanGetCurrentUser;
 use TigerCore\Auth\IAmCurrentUser;
 use TigerCore\BaseRestRouter;
-use TigerCore\Payload\BasePayloadData;
+use TigerCore\Payload\PayloadDataMapper;
 use TigerCore\Request\MatchedRequestData;
 use TigerCore\Response\ICanAddPayload;
 use TigerCore\Payload\ICanGetPayloadRawData;
@@ -30,7 +30,7 @@ $loader->setTempDirectory( __DIR__ . '/temp');
 $loader->register(); // Run the RobotLoader
 
 
-class PayloadData extends BasePayloadData
+class PayloadDataMapper extends PayloadDataMapper
 {
 
     public function getPayloadKey(): VO_PayloadKey

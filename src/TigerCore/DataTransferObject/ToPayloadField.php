@@ -5,7 +5,10 @@ namespace TigerCore\DataTransferObject;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class ToPayloadField {
 
-  public function __construct(private string $fieldName) {
+  private string $fieldName;
+
+  public function __construct(string $fieldName = '') {
+    $this->fieldName = trim($fieldName);
   }
 
   public function getFieldName():string {

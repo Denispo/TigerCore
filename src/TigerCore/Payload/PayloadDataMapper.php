@@ -10,22 +10,25 @@ use TigerCore\ICanGetValueAsString;
 use TigerCore\Response\S500_InternalServerErrorException;
 use TigerCore\ValueObject\BaseValueObject;
 
-class PayloadDataMapper{
+class PayloadDataMapper implements ICanGetPayloadRawData {
+
+  private array $payload;
 
   /**
+   * Methods directly modifies $this->payload to avoid array copying overhead
    * @template T
    * @param array<T> $data Array of classes. Each class has to be exactly the same type extended from BaseDTO class
-   * @return array Payload data mapped from $data object
    * @throws \ReflectionException
    */
-  protected function mapFromData(array $data):array {
+  protected function mapFromData(array $data):void {
+
+    $this->payload = [];
 
     if (!$data || count($data) === 0) {
-      return [];
+      return;
     }
 
     $tmpProps = []; // [['fieldname' => 'id', 'propname' => 'userId'], [,]]
-    $result = [];
 
 
     $reflection = new \ReflectionClass(current($data));
@@ -70,25 +73,20 @@ class PayloadDataMapper{
 
 
     foreach ($data as $oneData) {
-      $res = [];
       foreach ($tmpProps as $oneTmpProp) {
         if ($oneTmpProp['allows_null'] && $oneData->{$oneTmpProp['propname']} === null) {
           // If property allows to be null (ie: string|null) and value is null, just set null and go
-          $res[$oneTmpProp['fieldname']] = null;
+          $this->payload[$oneTmpProp['fieldname']] = null;
         } else {
           if ($oneTmpProp['is_vo']) {
             $vo = $oneData->{$oneTmpProp['propname']};
-            $res[$oneTmpProp['fieldname']] = $vo instanceof ICanGetValueAsString ? $vo->getValueAsString() : ($vo instanceof ICanGetValueAsInit ? $vo->getValueAsInt() : '' /*TODO: co s tim, kdyz nelze ziskat ani integer ani string?*/);
+            $this->payload[$oneTmpProp['fieldname']] = $vo instanceof ICanGetValueAsString ? $vo->getValueAsString() : ($vo instanceof ICanGetValueAsInit ? $vo->getValueAsInt() : '' /*TODO: co s tim, kdyz nelze ziskat ani integer ani string?*/);
           } else {
-            $res[$oneTmpProp['fieldname']] = $oneData->{$oneTmpProp['propname']};
+            $this->payload[$oneTmpProp['fieldname']] = $oneData->{$oneTmpProp['propname']};
           }
         }
       }
-      $result[] = $res;
     }
-
-    return $result;
-
   }
 
   /**
@@ -96,7 +94,8 @@ class PayloadDataMapper{
    * @param BaseDTO|BaseDTO[] $data
    * @throws S500_InternalServerErrorException|InvalidArgumentException
    */
-  public function getPayloadDataFromDTO(array|BaseDTO $data = []):array {
+  public function __construct(array|BaseDTO $data = []) {
+    $this->payload = [];
     if (!is_array($data)) {
       $data = [$data];
     }
@@ -107,12 +106,14 @@ class PayloadDataMapper{
     }
 
     try {
-      $payload = $this->mapFromData($data);
+      $this->mapFromData($data);
     } catch (\ReflectionException $e){
       throw new S500_InternalServerErrorException('Reflection exception. Can not map data to payload',['data' => var_export($data, true)]);
     }
-
-    return $payload;
   }
 
+  public function getPayloadRawData(): array
+  {
+    return $this->payload;
+  }
 }

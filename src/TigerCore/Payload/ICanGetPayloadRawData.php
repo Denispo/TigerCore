@@ -3,5 +3,5 @@
 namespace TigerCore\Payload;
 
 interface ICanGetPayloadRawData {
-  public function getPayloadRawData():array;
+  public function getPayloadRawData():array|\stdClass;
 }

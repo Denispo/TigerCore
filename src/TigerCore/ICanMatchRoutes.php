@@ -2,7 +2,6 @@
 
 namespace TigerCore;
 
-use Nette\Http\IRequest;
 use TigerCore\Payload\ICanGetPayloadRawData;
 use TigerCore\Response\BaseResponseException;
 use TigerCore\ValueObject\VO_HttpRequestMethod;

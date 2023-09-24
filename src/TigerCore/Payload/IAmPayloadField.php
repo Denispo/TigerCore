@@ -1,9 +1,9 @@
 <?php
 
-namespace TigerCore\DataTransferObject;
+namespace TigerCore\Payload;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class ToPayloadField {
+class IAmPayloadField {
 
   private string $fieldName;
 

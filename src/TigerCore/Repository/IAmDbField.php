@@ -1,9 +1,9 @@
 <?php
 
-namespace TigerCore\DataTransferObject;
+namespace TigerCore\Repository;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class FromDbField {
+class IAmDbField {
 
   public function __construct(private int|string $fieldName, private int|bool|string|float $defaultValue) {
   }

@@ -2,8 +2,6 @@
 
 namespace TigerCore\Payload;
 
-use TigerCore\DataTransferObject\BaseDTO;
-use TigerCore\DataTransferObject\ToPayloadField;
 use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\ICanGetValueAsInit;
 use TigerCore\ICanGetValueAsString;
@@ -17,7 +15,7 @@ class PayloadDataMapper implements ICanGetPayloadRawData {
   /**
    * Methods directly modifies $this->payload to avoid array copying overhead
    * @template T
-   * @param array<T> $data Array of classes. Each class has to be exactly the same type extended from BaseDTO class
+   * @param array<T> $data Array of classes. Each class has to be exactly the same structure each implementing ICanHavePayloadFields
    * @throws \ReflectionException
    */
   protected function mapFromData(array $data):void {
@@ -36,11 +34,11 @@ class PayloadDataMapper implements ICanGetPayloadRawData {
 
     foreach ($props as $oneProp) {
       // Prvne si ulozime vsechny PayloadField::class property...
-      $attributes = $oneProp->getAttributes(ToPayloadField::class);
+      $attributes = $oneProp->getAttributes(IAmPayloadField::class);
       foreach ($attributes as $oneAttribute) {
 
         /**
-         * @var ToPayloadField $attr
+         * @var IAmPayloadField $attr
          */
         $attr = $oneAttribute->newInstance();
         $fieldName = $attr->getFieldName();
@@ -90,18 +88,18 @@ class PayloadDataMapper implements ICanGetPayloadRawData {
   }
 
   /**
-   * If $data is array of the same classes extended from BaseDTO, automatic data mapping will be performed on each #[ToPayloadField] public property. Othervise $data will be considered as final array of raw payload data.
-   * @param BaseDTO|BaseDTO[] $data
+   * If $data is array of the same classes implementing ICanHavePayloadFields, automatic data mapping will be performed on each #[ToPayloadField] public property. Othervise $data will be considered as final array of raw payload data.
+   * @param ICanHavePayloadFields|ICanHavePayloadFields[] $data
    * @throws S500_InternalServerErrorException|InvalidArgumentException
    */
-  public function __construct(array|BaseDTO $data = []) {
+  public function __construct(array|ICanHavePayloadFields $data = []) {
     $this->payload = [];
     if (!is_array($data)) {
       $data = [$data];
     }
     foreach ($data as $oneData) {
-      if (!($oneData instanceof BaseDTO)) {
-        throw new InvalidArgumentException('All prams has to be instance of BaseDTO');
+      if (!($oneData instanceof ICanHavePayloadFields)) {
+        throw new InvalidArgumentException('All classes has to implement ICanHavePayloadFields');
       }
     }
 

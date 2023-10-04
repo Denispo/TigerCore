@@ -18,17 +18,16 @@ use TigerCore\ValueObject\VO_TokenPublicKey;
 
 class BaseJwtToken{
 
-  private const ALGORITHM = 'RS256';
-
   /**
    * @param VO_TokenPublicKey $publicKey
    * @param VO_TokenPlainStr $tokenStr
+   * @param string $algorithm
    * @return BaseTokenClaims
    * @throws InvalidTokenException
    */
-  public function decodeToken(VO_TokenPublicKey $publicKey, VO_TokenPlainStr $tokenStr): BaseTokenClaims {
+  public static function decodeToken(VO_TokenPublicKey $publicKey, VO_TokenPlainStr $tokenStr, string $algorithm = 'RS256'): BaseTokenClaims {
     try {
-      $data = (array) JWT::decode($tokenStr->getValueAsString(), new Key($publicKey, self::ALGORITHM));
+      $data = (array) JWT::decode($tokenStr->getValueAsString(), new Key($publicKey->getValueAsString(), $algorithm));
     } catch (\InvalidArgumentException|\DomainException|\UnexpectedValueException|SignatureInvalidException|BeforeValidException|ExpiredException|\TypeError $e) {
       switch (get_class($e)) {
         case \InvalidArgumentException::class:{
@@ -70,10 +69,11 @@ class BaseJwtToken{
    * @param VO_TokenPrivateKey $privateKey
    * @param ICanGetTokenClaims $claims
    * @param VO_Duration $duration
+   * @param string $algorithm
    * @return VO_TokenPlainStr
    * @throws InvalidArgumentException
    */
-  public function encodeToken(VO_TokenPrivateKey $privateKey, ICanGetTokenClaims $claims, VO_Duration $duration):VO_TokenPlainStr {
+  public static function encodeToken(VO_TokenPrivateKey $privateKey, ICanGetTokenClaims $claims, VO_Duration $duration, string $algorithm = 'RS256'):VO_TokenPlainStr {
 
     $expirationDate = (new VO_Timestamp(time()))->addDuration($duration);
 
@@ -86,8 +86,8 @@ class BaseJwtToken{
             'exp' => $expirationDate->getValueAsInt(), // epiration time
           ]
         ),
-        $privateKey,
-        self::ALGORITHM
+        $privateKey->getValueAsString(),
+        $algorithm
       );
     } catch (\DomainException $e) {
       throw new  InvalidArgumentException();

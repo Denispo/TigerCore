@@ -33,7 +33,7 @@ class FirebaseCustomToken{
    * @throws InvalidArgumentException
    * @throws InvalidTokenException
    */
-  private static function encodeToken(VO_FullPathFileName|string|array $serviceAccountJson, int|string $userId, ICanGetTokenClaims|null $claims = null, int $durationInSeconds = 60*60):VO_TokenPlainStr
+  public static function generateToken(VO_FullPathFileName|string|array $serviceAccountJson, int|string $userId, ICanGetTokenClaims|null $claims = null, int $durationInSeconds = 60*60):VO_TokenPlainStr
   {
     $userId = trim((string)$userId);
     if ($userId === '' || $userId == 0) {

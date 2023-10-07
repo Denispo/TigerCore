@@ -74,6 +74,16 @@ class BaseRestRouter implements ICanMatchRoutes {
         break;
       case Dispatcher::FOUND:
       default:
+
+      if ($requestMethod->isOPTIONS()) {
+        // preflight
+        $httpResponse = new Response();
+        $httpResponse->setHeader('Access-Control-Allow-Methods', $requestMethod->getValueAsString());
+        $httpResponse->setCode(200);
+        exit;
+      }
+
+
         $matchedRoute = $this->routes[$routeInfo[1]];
         $params = $routeInfo[2];
 

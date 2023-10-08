@@ -2,6 +2,7 @@
 
 namespace TigerCore\Auth;
 
+use ArrayAccess;
 use TigerCore\Constants\TokenError;
 use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\Exceptions\InvalidTokenException;
@@ -22,10 +23,10 @@ class BaseJwtToken{
    * @param VO_TokenPublicKey $publicKey
    * @param VO_TokenPlainStr $tokenStr
    * @param string $algorithm
-   * @return BaseTokenClaims
+   * @return BaseTokenPayload
    * @throws InvalidTokenException
    */
-  public static function decodeToken(VO_TokenPublicKey $publicKey, VO_TokenPlainStr $tokenStr, string $algorithm = 'RS256'): BaseTokenClaims {
+  public static function decodeToken(VO_TokenPublicKey $publicKey, VO_TokenPlainStr $tokenStr, string $algorithm = 'RS256'): BaseTokenPayload {
     try {
       $data = (array) JWT::decode($tokenStr->getValueAsString(), new Key($publicKey->getValueAsString(), $algorithm));
     } catch (\InvalidArgumentException|\DomainException|\UnexpectedValueException|SignatureInvalidException|BeforeValidException|ExpiredException|\TypeError $e) {
@@ -62,30 +63,30 @@ class BaseJwtToken{
       throw new InvalidTokenException($error, $e->getMessage(), $e->getCode(), $e->getPrevious());
     }
 
-    return new BaseTokenClaims($data);
+    return new BaseTokenPayload($data);
   }
 
   /**
    * @param VO_TokenPrivateKey $privateKey
-   * @param ICanGetTokenClaims $claims
    * @param VO_Duration $duration
+   * @param array $payload Payload except 'iat' and 'exp'. There are added automatically based on server time and $duration
    * @param string $algorithm
    * @return VO_TokenPlainStr
    * @throws InvalidArgumentException
    */
-  public static function encodeToken(VO_TokenPrivateKey $privateKey, ICanGetTokenClaims $claims, VO_Duration $duration, string $algorithm = 'RS256'):VO_TokenPlainStr {
+  public static function encodeToken(VO_TokenPrivateKey $privateKey, VO_Duration $duration, array $payload = [], string $algorithm = 'RS256'):VO_TokenPlainStr {
 
-    $expirationDate = (new VO_Timestamp(time()))->addDuration($duration);
+    $time = time();
+    $expirationDate = (new VO_Timestamp($time))->addDuration($duration);
 
     try {
       $tokenStr = JWT::encode(
         array_merge(
-          $claims->getClaims(),
+          $payload,
           [
-            'iat' => time(), // issued at
+            'iat' => $time, // issued at
             'exp' => $expirationDate->getValueAsInt(), // epiration time
-          ]
-        ),
+          ]),
         $privateKey->getValueAsString(),
         $algorithm
       );

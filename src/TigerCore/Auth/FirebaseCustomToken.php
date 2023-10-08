@@ -8,21 +8,12 @@ use TigerCore\Exceptions\InvalidTokenException;
 use TigerCore\ValueObject\VO_FullPathFileName;
 use TigerCore\ValueObject\VO_TokenPlainStr;
 use Firebase\JWT\JWT;
-use TigerCore\ValueObject\VO_TokenPublicKey;
 
+/**
+ * https://firebase.google.com/docs/auth/admin/create-custom-tokens
+ * We do not need to decode FirebaseCustomToken. This token is onlz generated and then consumed by Firebase SDK on the client.
+ */
 class FirebaseCustomToken{
-
-  private const FIREBASE_TOKEN_ALGORITHM = 'RS256';
-
-  /**
-   * @param VO_TokenPublicKey $publicKey
-   * @param VO_TokenPlainStr $tokenStr
-   * @return BaseTokenClaims
-   * @throws InvalidTokenException
-   */
-  public static function decodeToken(VO_TokenPublicKey $publicKey, VO_TokenPlainStr $tokenStr): BaseTokenClaims {
-    return BaseJwtToken::decodeToken($publicKey, $tokenStr, self::FIREBASE_TOKEN_ALGORITHM);
-  }
 
   /**
    * @param VO_FullPathFileName|string|array $serviceAccountJson Path to file or encoded JSON string or decoded JSON as associative array
@@ -83,7 +74,7 @@ class FirebaseCustomToken{
       "claims" => $claims?->getClaims()?? [],
     );
     try {
-      $result = JWT::encode($payload, $json['private_key'],self::FIREBASE_TOKEN_ALGORITHM);
+      $result = JWT::encode($payload, $json['private_key'],'RS256');
     } catch (\Throwable $e) {
       throw new InvalidTokenException( new TokenError(TokenError::ERR_NA), 'Can not generate FirebaseCustomAuthToken');
     }

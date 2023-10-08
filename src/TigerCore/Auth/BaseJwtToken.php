@@ -29,11 +29,11 @@ class BaseJwtToken{
    *       Using "client_x509_cert_url" strategy is neccesary if third party IdTokens are enabled (facebook. etc.) because in this scenario we do not know KeyId nor corresponding PublicKey
    * @param string $algorithm $algorithm must match "alg" claims from JWT header
    * @param \stdClass|null $headers reference to $headers object which will be filled by JWT header claims
-   * @return BaseTokenPayload
+   * @return BaseTokenClaims
    * @throws InvalidTokenException
    * @throws InvalidArgumentException
    */
-  public static function decodeToken(VO_TokenPlainStr $tokenStr, VO_TokenPublicKey|array $publicKey, string $algorithm = 'RS256', \stdClass &$headers = null): BaseTokenPayload {
+  public static function decodeToken(VO_TokenPlainStr $tokenStr, VO_TokenPublicKey|array $publicKey, string $algorithm = 'RS256', \stdClass &$headers = null): BaseTokenClaims {
     try {
       $keyOrKeyArray = [];
       if ($publicKey instanceof VO_TokenPublicKey){
@@ -84,7 +84,7 @@ class BaseJwtToken{
       throw new InvalidTokenException($error, $e->getMessage(), $e->getCode(), $e->getPrevious());
     }
 
-    return new BaseTokenPayload($data);
+    return new BaseTokenClaims($data);
   }
 
   /**

@@ -23,11 +23,11 @@ class FirebaseIdToken{
    *      Using "client_x509_cert_url" strategy is neccesary if third party IdTokens are enabled (facebook. etc.) because in this scenario we do not know KeyId nor corresponding PublicKey
    *
    * @param VO_TokenPlainStr $tokenStr
-   * @return BaseTokenPayload
+   * @return BaseTokenClaims
    * @throws InvalidTokenException
    * @throws InvalidArgumentException
    */
-  public static function decodeToken(VO_TokenPublicKey|array $publicKey, VO_TokenPlainStr $tokenStr): BaseTokenPayload {
+  public static function decodeToken(VO_TokenPublicKey|array $publicKey, VO_TokenPlainStr $tokenStr): BaseTokenClaims {
     $decodedToken = BaseJwtToken::decodeToken($tokenStr, $publicKey, 'RS256');
 
     // https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_a_third-party_jwt_library

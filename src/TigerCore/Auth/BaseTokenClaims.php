@@ -2,20 +2,20 @@
 
 namespace TigerCore\Auth;
 
-class BaseTokenPayload implements ICanAddTokenClaim, ICanGetTokenClaims{
+class BaseTokenClaims implements ICanAddTokenClaim, ICanGetTokenClaims{
 
 
   public function __construct(
-    protected array $payload = []
+    protected array $claims = []
     ) {
   }
 
   public function addClaim(string $name, string|int|array $value):void {
-    $this->payload[$name] = $value;
+    $this->claims[$name] = $value;
   }
 
   public function getClaims(): array {
-    return $this->payload;
+    return $this->claims;
   }
 
 }

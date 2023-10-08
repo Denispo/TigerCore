@@ -10,7 +10,7 @@ use TigerCore\ValueObject\VO_TokenPublicKey;
 
 /*
  * https://firebase.google.com/docs/auth/admin/verify-id-tokens
- * Firebase ID token is generated on the client via firebase server. Therefore, it does not have to be generated there
+ * Firebase ID token is generated on client via firebase server. Therefore, it does not have to be generated there
  */
 class FirebaseIdToken{
 

@@ -23,7 +23,7 @@ class FirebaseIdToken{
    *      Using "client_x509_cert_url" strategy is neccesary if third party IdTokens are enabled (facebook. etc.) because in this scenario we do not know KeyId nor corresponding PublicKey
    *
    * @param VO_TokenPlainStr $tokenStr
-   * @return BaseTokenClaims
+   * @return FirebaseIdTokenClaims
    * @throws InvalidTokenException
    * @throws InvalidArgumentException
    */
@@ -31,7 +31,7 @@ class FirebaseIdToken{
     $decodedToken = BaseJwtToken::decodeToken($tokenStr, $publicKey, 'RS256');
 
     // https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_a_third-party_jwt_library
-    $authTime = $decodedToken->getClaims()['auth_']?? -1;
+    $authTime = $decodedToken['auth_']?? -1;
     if ($authTime === -1) {
       throw new InvalidTokenException(new TokenError(TokenError::ERR_INVALID_AUTHENTICATION_TIME),'Missin authentication time claim "_auth"');
     }
@@ -39,7 +39,7 @@ class FirebaseIdToken{
       throw new InvalidTokenException(new TokenError(TokenError::ERR_INVALID_AUTHENTICATION_TIME),'Authentication time claim "_auth" can not be in the future');
     }
 
-    return $decodedToken;
+    return new FirebaseIdTokenClaims($decodedToken);
   }
 
 }

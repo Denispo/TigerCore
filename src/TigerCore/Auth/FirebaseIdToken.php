@@ -27,7 +27,7 @@ class FirebaseIdToken{
    * @throws InvalidTokenException
    * @throws InvalidArgumentException
    */
-  public static function decodeToken(VO_TokenPublicKey|array $publicKey, VO_TokenPlainStr $tokenStr): BaseTokenClaims {
+  public static function decodeToken(VO_TokenPublicKey|array $publicKey, VO_TokenPlainStr $tokenStr): FirebaseIdTokenClaims {
     $decodedToken = BaseJwtToken::decodeToken($tokenStr, $publicKey, 'RS256');
 
     // https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_a_third-party_jwt_library

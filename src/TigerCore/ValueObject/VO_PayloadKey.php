@@ -27,7 +27,7 @@ class VO_PayloadKey extends VO_String_Trimmed {
     }
 
     // Checks if all of the characters in the provided string, text, are numerical.
-    if (!ctype_digit($this->getValueAsString()[0])) {
+    if (ctype_digit($this->getValueAsString()[0])) {
       throw new InvalidArgumentException('Payload key name can not start with numeric character');
     }
 

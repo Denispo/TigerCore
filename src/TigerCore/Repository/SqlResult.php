@@ -118,7 +118,7 @@ class SqlResult {
 
     // ... a pak vytvorime prislusne objekty.
     foreach ($this->data as $oneData) {
-      $obj = $resultClassTemplate::construct();
+      $obj = new ($resultClassTemplate::class)();
       if ($orderByMap) {
         // Natvrdo predpokladame, ze vsechny $this->data maji field s nazvem $orderFieldName->getValueAsString()
         // TODO: asi by se tento prdpoklad mel nejak osetrit?

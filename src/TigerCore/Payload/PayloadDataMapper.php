@@ -71,19 +71,21 @@ class PayloadDataMapper implements ICanGetPayloadRawData {
 
 
     foreach ($data as $oneData) {
+      $tmpPayload = [];
       foreach ($tmpProps as $oneTmpProp) {
         if ($oneTmpProp['allows_null'] && $oneData->{$oneTmpProp['propname']} === null) {
           // If property allows to be null (ie: string|null) and value is null, just set null and go
-          $this->payload[$oneTmpProp['fieldname']] = null;
+          $tmpPayload[$oneTmpProp['fieldname']] = null;
         } else {
           if ($oneTmpProp['is_vo']) {
             $vo = $oneData->{$oneTmpProp['propname']};
-            $this->payload[$oneTmpProp['fieldname']] = $vo instanceof ICanGetValueAsString ? $vo->getValueAsString() : ($vo instanceof ICanGetValueAsInit ? $vo->getValueAsInt() : '' /*TODO: co s tim, kdyz nelze ziskat ani integer ani string?*/);
+            $tmpPayload[$oneTmpProp['fieldname']] = $vo instanceof ICanGetValueAsString ? $vo->getValueAsString() : ($vo instanceof ICanGetValueAsInit ? $vo->getValueAsInt() : '' /*TODO: co s tim, kdyz nelze ziskat ani integer ani string?*/);
           } else {
-            $this->payload[$oneTmpProp['fieldname']] = $oneData->{$oneTmpProp['propname']};
+            $tmpPayload[$oneTmpProp['fieldname']] = $oneData->{$oneTmpProp['propname']};
           }
         }
       }
+      $this->payload[] = $tmpPayload;
     }
   }
 

@@ -137,7 +137,7 @@ class DataMapper
         }
 
 
-        $valueToAssign = $data[$paramName] ?? null;
+        $valueToAssign = $data[$paramName] ?? $attr->getDefaultValue() ?? null;
         $type = $oneProp->getType();
         if (!$type) {
           throw new TypeNotDefinedException('Assertable object property has no type definition.  Path: '.$propPathName.'->'.$oneProp->getName());

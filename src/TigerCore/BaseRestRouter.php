@@ -35,10 +35,10 @@ class BaseRestRouter implements ICanMatchRoutes {
   /**
    * @param VO_HttpRequestMethod $requestMethod IRequest->getMethod()
    * @param string $requestUrlPath IRequest->getUrl()->getPath()
-   * @return ICanGetPayloadRawData
+   * @return ICanGetPayloadRawData|null Return null if request do not match any path
    * @throws BaseResponseException
    */
-  public function runMatch(VO_HttpRequestMethod $requestMethod, string $requestUrlPath):ICanGetPayloadRawData
+  public function runMatch(VO_HttpRequestMethod $requestMethod, string $requestUrlPath):ICanGetPayloadRawData|null
   {
 
     /**
@@ -59,7 +59,7 @@ class BaseRestRouter implements ICanMatchRoutes {
 
     switch ($routeInfo[0]) {
       case Dispatcher::NOT_FOUND:
-        throw new S404_NotFoundException('path not found');
+        return null;
         break;
       case Dispatcher::METHOD_NOT_ALLOWED:
         if ($requestMethod->isOPTIONS()) {

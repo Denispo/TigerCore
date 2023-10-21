@@ -11,10 +11,10 @@ interface ICanMatchRoutes  {
   /**
    * @param VO_HttpRequestMethod $requestMethod IRequest->getMethod()
    * @param string $requestUrlPath IRequest->getUrl()->getPath()
-   * @return ICanGetPayloadRawData
+   * @return ICanGetPayloadRawData|null
    * @throws BaseResponseException
    */
-  public function runMatch(VO_HttpRequestMethod $requestMethod, string $requestUrlPath):ICanGetPayloadRawData;
+  public function runMatch(VO_HttpRequestMethod $requestMethod, string $requestUrlPath):ICanGetPayloadRawData|null;
 
 
 }

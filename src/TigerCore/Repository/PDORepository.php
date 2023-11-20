@@ -10,12 +10,12 @@ class PDORepository {
 
   private Connection|null $dbConnection = null;
 
-  public function __construct(private ICanGetDbConnection $db) {
+  public function __construct(private readonly ICanGetDbConnection $db) {
 
   }
 
 
-  private function getDb():Connection {
+  protected function getDb():Connection {
     if (!$this->dbConnection) {
       $this->dbConnection = $this->db->getDbConnection();
     }

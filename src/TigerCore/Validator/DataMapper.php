@@ -96,16 +96,13 @@ class DataMapper
    */
   // $data je typu mixed i kdyz ocekavame $data pouze jako array, protoze $data nemame pod kontrolou ($data jdou od klienta) a kdyby $data byly jine nez array,
   // tak PHP vyhodi vyjimku o nekompatibilnich typech (napr. array expected but string given) a vubec se nedostaneme do tela
-  // metody na $data = array_change_key_case($data, CASE_LOWER); na nasi vyjimku s nasim textem
+  // metody
   private function runMapping(string|BaseAssertableObject $assertableObjectOrClassName, mixed $data, string $propPathName = ''):BaseAssertableObject
   {
 
-    try {
-      $data = array_change_key_case($data, CASE_LOWER);
-    } catch (\Throwable) {
+    if (!is_array($data)) {
       throw new InvalidArgumentException('Parameter $data has to be an array. Path: '.$propPathName);
     }
-
 
     /**
      * @var BaseAssertableObject $object

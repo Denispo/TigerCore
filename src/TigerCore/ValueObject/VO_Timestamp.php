@@ -2,25 +2,28 @@
 
 namespace TigerCore\ValueObject;
 
-use TigerCore\ICanCheckSelfValidity;
+use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\ICanGetValueAsInit;
 use TigerCore\ICanGetValueAsTimestamp;
 
-class VO_Timestamp extends VO_Int implements ICanCheckSelfValidity {
+class VO_Timestamp extends VO_Int {
 
   public static function createAsNow():self {
     return new self(time());
   }
 
+  /**
+   * @param int|ICanGetValueAsTimestamp|ICanGetValueAsInit $unixTimestampInSeconds
+   * @throws InvalidArgumentException
+   */
   public function __construct(int|ICanGetValueAsTimestamp|ICanGetValueAsInit $unixTimestampInSeconds) {
     if ($unixTimestampInSeconds instanceof ICanGetValueAsTimestamp) {
       $unixTimestampInSeconds = $unixTimestampInSeconds->getValueAsTimestamp()->getValueAsInt();
     }
+    if ($unixTimestampInSeconds < 0) {
+      throw new InvalidArgumentException('Timestamp can not be negative value');
+    }
     parent::__construct($unixTimestampInSeconds);
-  }
-
-  function isValid(): bool {
-    return $this->getValueAsInt() > 0;
   }
 
   public function addDays(int $daysCount):self{

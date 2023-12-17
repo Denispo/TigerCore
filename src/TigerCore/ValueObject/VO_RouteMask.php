@@ -28,4 +28,15 @@ class VO_RouteMask extends VO_String_Trimmed {
     parent::__construct($value);
   }
 
+  public function add(VO_RouteMask $value): VO_RouteMask
+  {
+    $result = $this; // aby "return $result;" nerval, ze $return neni inicializovany
+    try {
+      $result = new VO_RouteMask($this->getValueAsString() . $value->getValueAsString());
+    } catch (\Throwable $e) {
+      // nic. Tato vyjimka by nikdy nemela nastat, protoze spojujeme dva validni VO_RouteMask
+    }
+    return $result;
+  }
+
 }

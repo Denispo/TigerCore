@@ -32,6 +32,11 @@ class BaseRestRouter implements ICanMatchRoutes {
     $this->routes[] = ['method' => $method, 'mask' => $mask, 'handler' => $handler, 'customData' => $customData];
   }
 
+  public function getRoutesCount(): int
+  {
+    return count($this->routes);
+  }
+
   /**
    * @param VO_HttpRequestMethod $requestMethod IRequest->getMethod()
    * @param string $requestUrlPath IRequest->getUrl()->getPath()
@@ -59,31 +64,36 @@ class BaseRestRouter implements ICanMatchRoutes {
 
     switch ($routeInfo[0]) {
       case Dispatcher::NOT_FOUND:
+      {
         return null;
         break;
+      }
       case Dispatcher::METHOD_NOT_ALLOWED:
+      {
         if ($requestMethod->isOPTIONS()) {
           // preflight
           $httpResponse = new Response();
-          $httpResponse->setHeader('Access-Control-Allow-Methods', implode(', ',$routeInfo[1]));
+          $httpResponse->setHeader('Access-Control-Allow-Methods', implode(', ', $routeInfo[1]));
           $httpResponse->setCode(200);
           exit;
         } else {
           throw new S405_MethodNotAllowedException($routeInfo[1], 'Allowed methods: ' . implode(', ', $routeInfo[1]));
         }
         break;
+      }
       case Dispatcher::FOUND:
       default:
+      {
 
-      if ($requestMethod->isOPTIONS()) {
-        // preflight
-        $httpResponse = new Response();
-        $httpResponse->setHeader('Access-Control-Allow-Origin','*');
-        $httpResponse->setHeader('Access-Control-Allow-Headers','*');
-        $httpResponse->setHeader('Access-Control-Allow-Methods', $requestMethod->getValueAsString());
-        $httpResponse->setCode(200);
-        exit;
-      }
+        if ($requestMethod->isOPTIONS()) {
+          // preflight
+          $httpResponse = new Response();
+          $httpResponse->setHeader('Access-Control-Allow-Origin', '*');
+          $httpResponse->setHeader('Access-Control-Allow-Headers', '*');
+          $httpResponse->setHeader('Access-Control-Allow-Methods', $requestMethod->getValueAsString());
+          $httpResponse->setCode(200);
+          exit;
+        }
 
 
         $matchedRoute = $this->routes[$routeInfo[1]];
@@ -95,6 +105,7 @@ class BaseRestRouter implements ICanMatchRoutes {
         $handler = $matchedRoute['handler'];
         return $handler->handleMatchedRoute($params, $matchedRoute['customData']);
         break;
+      }
     }
   }
 }

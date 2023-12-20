@@ -8,7 +8,6 @@ use Nette\Http\Response;
 use TigerCore\Response\BaseResponseException;
 use TigerCore\Payload\ICanGetPayloadRawData;
 use TigerCore\Response\S405_MethodNotAllowedException;
-use TigerCore\Response\S404_NotFoundException;
 use TigerCore\ValueObject\VO_HttpRequestMethod;
 use TigerCore\ValueObject\VO_RouteMask;
 use function FastRoute\simpleDispatcher;

@@ -2,7 +2,6 @@
 
 namespace TigerCore\Auth;
 
-use ArrayAccess;
 use TigerCore\Constants\TokenError;
 use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\Exceptions\InvalidTokenException;

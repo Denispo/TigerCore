@@ -31,7 +31,7 @@ class BaseResponseException extends \Exception {
     }
   }
 
-  private function setHttpResponseCode()
+  private function setHttpResponseCode():void
   {
     $class = $this;
 

@@ -2,9 +2,6 @@
 
 namespace TigerCore\Request;
 
-use TigerCore\Request\ICanGetRequestParamName;
-use TigerCore\ValueObject\VO_RequestParamName;
-
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class RequestParam {
   private string $customParamName;

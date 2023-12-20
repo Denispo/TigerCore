@@ -9,7 +9,6 @@ use TigerCore\ICanGetValueAsFloat;
 use TigerCore\ICanGetValueAsInit;
 use TigerCore\ICanGetValueAsString;
 use TigerCore\ICanGetValueAsTimestamp;
-use TigerCore\Request\BaseRequestParam;
 use TigerCore\Request\RequestParam;
 use TigerCore\Request\Validator\BaseAssertionArray;
 use TigerCore\Request\Validator\BaseParamErrorCode;
@@ -179,24 +178,13 @@ class DataMapper
               if ($result) {
                 throw new InvalidArgumentException('Value violated guard rules. ErorCode:'.$result->getErrorCodeValue()->getValueAsString().'.  Path: '.$propPathName.'->'.$oneProp->getName());
               }
-
-
-
-            } elseif (is_a($type->getName(), BaseRequestParam::class, true)) {
-              // Parametr je potomkem BaseRequestParam
-              $propValue = new ($type->getName())($paramName, $valueToAssign);
-              $oneProp->setValue($object, $propValue);
-              $result = $this->validateProperty($propValue, $oneProp);
-              if ($result) {
-                throw new InvalidArgumentException('Value violated guard rules. ErorCode:'.$result->getErrorCodeValue()->getValueAsString().'.  Path: '.$propPathName.'->'.$oneProp->getName());
-              }
             } elseif (is_a($type->getName(), BaseAssertableObject::class, true)) {
               // Parametr je potomkem BaseAssertableObject
               // rekurzivne zavolame mapping na property $oneProp, protoze je typu BaseAssertableObject
               $newObject = $this->runMapping($type->getName(), $valueToAssign, $propPathName.'->'.$paramName);
               $oneProp->setValue($object, $newObject);
             } else {
-              // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject ani BaseRequestParam a tim padem ji neumime zpracovat
+              // Parametr je nejaka jina trida (class, trait nebo interface), ktera neni potomkem BaseValueObject a tim padem ji neumime zpracovat
               throw new InvalidArgumentException('DataMapper can not handle this property type: '.$type->getName().'.  Path: '.$propPathName.'->'.$oneProp->getName());
             }
           }

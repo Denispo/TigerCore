@@ -20,9 +20,8 @@ class VO_RouteMask extends VO_String_Trimmed {
       throw new InvalidArgumentException('Route mask can not be empty string');
     }
     $firstCahr = $value[0] ?? '';
-    if ($firstCahr != '/' && $firstCahr != '[') {
+    if ($firstCahr != '/') {
       // Maska musi zacinat lomitkem.
-      // Pokud maska nezacina lomitkem a zaroven nezacina [, pak pridame lomitko na zacatek
       $value = '/'.$value;
     }
     parent::__construct($value);
@@ -32,7 +31,9 @@ class VO_RouteMask extends VO_String_Trimmed {
   {
     $result = $this; // aby "return $result;" nerval, ze $return neni inicializovany
     try {
-      $result = new VO_RouteMask($this->getValueAsString() . $value->getValueAsString());
+      // Maska vzdy zacina lomitke. viz konstruktor
+      // /cesta/ + /nekam = /cesta/nekam NE /cesta//nekam, proto rtrim()
+      $result = new VO_RouteMask(rtrim($this->getValueAsString(),'/') . $value->getValueAsString());
     } catch (\Throwable $e) {
       // nic. Tato vyjimka by nikdy nemela nastat, protoze spojujeme dva validni VO_RouteMask
     }

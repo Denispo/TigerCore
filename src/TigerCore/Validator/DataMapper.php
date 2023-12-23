@@ -8,7 +8,6 @@ use TigerCore\ICanGetValueAsBoolean;
 use TigerCore\ICanGetValueAsFloat;
 use TigerCore\ICanGetValueAsInit;
 use TigerCore\ICanGetValueAsString;
-use TigerCore\ICanGetValueAsTimestamp;
 use TigerCore\Request\RequestParam;
 use TigerCore\Request\Validator\BaseAssertionArray;
 use TigerCore\Request\Validator\BaseParamErrorCode;
@@ -18,7 +17,6 @@ use TigerCore\Request\Validator\ICanAssertBooleanValue;
 use TigerCore\Request\Validator\ICanAssertFloatValue;
 use TigerCore\Request\Validator\ICanAssertIntValue;
 use TigerCore\Request\Validator\ICanAssertStringValue;
-use TigerCore\Request\Validator\ICanAssertTimestampValue;
 use TigerCore\ValueObject\BaseValueObject;
 
 class DataMapper
@@ -42,7 +40,6 @@ class DataMapper
         ($valueToValidate instanceof ICanGetValueAsInit && $attrInstance instanceof ICanAssertIntValue) ||
         ($valueToValidate instanceof ICanGetValueAsString && $attrInstance instanceof ICanAssertStringValue) ||
         ($valueToValidate instanceof ICanGetValueAsFloat && $attrInstance instanceof ICanAssertFloatValue) ||
-        ($valueToValidate instanceof ICanGetValueAsTimestamp && $attrInstance instanceof ICanAssertTimestampValue) ||
         ($valueToValidate instanceof ICanGetValueAsBoolean && $attrInstance instanceof ICanAssertBooleanValue)
       ){
         $errorCode = $attrInstance->runAssertion($valueToValidate);
@@ -87,7 +84,7 @@ class DataMapper
   }
 
   /**
-   * @param class-string|BaseAssertableObject $assertableObjectOrClassName
+   * @param class-string|BaseAssertableObject $assertableObjectInstanceOrClassName
    * @param array $data Key->Value pairs of ParamName->ValueToBeMapped.
    * @param string $propPathName
    * @return BaseAssertableObject Object with $data mapped on
@@ -96,7 +93,7 @@ class DataMapper
   // $data je typu mixed i kdyz ocekavame $data pouze jako array, protoze $data nemame pod kontrolou ($data jdou od klienta) a kdyby $data byly jine nez array,
   // tak PHP vyhodi vyjimku o nekompatibilnich typech (napr. array expected but string given) a vubec se nedostaneme do tela
   // metody
-  private function runMapping(string|BaseAssertableObject $assertableObjectOrClassName, mixed $data, string $propPathName = ''):BaseAssertableObject
+  private function runMapping(string|BaseAssertableObject $assertableObjectInstanceOrClassName, mixed $data, string $propPathName = ''):BaseAssertableObject
   {
 
     if (!is_array($data)) {
@@ -106,14 +103,14 @@ class DataMapper
     /**
      * @var BaseAssertableObject $object
      */
-    if (is_string($assertableObjectOrClassName)) {
-      $object = new $assertableObjectOrClassName;
+    if (is_string($assertableObjectInstanceOrClassName)) {
+      $object = new $assertableObjectInstanceOrClassName;
     } else {
-      $object = $assertableObjectOrClassName;
+      $object = $assertableObjectInstanceOrClassName;
     }
 
     if (!($object instanceof BaseAssertableObject)) {
-      throw new InvalidArgumentException('Parameter $assertableObjectOrClassName has to extends BaseAssertableObject::class');
+      throw new InvalidArgumentException('Parameter $assertableObjectInstanceOrClassName has to extends BaseAssertableObject::class');
     }
 
     $reflection = new \ReflectionClass($object);

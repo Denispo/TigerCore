@@ -5,24 +5,11 @@ namespace tests;
 require_once __DIR__.'/../vendor/autoload.php';
 
 
-use Nette\Http\UrlScript;
 use Nette\Loaders\RobotLoader;
-use TigerCore\Auth\ICanGetCurrentUser;
-use TigerCore\Auth\IAmCurrentUser;
-use TigerCore\BaseRestRouter;
-use TigerCore\Payload\PayloadDataMapper;
-use TigerCore\Request\MatchedRequestData;
 use TigerCore\Request\RequestParam;
 use TigerCore\Request\Validator\Assert_IsArrayOfAssertableObjects;
-use TigerCore\Response\ICanAddPayload;
-use TigerCore\Payload\ICanGetPayloadRawData;
 use TigerCore\Validator\BaseAssertableObject;
 use TigerCore\Validator\DataMapper;
-use TigerCore\ValueObject\VO_Duration;
-use TigerCore\ValueObject\VO_Int;
-use TigerCore\ValueObject\VO_PayloadKey;
-use TigerCore\ValueObject\VO_RouteMask;
-use TigerCore\ValueObject\VO_String;
 
 date_default_timezone_set('Europe/Prague');
 
@@ -39,13 +26,14 @@ $loader->register(); // Run the RobotLoader
 
 $rawData = [
   'name' => 'pepik',
-  'id' => 'name',
+  'id' => ['name' => 'jmeno'],
+  'idList2' => [1,2,3,4,5],
   'idlist' => [
     ['caption' => 'super'],
     [
       'caption' => 'veci',
       'subList' => [
-        ['captiON' => 'subveci']
+        ['caption' => 'subveci']
       ]
     ],
   ]
@@ -74,13 +62,15 @@ class Neco extends BaseAssertableObject {
 class MyData extends Neco {
 
 
-
   #[RequestParam('idlist')]
   #[Assert_IsArrayOfAssertableObjects(MyData2::class)]
   /**
    * @var MyData2[] $idList
    */
   public array $idList;
+
+  #[RequestParam('idList2')]
+  public array $idList2;
 
   #[RequestParam('id')]
   public Neco $id;
@@ -92,6 +82,7 @@ class MyData extends Neco {
 /**
  * @var MyData $result
  */
-$result = $dataMapper->mapTo(MyData::class);
+$data = new MyData();
+$dataMapper->mapTo($data);
 
-var_dump($result);
+var_dump($data);

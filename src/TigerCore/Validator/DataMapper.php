@@ -13,6 +13,7 @@ use TigerCore\Request\Validator\BaseAssertionArray;
 use TigerCore\Request\Validator\BaseParamErrorCode;
 use TigerCore\Request\Validator\BaseAssertion;
 use TigerCore\Request\Validator\ICanAssertArrayOfAssertableObjects;
+use TigerCore\Request\Validator\ICanAssertArrayOfValueObjects;
 use TigerCore\Request\Validator\ICanAssertBooleanValue;
 use TigerCore\Request\Validator\ICanAssertFloatValue;
 use TigerCore\Request\Validator\ICanAssertIntValue;
@@ -64,22 +65,44 @@ class DataMapper
     }
 
     $attributes = $property->getAttributes(BaseAssertionArray::class, \ReflectionAttribute::IS_INSTANCEOF);
-    foreach ($attributes as $oneAttribute) {
 
-      /**
-       * @var BaseAssertion $attrInstance
-       */
-      $attrInstance = $oneAttribute->newInstance();
+/*    if (count($attributes) === 0) {
+      throw new InvalidArgumentException('Array type has to have one assertion of ICanAssertArray...   Path: '.$propPathName.'->'.$property->getName());
+    }*/
 
-      if ($attrInstance instanceof ICanAssertArrayOfAssertableObjects) {
-        $result = [];
-        foreach ($valueToAssign as $index => $oneValueToAssign) {
-          $result[] = $this->runMapping($attrInstance->getAssertableObjectName(),$oneValueToAssign,$propPathName.'->'.$property->getName().'['.$index.']');
-        }
-        $property->setValue($object,$result);
-      }
+    if (count($attributes) > 1) {
+      throw new InvalidArgumentException('Property can have only one Assertable array attribute. Path: '.$propPathName.'->'.$property->getName());
     }
 
+    /**
+     * @var BaseAssertion $attrInstance
+     */
+    $attrInstance = $attributes[0]?->newInstance();
+
+    if ($attrInstance instanceof ICanAssertArrayOfAssertableObjects) {
+      $result = [];
+      foreach ($valueToAssign as $index => $oneValueToAssign) {
+        $result[] = $this->runMapping($attrInstance->getAssertableObjectClassName(), $oneValueToAssign, $propPathName . '->' . $property->getName() . '[' . $index . ']');
+      }
+      $property->setValue($object, $result);
+    } elseif ($attrInstance instanceof ICanAssertArrayOfValueObjects){
+      $valueObjectClassName = $attrInstance->getValueObjectClassName();
+      $data = [];
+      try {
+        foreach ($valueToAssign as $index => $value) {
+          $data[] = new $valueObjectClassName($value);
+        }
+      } catch (\Throwable $e) {
+        $message = '';
+        if ($e instanceof InvalidArgumentException) {
+          $message = ' Message:"'.$e->getMessage().'"';
+        }
+        throw new InvalidArgumentException('Value object for array item can not be created.'.$message.'  Path: '.$propPathName.'->'.$property->getName().'['.$index.']');
+      }
+      $property->setValue($object, $data);
+    } else {
+      $property->setValue($object, $valueToAssign);
+    }
 
   }
 

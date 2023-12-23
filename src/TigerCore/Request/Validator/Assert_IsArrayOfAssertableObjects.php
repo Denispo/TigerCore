@@ -12,7 +12,7 @@ class Assert_IsArrayOfAssertableObjects extends BaseAssertionArray implements IC
   {
   }
 
-  public function getAssertableObjectName(): string
+  public function getAssertableObjectClassName(): string
   {
     return $this->assertableObjectClassName;
   }

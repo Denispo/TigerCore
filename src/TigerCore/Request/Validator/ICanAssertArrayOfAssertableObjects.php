@@ -7,6 +7,6 @@ interface ICanAssertArrayOfAssertableObjects {
   /**
    * @return class-string BaseAssertableObject class name
    */
-  public function getAssertableObjectName(): string;
+  public function getAssertableObjectClassName(): string;
 
 }

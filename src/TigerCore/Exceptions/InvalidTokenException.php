@@ -9,7 +9,7 @@ use TigerCore\Constants\TokenError;
 class InvalidTokenException extends _BaseException
 {
   public function __construct(private TokenError $tokenError , string $message = '', int $code = 0, null|\Throwable $previous = null) {
-    parent::__construct($message, $code, $previous);
+    parent::__construct($message,[], $previous, $code);
   }
 
   public function getTokenError():TokenError {

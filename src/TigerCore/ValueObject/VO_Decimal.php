@@ -9,18 +9,29 @@ use TigerCore\ICanGetValueAsString;
 
 abstract class VO_Decimal extends VO_String_Trimmed implements ICanGetValueAsFloat {
 
-  private int $fractionsCount = 0;
+  /**
+   * @var string[] array containing $value parts [Decimal, Fraction?]. i.e. ["100","05"] or ["500"]
+   */
+  private array $parts;
+  private float $loatRepresentationOfValue;
 
   /**
-   * @param string|ICanGetValueAsString $value i.e. 100.50 or 500 etc.
+   * @param string|ICanGetValueAsString $value i.e. 100.05 or 500 etc.
    * @throws InvalidArgumentException
    */
   public function __construct(string|ICanGetValueAsString $value) {
     parent::__construct($value);
     $value = $this->getValueAsString();
-    if (!(filter_var($value, FILTER_VALIDATE_FLOAT))) {
+    $this->loatRepresentationOfValue = filter_var($value, FILTER_VALIDATE_FLOAT);
+    if ($this->loatRepresentationOfValue === false) {
       throw new InvalidArgumentException('$value is not valid decimal value.',['$value' => $value]);
     }
+    $this->parts = explode('.',$value,2);
+  }
+
+  public function getValueAsFloat():float
+  {
+    return $this->loatRepresentationOfValue;
   }
 
   public function getValueAsString():string {

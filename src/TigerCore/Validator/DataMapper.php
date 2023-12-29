@@ -193,7 +193,7 @@ class DataMapper
                 $result = $this->validateProperty($valueObject, $oneProp);
               } catch (InvalidArgumentException $e) {
                 // Value object se nepodarilo vytvorit (asi nelze vytvorit nevalidni)
-                throw new InvalidArgumentException('BaseValueObject can not be created. Invalid param value.  Path: '.$propPathName.'->'.$oneProp->getName(),['message' => $e->getMessage()]);
+                throw new InvalidArgumentException('BaseValueObject can not be created. Invalid param value.  Path: '.$propPathName.'->'.$oneProp->getName(),[],$e);
               }
               if ($result) {
                 throw new InvalidArgumentException('Value violated guard rules. ErorCode:'.$result->getErrorCodeValue()->getValueAsString().'.  Path: '.$propPathName.'->'.$oneProp->getName());

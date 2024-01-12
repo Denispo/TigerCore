@@ -15,7 +15,7 @@ class S405_MethodNotAllowedException extends Base_4xx_RequestException {
    * @param string|int $customErrorId
    * @param array $customData
    */
-  public function __construct(private array $allowedMethods = [], string|int $customErrorId = '', array $customData = []) {
+  public function __construct(private array $allowedMethods = [], string|int $customErrorId = '', array $customData = [], ) {
     parent::__construct($customErrorId,  $customData);
   }
 

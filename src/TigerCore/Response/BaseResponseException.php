@@ -13,7 +13,7 @@ class BaseResponseException extends \Exception {
   private int $httpResponseCode = 0;
   private array $customData = [];
 
-  public function __construct(string $message = '', array $customData = []) {
+  public function __construct(string $message = '', array $customData = [], private readonly \Throwable|null $previousException = null) {
     parent::__construct($message);
     foreach ($customData as $key => $value) {
       if ($value instanceof ICanGetValueAsInit) {
@@ -55,10 +55,12 @@ class BaseResponseException extends \Exception {
     return $this->httpResponseCode;
   }
 
-
-
   public function getCustomData():array {
     return $this->customData;
+  }
+
+  public function getPreviousException():\Throwable|null {
+    return $this->previousException;
   }
 
 }

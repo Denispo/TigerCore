@@ -51,7 +51,7 @@ class FirebaseCustomToken{
       "sub" => $serviceAccountJsonData['client_email'],
       "aud" => "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit",
       "iat" => $nowSeconds,
-      "exp" => $nowSeconds+($duration),  // Maximum expiration time is one hour (3600 seconds)
+      "exp" => $nowSeconds+($duration->getValueAsInt()),  // Maximum expiration time is one hour (3600 seconds)
       "uid" => $userId,
       "claims" => $claims?->getClaims()?? [],
     );

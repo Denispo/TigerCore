@@ -5,13 +5,14 @@ namespace TigerCore\Auth;
 use TigerCore\Constants\TokenError;
 use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\Exceptions\InvalidTokenException;
+use TigerCore\JwtTokenUtils;
 use TigerCore\ValueObject\VO_FirebaseCustomTokenDuration;
 use TigerCore\ValueObject\VO_TokenPlainStr;
-use Firebase\JWT\JWT;
+use TigerCore\ValueObject\VO_TokenPrivateKey;
 
 /**
  * https://firebase.google.com/docs/auth/admin/create-custom-tokens
- * We do not need to decode FirebaseCustomToken. This token is onlz generated and then consumed by Firebase SDK on the client.
+ * We do not need to decode FirebaseCustomToken. This token is only generated and then consumed by Firebase SDK on the client.
  */
 class FirebaseCustomToken{
 
@@ -28,7 +29,8 @@ class FirebaseCustomToken{
     array $serviceAccountJsonData,
     int|string                       $userId,
     ICanGetTokenClaims|null          $claims = null,
-    VO_FirebaseCustomTokenDuration   $duration = null):VO_TokenPlainStr
+    VO_FirebaseCustomTokenDuration   $duration = null
+  ):VO_TokenPlainStr
   {
     $userId = trim((string)$userId);
     if ($userId === '' || $userId == 0) {
@@ -39,28 +41,31 @@ class FirebaseCustomToken{
       $duration = new VO_FirebaseCustomTokenDuration(3600);
     }
 
-    if (!($serviceAccountJsonData['private_key'] && $serviceAccountJsonData['client_email'])) {
-      throw new InvalidArgumentException('FB service account is missing privateKey and/or clientEmail');
+
+    try {
+      $privateKey = new VO_TokenPrivateKey($serviceAccountJsonData['private_key']);
+    } catch (InvalidArgumentException $e) {
+      throw new InvalidArgumentException('FB service account is missing private_key');
     }
 
-    $nowSeconds = time()-30; // server time is allowed to be 30 seconds off
+    if (!$serviceAccountJsonData['client_email']) {
+      throw new InvalidArgumentException('FB service account is missing client_email');
+    }
 
     // https://firebase.google.com/docs/auth/admin/create-custom-tokens
     $payload = array(
       "iss" => $serviceAccountJsonData['client_email'],
       "sub" => $serviceAccountJsonData['client_email'],
       "aud" => "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit",
-      "iat" => $nowSeconds,
-      "exp" => $nowSeconds+($duration->getValueAsInt()),  // Maximum expiration time is one hour (3600 seconds)
       "uid" => $userId,
       "claims" => $claims?->getClaims()?? [],
     );
     try {
-      $result = JWT::encode($payload, $serviceAccountJsonData['private_key'],'RS256');
+      $result = JwtTokenUtils::encodeToken($privateKey, $duration, $payload, 'RS256');
     } catch (\Throwable $e) {
       throw new InvalidTokenException( new TokenError(TokenError::ERR_NA), 'Can not generate FirebaseCustomAuthToken');
     }
-    return new VO_TokenPlainStr($result);
+    return $result;
   }
 
 

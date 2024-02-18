@@ -1,22 +1,22 @@
 <?php
 
-namespace TigerCore\Auth;
+namespace TigerCore;
 
+use Firebase\JWT\BeforeValidException;
+use Firebase\JWT\ExpiredException;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Firebase\JWT\SignatureInvalidException;
 use TigerCore\Constants\TokenError;
 use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\Exceptions\InvalidTokenException;
 use TigerCore\ValueObject\VO_Duration;
 use TigerCore\ValueObject\VO_Timestamp;
 use TigerCore\ValueObject\VO_TokenPlainStr;
-use Firebase\JWT\BeforeValidException;
-use Firebase\JWT\ExpiredException;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
-use Firebase\JWT\SignatureInvalidException;
 use TigerCore\ValueObject\VO_TokenPrivateKey;
 use TigerCore\ValueObject\VO_TokenPublicKey;
 
-class BaseJwtToken{
+class JwtTokenUtils{
 
   /**
    * @param VO_TokenPlainStr $tokenStr
@@ -96,27 +96,25 @@ class BaseJwtToken{
    */
   public static function encodeToken(VO_TokenPrivateKey $privateKey, VO_Duration $duration, array $payload = [], string $algorithm = 'RS256'):VO_TokenPlainStr {
 
-    $time = time();
-    $expirationDate = (new VO_Timestamp($time))->addDuration($duration);
+    $time = new VO_Timestamp(time());
+    $expirationDate = ($time)->addDuration($duration);
 
     try {
       $tokenStr = JWT::encode(
         array_merge(
           $payload,
           [
-            'iat' => $time, // issued at
-            'exp' => $expirationDate->getValueAsInt(), // epiration time
+            'iat' => $time->getValueAsInt(), // issued at timestamp
+            'exp' => $expirationDate->getValueAsInt(), // expiration timestamp
           ]),
         $privateKey->getValueAsString(),
         $algorithm
       );
-    } catch (\DomainException $e) {
-      throw new  InvalidArgumentException();
+    } catch (\Throwable $e) {
+      throw new InvalidArgumentException('Can not encode JWT token', ['message' =>  $e->getMessage()]);
     }
 
-
     return new VO_TokenPlainStr($tokenStr);
-
   }
 
 }

@@ -5,6 +5,7 @@ namespace TigerCore\Auth;
 use TigerCore\Constants\TokenError;
 use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\Exceptions\InvalidTokenException;
+use TigerCore\JwtTokenUtils;
 use TigerCore\ValueObject\VO_TokenPlainStr;
 use TigerCore\ValueObject\VO_TokenPublicKey;
 
@@ -28,15 +29,15 @@ class FirebaseIdToken{
    * @throws InvalidArgumentException
    */
   public static function decodeToken(VO_TokenPlainStr $tokenStr, VO_TokenPublicKey|array $publicKey): FirebaseIdTokenClaims {
-    $decodedToken = BaseJwtToken::decodeToken($tokenStr, $publicKey, 'RS256');
+    $decodedToken = JwtTokenUtils::decodeToken($tokenStr, $publicKey, 'RS256');
 
     // https://firebase.google.com/docs/auth/admin/verify-id-tokens#verify_id_tokens_using_a_third-party_jwt_library
-    $authTime = $decodedToken['auth_']?? -1;
+    $authTime = $decodedToken['auth_time']?? -1;
     if ($authTime === -1) {
-      throw new InvalidTokenException(new TokenError(TokenError::ERR_INVALID_AUTHENTICATION_TIME),'Missin authentication time claim "_auth"');
+      throw new InvalidTokenException(new TokenError(TokenError::ERR_INVALID_AUTHENTICATION_TIME),'Missing authentication time claim "auth_time"');
     }
     if ($authTime >= time()) {
-      throw new InvalidTokenException(new TokenError(TokenError::ERR_INVALID_AUTHENTICATION_TIME),'Authentication time claim "_auth" can not be in the future');
+      throw new InvalidTokenException(new TokenError(TokenError::ERR_INVALID_AUTHENTICATION_TIME),'Authentication time claim "auth_time" can not be in the future');
     }
 
     return new FirebaseIdTokenClaims($decodedToken);

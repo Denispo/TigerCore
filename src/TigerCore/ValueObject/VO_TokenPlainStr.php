@@ -8,10 +8,7 @@ use TigerCore\ICanGetValueAsString;
 
 class VO_TokenPlainStr extends VO_String_Trimmed {
 
-  /**
-   * @throws InvalidArgumentException
-   */
-  public static function createFromBearerRequest(IRequest $request):self {
+  public static function createFromBearerRequest(IRequest $request):self|null {
     $str = $request->getHeader('Authorization') ?? '';
     $str = explode(' ', $str,2);
     if ($str && $str[0] == 'Bearer') {
@@ -19,7 +16,11 @@ class VO_TokenPlainStr extends VO_String_Trimmed {
     } else {
       $str = '';
     }
-    return new self($str);
+    try {
+      return new self($str);
+    } catch (InvalidArgumentException $e) {
+      return null;
+    }
   }
 
   /**

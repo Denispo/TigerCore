@@ -3,8 +3,10 @@
 namespace TigerCore;
 
 use TigerCore\Exceptions\CanNotCloseFileException;
+use TigerCore\Exceptions\CanNotCreateException;
 use TigerCore\Exceptions\CanNotOpenFileException;
 use TigerCore\Exceptions\CanNotWriteToFileException;
+use TigerCore\Exceptions\NotFoundException;
 use TigerCore\Utils\ProxyPhpErrorHandler;
 
 class SafeFileStream {
@@ -12,7 +14,7 @@ class SafeFileStream {
   private ProxyPhpErrorHandler $proxyErrorHandler;
   private string $streamPrefix = 'nette.safe://';
 
-  public function __construct(private string $fullFileName) {
+  public function __construct(private string $fullFileName, private bool $createDirIfNotExists = true) {
     $this->proxyErrorHandler = new ProxyPhpErrorHandler();
   }
 
@@ -32,10 +34,25 @@ class SafeFileStream {
    * @param string $mode
    * @return resource
    * @throws CanNotOpenFileException
+   * @throws NotFoundException
+   * @throws CanNotCreateException
    */
   private function stream_open(string $mode) {
     if (!$this->proxyErrorHandler->isCapturing()) {
       $this->proxyErrorHandler->startCapturingErrors();
+    }
+    if (!file_exists($this->fullFileName)) {
+      $path = pathinfo($this->fullFileName);
+      if (!is_dir($path)) {
+        if ($this->createDirIfNotExists) {
+          mkdir(directory: $path,recursive: true);
+          if (!is_dir($path)) {
+            throw new CanNotCreateException('Can not create directory',['path'=>$path,'file'=>$this->fullFileName]);
+          }
+        } else {
+          throw new NotFoundException('Path not found. Enable $createDirIfNotExists to create path automatically',['path'=>$path,'file'=>$this->fullFileName]);
+        }
+      }
     }
     $handle = @fopen($this->streamPrefix.$this->fullFileName, $mode);
     if ($handle === false) {

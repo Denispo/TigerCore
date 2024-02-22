@@ -42,7 +42,7 @@ class SafeFileStream {
       $this->proxyErrorHandler->startCapturingErrors();
     }
     if (!file_exists($this->fullFileName)) {
-      $path = pathinfo($this->fullFileName);
+      $path = pathinfo($this->fullFileName,PATHINFO_DIRNAME);
       if (!is_dir($path)) {
         if ($this->createDirIfNotExists) {
           mkdir(directory: $path,recursive: true);

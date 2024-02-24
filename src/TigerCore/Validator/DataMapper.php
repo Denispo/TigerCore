@@ -3,6 +3,7 @@
 namespace TigerCore\Validator;
 
 use TigerCore\Exceptions\InvalidArgumentException;
+use TigerCore\Exceptions\InvalidFormatException;
 use TigerCore\Exceptions\TypeNotDefinedException;
 use TigerCore\ICanGetValueAsBoolean;
 use TigerCore\ICanGetValueAsFloat;
@@ -55,13 +56,14 @@ class DataMapper
   /**
    * @throws InvalidArgumentException
    * @throws TypeNotDefinedException
+   * @throws InvalidFormatException
    */
   private function mapArray(BaseAssertableObject $object, \ReflectionProperty $property, mixed $valueToAssign, string $propPathName = ''):void
   {
     $property->setValue($object,[]);
     if (!is_array($valueToAssign)) {
       // $valueToAssign neni typu pole, takze nelze priradit do array
-      throw new InvalidArgumentException("Assertable object expects array but got no iterable value. ".$propPathName.'->'.$property->getName().'[]');
+      throw new InvalidFormatException("Assertable object expects array but got no iterable value. ".$propPathName.'->'.$property->getName().'[]');
     }
 
     $attributes = $property->getAttributes(BaseAssertionArray::class, \ReflectionAttribute::IS_INSTANCEOF);
@@ -97,7 +99,7 @@ class DataMapper
         if ($e instanceof InvalidArgumentException) {
           $message = ' Message:"'.$e->getMessage().'"';
         }
-        throw new InvalidArgumentException('Value object for array item can not be created.'.$message.'  Path: '.$propPathName.'->'.$property->getName().'['.$index.']');
+        throw new InvalidFormatException('Value object for array item can not be created.'.$message.'  Path: '.$propPathName.'->'.$property->getName().'['.$index.']');
       }
       $property->setValue($object, $data);
     } else {
@@ -107,11 +109,13 @@ class DataMapper
   }
 
   /**
-   * @param class-string|BaseAssertableObject $assertableObjectInstanceOrClassName
+   * @param string|BaseAssertableObject $assertableObjectInstanceOrClassName
    * @param array $data Key->Value pairs of ParamName->ValueToBeMapped.
    * @param string $propPathName
    * @return BaseAssertableObject Object with $data mapped on
-   * @throws InvalidArgumentException|TypeNotDefinedException
+   * @throws InvalidArgumentException
+   * @throws InvalidFormatException
+   * @throws TypeNotDefinedException
    */
   // $data je typu mixed i kdyz ocekavame $data pouze jako array, protoze $data nemame pod kontrolou ($data jdou od klienta) a kdyby $data byly jine nez array,
   // tak PHP vyhodi vyjimku o nekompatibilnich typech (napr. array expected but string given) a vubec se nedostaneme do tela
@@ -164,10 +168,10 @@ class DataMapper
           } else {
             if (array_key_exists($paramName, $data)) {
               // Klic v array existuje a ma hodnotu null
-              throw new InvalidArgumentException('Null can not be assigned to.  Path: '.$propPathName.'->'.$oneProp->getName());
+              throw new InvalidFormatException('Null can not be assigned to.  Path: '.$propPathName.'->'.$oneProp->getName());
             } else {
               // Klic v array vubec neexistuje
-              throw new InvalidArgumentException('Key "'.$paramName.'" do not exists in $data and Null can not be assigned to.  Path: '.$propPathName.'->'.$oneProp->getName());
+              throw new InvalidFormatException('Key "'.$paramName.'" do not exists in $data and Null can not be assigned to.  Path: '.$propPathName.'->'.$oneProp->getName());
             }
           }
 
@@ -193,10 +197,10 @@ class DataMapper
                 $result = $this->validateProperty($valueObject, $oneProp);
               } catch (InvalidArgumentException $e) {
                 // Value object se nepodarilo vytvorit (asi nelze vytvorit nevalidni)
-                throw new InvalidArgumentException('BaseValueObject can not be created. Invalid param value.  Path: '.$propPathName.'->'.$oneProp->getName().' Message: '.$e->getMessage(),[],$e);
+                throw new InvalidFormatException('BaseValueObject can not be created. Invalid param value.  Path: '.$propPathName.'->'.$oneProp->getName().' Message: '.$e->getMessage(),[],$e);
               }
               if ($result) {
-                throw new InvalidArgumentException('Value violated guard rules. ErorCode:'.$result->getErrorCodeValue()->getValueAsString().'.  Path: '.$propPathName.'->'.$oneProp->getName());
+                throw new InvalidFormatException('Value violated guard rules. ErorCode:'.$result->getErrorCodeValue()->getValueAsString().'.  Path: '.$propPathName.'->'.$oneProp->getName());
               }
             } elseif (is_a($type->getName(), BaseAssertableObject::class, true)) {
               // Parametr je potomkem BaseAssertableObject

@@ -10,6 +10,7 @@ use TigerCore\Request\Validator\Assert_IsArrayOfAssertableObjects;
 use TigerCore\Request\Validator\Assert_IsArrayOfValueObjects;
 use TigerCore\Validator\BaseAssertableObject;
 use TigerCore\Validator\DataMapper;
+use TigerCore\ValueObject\VO_Base64Hash;
 use TigerCore\ValueObject\VO_Duration;
 use TigerCore\ValueObject\VO_Hash;
 
@@ -37,6 +38,24 @@ $rawData = [
 ];
 
 
+
+test('DataMapper default value',function()use($rawData){
+
+  $dataMapper = new DataMapper([]);
+
+  class RequestData extends BaseAssertableObject {
+
+    #[RequestParam('hash','')]
+    public VO_Base64Hash $hash;
+
+  }
+
+  $data = new RequestData();
+  $dataMapper->mapTo($data);
+
+  Assert::same($data->hash->getValueAsString(), '');
+
+});
 
 test('DataMapper can handle Assert_IsArrayOfAssertableObjects',function()use($rawData){
   $dataMapper = new DataMapper($rawData);
@@ -83,9 +102,6 @@ test('DataMapper can handle Assert_IsArrayOfAssertableObjects',function()use($ra
     public NameData $id;
   }
 
-  /**
-   * @var MyData $result
-   */
   $data = new MyData();
   $dataMapper->mapTo($data);
 

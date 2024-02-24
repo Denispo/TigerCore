@@ -78,18 +78,18 @@ class Crypt {
    * @throws \Exception
    */
   public static function decode(VO_Base64Hash $encryptedData, VO_PasswordPlainText $password):string {
-    $encryptedData = base64_decode($encryptedData);
+    $encryptedDataRaw = base64_decode($encryptedData->getValueAsString());
 
-    if ($encryptedData === false) {
+    if ($encryptedDataRaw === false) {
       throw new \Exception('Encrypted data is not base64 string');
     }
 
-    if (strlen($encryptedData) < 2) {
+    if (strlen($encryptedDataRaw) < 2) {
       throw new \Exception('Invalid $encryptedData data. Too short');
     }
 
     // First byte is Cipher method id from VO_CipherMethod
-    $cipherMethod = current(unpack('C',substr($encryptedData,0,1)));
+    $cipherMethod = current(unpack('C',substr($encryptedDataRaw,0,1)));
 
     try {
       $cipherMethod = new VOM_CipherMethod($cipherMethod);
@@ -106,25 +106,25 @@ class Crypt {
     $options = OPENSSL_RAW_DATA;
 
     // Non-NULL Initialization Vector for encryption
-    $decryption_iv = substr($encryptedData,1,$iv_length);
+    $decryption_iv = substr($encryptedDataRaw,1,$iv_length);
 
     if (strlen($decryption_iv) < $iv_length) {
       throw new \Exception('Not enought bytes for IVector. Want: '.$iv_length.'bytes. Got: '.strlen($decryption_iv).'bytes');
     }
 
-    $encryptedData = substr($encryptedData, 1 + $iv_length);
+    $encryptedDataRaw = substr($encryptedDataRaw, 1 + $iv_length);
 
-    if (strlen($encryptedData) === 0) {
+    if (strlen($encryptedDataRaw) === 0) {
       throw new \Exception('No data left to decrypt.');
     }
 
     // Store the encryption key
-    $decryption_key = $password;
+    $decryption_key = $password->getValueAsString();
 
 
     // Use openssl_decrypt() function to decrypt the data
     $decryption = openssl_decrypt(
-      $encryptedData,
+      $encryptedDataRaw,
       $cipherMethod->getValueAsString(),
       $decryption_key,
       $options,

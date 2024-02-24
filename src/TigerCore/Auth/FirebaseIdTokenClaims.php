@@ -15,7 +15,9 @@ class FirebaseIdTokenClaims{
 
   public function getUserId(): string|int
   {
-    return $this->claims['uid'] ?? '';
+    // Subject. Must be a non-empty string and must be the uid of the user or device.
+    // https://firebase.google.com/docs/auth/admin/verify-id-tokens
+    return $this->claims['sub'] ?? '';
   }
 
   public function getCustomClaims(): BaseTokenClaims {

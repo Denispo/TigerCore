@@ -97,16 +97,19 @@ class JwtTokenUtils{
   public static function encodeToken(VO_TokenPrivateKey $privateKey, VO_Duration $duration, array $payload = [], string $algorithm = 'RS256'):VO_TokenPlainStr {
 
     $time = new VO_Timestamp(time());
-    $expirationDate = ($time)->addDuration($duration);
+    $expirationDate = $time->addDuration($duration);
 
+
+    $payload = array_merge(
+      $payload,
+      [
+        'iat' => (string)$time->getValueAsInt(), // issued at timestamp
+        'exp' => (string)$expirationDate->getValueAsInt(), // expiration timestamp
+      ]
+    );
     try {
       $tokenStr = JWT::encode(
-        array_merge(
-          $payload,
-          [
-            'iat' => $time->getValueAsInt(), // issued at timestamp
-            'exp' => $expirationDate->getValueAsInt(), // expiration timestamp
-          ]),
+        $payload,
         $privateKey->getValueAsString(),
         $algorithm
       );

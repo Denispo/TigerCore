@@ -87,8 +87,6 @@ class BaseRestRouter implements ICanMatchRoutes {
         if ($requestMethod->isOPTIONS()) {
           // preflight
           $httpResponse = new Response();
-          $httpResponse->setHeader('Access-Control-Allow-Origin', '*');
-          $httpResponse->setHeader('Access-Control-Allow-Headers', '*');
           $httpResponse->setHeader('Access-Control-Allow-Methods', $requestMethod->getValueAsString());
           $httpResponse->setCode(200);
           exit;

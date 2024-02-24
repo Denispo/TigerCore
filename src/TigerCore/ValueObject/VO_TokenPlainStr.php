@@ -2,15 +2,22 @@
 
 namespace TigerCore\ValueObject;
 
-use Nette\Http\IRequest;
 use TigerCore\Exceptions\InvalidArgumentException;
 use TigerCore\ICanGetValueAsString;
 
 class VO_TokenPlainStr extends VO_String_Trimmed {
 
-  public static function createFromBearerRequest(IRequest $request):self|null {
-    $str = $request->getHeader('Authorization') ?? '';
-    $str = explode(' ', $str,2);
+  public static function createFromBearerRequest():self|null {
+
+    $authToken = '';
+    // https://github.com/yiisoft/yii2/issues/13564
+    if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+      $authToken = $_SERVER['HTTP_AUTHORIZATION'];
+    } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+      $authToken = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+    }
+
+    $str = explode(' ', $authToken,2);
     if ($str && $str[0] == 'Bearer') {
       $str = $str[1] ?? '';
     } else {

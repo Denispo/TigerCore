@@ -10,10 +10,8 @@ use TigerCore\Request\Validator\Assert_IsArrayOfAssertableObjects;
 use TigerCore\Request\Validator\Assert_IsArrayOfValueObjects;
 use TigerCore\Validator\BaseAssertableObject;
 use TigerCore\Validator\DataMapper;
-use TigerCore\ValueObject\VO_Base64Hash;
 use TigerCore\ValueObject\VO_Duration;
 use TigerCore\ValueObject\VO_Hash;
-use TigerCore\ValueObject\VO_Timestamp;
 
 $rawData = [
   'name' => 'pepik',

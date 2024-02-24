@@ -74,7 +74,7 @@ class BaseRestRouter implements ICanMatchRoutes {
           $httpResponse = new Response();
           $httpResponse->setHeader('Access-Control-Allow-Methods', implode(', ', $routeInfo[1]));
           $httpResponse->setCode(200);
-          exit;
+          return null;
         } else {
           throw new S405_MethodNotAllowedException($routeInfo[1], 'Allowed methods: ' . implode(', ', $routeInfo[1]));
         }
@@ -89,7 +89,7 @@ class BaseRestRouter implements ICanMatchRoutes {
           $httpResponse = new Response();
           $httpResponse->setHeader('Access-Control-Allow-Methods', $requestMethod->getValueAsString());
           $httpResponse->setCode(200);
-          exit;
+          return null;
         }
 
 

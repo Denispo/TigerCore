@@ -58,8 +58,11 @@ class FirebaseCustomToken{
       "sub" => $serviceAccountJsonData['client_email'],
       "aud" => "https://identitytoolkit.googleapis.com/google.identity.identitytoolkit.v1.IdentityToolkit",
       "uid" => $userId,
-      "claims" => $claims?->getClaims()?? [],
     );
+    if ($claims) {
+      // https://stackoverflow.com/a/45536473
+      $payload["claims"] = $claims->getClaims();
+    }
     try {
       $result = JwtTokenUtils::encodeToken($privateKey, $duration, $payload, 'RS256');
     } catch (\Throwable $e) {

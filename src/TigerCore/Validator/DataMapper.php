@@ -226,6 +226,7 @@ class DataMapper
    * @return void
    * @throws InvalidArgumentException
    * @throws TypeNotDefinedException
+   * @throws InvalidFormatException
    */
   public function mapTo(BaseAssertableObject $assertableObject):void
   {

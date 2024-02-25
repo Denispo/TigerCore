@@ -12,6 +12,17 @@ class BaseResponseException extends \Exception {
 
   private int $httpResponseCode = 0;
   private array $customData = [];
+  private string $sentryEventId = '';
+
+  public function getSentryEventId(): string
+  {
+    return $this->sentryEventId;
+  }
+
+  protected function setSentryEventId(string $sentryEventId)
+  {
+    $this->sentryEventId = $sentryEventId;
+  }
 
   public function __construct(string $message = '', array $customData = [], private readonly \Throwable|null $previousException = null) {
     parent::__construct($message);

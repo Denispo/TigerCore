@@ -9,7 +9,18 @@ abstract class Base_5xx_RequestException extends BaseResponseException {
   {
     parent::__construct(message: $message, customData: $customData,previousException: $this->previousException);
     if (function_exists('\Sentry\captureException') && class_exists('\Sentry\EventHint')) {
-      $eventId = \Sentry\captureException($previousException,\Sentry\EventHint::fromArray(['extra' => $customData]));
+
+      $data['custom_data'] = $customData;
+      $data['original_exception'] = [
+        'class' => get_class($this),
+        'message' => $this->message,
+        'file' => $this->file,
+        'line' => $this->line,
+        'trace' =>  $this->getTrace()
+      ];
+
+
+      $eventId = \Sentry\captureException($previousException ? $previousException : $this,\Sentry\EventHint::fromArray(['extra' => $data]));
       $this->setSentryEventId($eventId);
     }
   }

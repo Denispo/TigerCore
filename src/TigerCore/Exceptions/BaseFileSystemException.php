@@ -3,6 +3,6 @@
 namespace TigerCore\Exceptions;
 
 
-class BaseFileSystemException extends _BaseException {
+class BaseFileSystemException extends BaseTigerException {
 
 }

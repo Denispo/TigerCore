@@ -4,6 +4,6 @@ namespace TigerCore\Exceptions;
 
 
 
-class EmptyArgumentException extends _BaseException
+class EmptyArgumentException extends BaseTigerException
 {
 }

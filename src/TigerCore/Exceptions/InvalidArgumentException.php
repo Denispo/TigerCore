@@ -4,6 +4,6 @@ namespace TigerCore\Exceptions;
 
 
 
-class InvalidArgumentException extends _BaseException
+class InvalidArgumentException extends BaseTigerException
 {
 }

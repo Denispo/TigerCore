@@ -4,7 +4,7 @@ namespace TigerCore\Exceptions;
 
 
 
-class InvalidFileNameException extends _BaseException
+class InvalidFileNameException extends BaseTigerException
 {
 }
 

@@ -2,8 +2,8 @@
 
 namespace TigerCore\Email;
 
-use TigerCore\Exceptions\_BaseException;
+use TigerCore\Exceptions\BaseTigerException;
 
-class CanNotSendEmailException extends _BaseException {
+class CanNotSendEmailException extends BaseTigerException {
 
 }

@@ -4,6 +4,6 @@ namespace TigerCore\Exceptions;
 
 
 
-class NotFoundException extends _BaseException
+class NotFoundException extends BaseTigerException
 {
 }

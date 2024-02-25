@@ -4,6 +4,6 @@ namespace TigerCore\Exceptions;
 
 
 
-class ExpiredException extends _BaseException
+class ExpiredException extends BaseTigerException
 {
 }

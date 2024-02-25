@@ -4,7 +4,7 @@ namespace TigerCore\Exceptions;
 
 
 
-class _BaseException extends \Exception
+class BaseTigerException extends \Exception
 {
   /**
    * @param string $message

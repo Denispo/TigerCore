@@ -4,6 +4,6 @@ namespace TigerCore\Exceptions;
 
 
 
-class TypeNotDefinedException extends _BaseException
+class TypeNotDefinedException extends BaseTigerException
 {
 }

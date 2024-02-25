@@ -4,6 +4,6 @@ namespace TigerCore\Exceptions;
 
 
 
-class InvalidFormatException extends _BaseException
+class InvalidFormatException extends BaseTigerException
 {
 }

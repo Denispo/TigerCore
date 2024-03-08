@@ -48,6 +48,9 @@ class JwtTokenUtils{
         }
       }
 
+      // https://github.com/firebase/firebase-admin-dotnet/pull/29
+      JWT::$leeway = 5 * 60; // 5 minute tolerance
+
       $data = (array) JWT::decode($tokenStr->getValueAsString(), $keyOrKeyArray, $headers);
     } catch (\InvalidArgumentException|\DomainException|\UnexpectedValueException|SignatureInvalidException|BeforeValidException|ExpiredException|\TypeError $e) {
       switch (get_class($e)) {

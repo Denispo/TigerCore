@@ -36,7 +36,11 @@ class FirebaseIdToken{
     if ($authTime === -1) {
       throw new InvalidTokenException(new TokenError(TokenError::ERR_INVALID_AUTHENTICATION_TIME),'Missing authentication time claim "auth_time"');
     }
-    if ($authTime >= time()) {
+
+    // Google time is sometimes "in the future" :/
+    // https://github.com/firebase/firebase-admin-dotnet/pull/29
+    // 5 minute leeway
+    if ($authTime >= time() + (5*60)) {
       throw new InvalidTokenException(new TokenError(TokenError::ERR_INVALID_AUTHENTICATION_TIME),'Authentication time claim "auth_time" can not be in the future');
     }
 

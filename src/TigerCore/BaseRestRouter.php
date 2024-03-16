@@ -14,7 +14,7 @@ use TigerCore\ValueObject\VO_HttpRequestMethod;
 use TigerCore\ValueObject\VO_RouteMask;
 use function FastRoute\simpleDispatcher;
 
-class BaseRestRouter implements ICanMatchRoutes {
+class BaseRestRouter implements ICanMatchRoutes, ICanMatchPreflightRoutes {
 
   /**
    * @var array

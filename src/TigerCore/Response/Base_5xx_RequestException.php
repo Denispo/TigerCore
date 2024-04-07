@@ -10,7 +10,7 @@ abstract class Base_5xx_RequestException extends BaseResponseException {
     parent::__construct(message: $message, customData: $customData,previousException: $this->previousException);
     if (function_exists('\Sentry\captureException') && class_exists('\Sentry\EventHint')) {
 
-      $data['custom_data'] = $customData;
+      $data['custom_data'] = $this->getCustomData();
       $data['original_exception'] = [
         'class' => get_class($this),
         'message' => $this->message,

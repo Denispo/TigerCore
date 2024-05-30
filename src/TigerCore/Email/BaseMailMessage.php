@@ -27,19 +27,16 @@ class BaseMailMessage {
     $this->message->setSubject($subject);
   }
 
-  public function send(Mailer $mailer)
+  public function send(VO_Email $to, Mailer $mailer):void
   {
+    $this->message->clearHeader('To');
+    $this->message->addTo($to->getValueAsString());
     $mailer->send($this->message);
   }
 
   public function setHtmlBody(string $htmlBody):void
   {
     $this->message->setHtmlBody($htmlBody);
-  }
-
-  public function addTo(string $email, ?string $name = null):void
-  {
-    $this->message->addTo($email, $name);
   }
 
   public function getSubject():string

@@ -2,23 +2,69 @@
 
 namespace TigerCore\Email;
 
+use Nette\Mail\Mailer;
 use Nette\Mail\Message;
+use TigerCore\ValueObject\VO_Email;
 
-class BaseMailMessage extends Message {
+class BaseMailMessage {
 
-  public function __construct()
+  protected Message $message;
+
+  /**
+   * If $subject is not set then subject will be set from <title> tag from Html message body
+   * @param VO_Email $fromEmail
+   * @param string $subject
+   * @param string|null $fromName
+   */
+  public function __construct(VO_Email $fromEmail, string $fromName = null, string $subject = '')
   {
-    parent::__construct();
-    $this::$defaultHeaders = [
+    $this->message = new Message();
+    $this->message::$defaultHeaders = [
       'MIME-Version' => '1.0',
 //      'X-Mailer' => 'Nette Framework',
     ];
+    $this->message->setFrom($fromEmail->getValueAsString(), $fromName);
+    $this->message->setSubject($subject);
   }
 
-  public function setTo(string $email, ?string $name = null):void
+  public function send(Mailer $mailer)
   {
-    $this->clearHeader('To');
-    $this->addTo($email, $name);
+    $mailer->send($this->message);
+  }
+
+  public function setHtmlBody(string $htmlBody):void
+  {
+    $this->message->setHtmlBody($htmlBody);
+  }
+
+  public function addTo(string $email, ?string $name = null):void
+  {
+    $this->message->addTo($email, $name);
+  }
+
+  public function getSubject():string
+  {
+    return $this->message->getSubject();
+  }
+
+  public function getTo():string|array
+  {
+    return $this->message->getHeader('To');
+  }
+
+  public function getFrom():string
+  {
+    return current($this->message->getFrom()?? ['']);
+  }
+
+  public function getBodyHtml():string
+  {
+    return $this->message->getHtmlBody();
+  }
+
+  public function getBodyPlainText():string
+  {
+    return $this->message->getBody();
   }
 
 }

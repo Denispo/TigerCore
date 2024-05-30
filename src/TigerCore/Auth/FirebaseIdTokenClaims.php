@@ -10,7 +10,7 @@ class FirebaseIdTokenClaims{
     protected array $claims = []
     )
   {
-    $this->customClaims = new BaseTokenClaims($this->claims['claims']?? []);
+    $this->customClaims = new BaseTokenClaims((array)($this->claims['claims']?? []));
   }
 
   public function getUserId(): string|int

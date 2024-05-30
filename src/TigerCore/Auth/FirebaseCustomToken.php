@@ -61,7 +61,8 @@ class FirebaseCustomToken{
     );
     if ($claims) {
       // https://stackoverflow.com/a/45536473
-      $payload["claims"] = $claims->getClaims();
+        // content from $payload["claims"] will be rendered in the IdToken root, so we have to add claims into claims. See FirebaseIdTokenClaims.php
+      $payload["claims"] = ['claims'=>$claims->getClaims()];
     }
     try {
       $result = JwtTokenUtils::encodeToken($privateKey, $duration, $payload, 'RS256');

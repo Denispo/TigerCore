@@ -7,14 +7,14 @@ use TigerCore\ICanGetValueAsString;
 
 class VO_Url extends VO_String_Trimmed {
   /**
-   * @param ICanGetValueAsString|string $url
+   * @param string|ICanGetValueAsString $urlWithProtocol
    * @throws InvalidArgumentException
    */
-  public function __construct(ICanGetValueAsString|string $url)
+  public function __construct(string|ICanGetValueAsString $urlWithProtocol)
   {
-    parent::__construct($url);
-    if ($this->isEmpty()) {
-      throw new InvalidArgumentException('Url can not be empty string');
+    parent::__construct($urlWithProtocol);
+    if (filter_var($this->getValueAsString(), FILTER_VALIDATE_URL) === false) {
+      throw new InvalidArgumentException('Mallformed Url', ['$urlWithProtocol' => $urlWithProtocol]);
     }
   }
 

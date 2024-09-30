@@ -7,8 +7,9 @@ use TigerCore\ICanGetValueAsInit;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class Assert_IsPositiveNumber extends BaseAssertion implements ICanAssertIntValue {
 
-  public function runAssertion(ICanGetValueAsInit $requestParam): BaseParamErrorCode|null
+  public function runAssertion(ICanGetValueAsInit|int $requestParam): BaseParamErrorCode|null
   {
-    return $requestParam->getValueAsInt() > 0 ? null : new ParamErrorCode_TooLow();
+     $value = parent::getValueAsInt($requestParam);
+     return $value > 0 ? null : new ParamErrorCode_TooLow();
   }
 }

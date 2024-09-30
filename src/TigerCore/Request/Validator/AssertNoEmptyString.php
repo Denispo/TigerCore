@@ -7,8 +7,16 @@ use TigerCore\ICanGetValueAsString;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class AssertNoEmptyString extends BaseAssertion implements ICanAssertStringValue {
 
-  public function runAssertion(ICanGetValueAsString $requestParam): BaseParamErrorCode|null
-  {
-    return $requestParam->getValueAsString() === '' ? new ParamErrorCode_IsEmpty() : null;
-  }
+   public function __construct(private readonly bool $trimWhitespaces = true)
+   {
+   }
+
+   public function runAssertion(ICanGetValueAsString|string $requestParam): BaseParamErrorCode|null
+   {
+      $value = parent::getValueAsString($requestParam);
+      if ($this->trimWhitespaces) {
+         $value = trim($value);
+      }
+      return $value === '' ? new ParamErrorCode_IsEmpty() : null;
+   }
 }

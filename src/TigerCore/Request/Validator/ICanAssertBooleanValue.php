@@ -6,6 +6,6 @@ use TigerCore\ICanGetValueAsBoolean;
 
 interface ICanAssertBooleanValue {
 
-  public function runAssertion(ICanGetValueAsBoolean $requestParam):BaseParamErrorCode|null;
+  public function runAssertion(ICanGetValueAsBoolean|bool $requestParam):BaseParamErrorCode|null;
 
 }

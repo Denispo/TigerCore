@@ -6,6 +6,6 @@ use TigerCore\ICanGetValueAsString;
 
 interface ICanAssertStringValue {
 
-  public function runAssertion(ICanGetValueAsString $requestParam):BaseParamErrorCode|null;
+  public function runAssertion(ICanGetValueAsString|string $requestParam):BaseParamErrorCode|null;
 
 }

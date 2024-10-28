@@ -12,12 +12,12 @@ class VO_Base64Hash extends VO_Hash {
    */
   public function __construct(ICanGetValueAsString|string $base64String)
   {
+     parent::__construct($base64String);
     //https://stackoverflow.com/a/11154248
-    if (!(bool)preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $base64String)) {
-      throw new InvalidArgumentException('$base64String contains invalid characters:'.substr($base64String,0,100));
+    if (!(bool)preg_match('/^[a-zA-Z0-9\/\r\n+]*={0,2}$/', $this->getValueAsString())) {
+      throw new InvalidArgumentException('$base64String contains invalid characters:'.substr($this->getValueAsString(),0,100));
     }
 
-    parent::__construct($base64String);
   }
 
 }

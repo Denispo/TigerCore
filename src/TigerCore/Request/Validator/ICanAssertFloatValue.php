@@ -6,6 +6,6 @@ use TigerCore\ICanGetValueAsFloat;
 
 interface ICanAssertFloatValue {
 
-  public function runAssertion(ICanGetValueAsFloat $requestParam):BaseParamErrorCode|null;
+  public function runAssertion(ICanGetValueAsFloat|float $requestParam):BaseParamErrorCode|null;
 
 }

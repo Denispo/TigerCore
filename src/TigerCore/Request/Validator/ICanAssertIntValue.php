@@ -6,6 +6,6 @@ use TigerCore\ICanGetValueAsInit;
 
 interface ICanAssertIntValue {
 
-  public function runAssertion(ICanGetValueAsInit $requestParam):BaseParamErrorCode|null;
+  public function runAssertion(ICanGetValueAsInit|int $requestParam):BaseParamErrorCode|null;
 
 }

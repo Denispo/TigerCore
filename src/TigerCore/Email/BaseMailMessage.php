@@ -34,6 +34,11 @@ class BaseMailMessage {
     $mailer->send($this->message);
   }
 
+   public function setReplyTo(VO_Email $email):void
+   {
+      $this->message->setHeader('Reply-To', $email->getValueAsString());
+   }
+
   public function setHtmlBody(string $htmlBody):void
   {
     $this->message->setHtmlBody($htmlBody);

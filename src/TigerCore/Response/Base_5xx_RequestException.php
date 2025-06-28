@@ -21,7 +21,9 @@ abstract class Base_5xx_RequestException extends BaseResponseException {
 
 
       $eventId = \Sentry\captureException($previousException ? $previousException : $this,\Sentry\EventHint::fromArray(['extra' => $data]));
-      $this->setSentryEventId($eventId);
+      if (is_string($eventId)) {
+         $this->setSentryEventId($eventId);
+      }
     }
   }
 

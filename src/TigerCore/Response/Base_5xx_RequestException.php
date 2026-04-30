@@ -5,27 +5,31 @@ namespace TigerCore\Response;
 
 abstract class Base_5xx_RequestException extends BaseResponseException {
 
-  public function __construct(string $message = '', array $customData = [], private readonly \Throwable|null $previousException = null)
-  {
-    parent::__construct(message: $message, customData: $customData,previousException: $this->previousException);
-    if (function_exists('\Sentry\captureException') && class_exists('\Sentry\EventHint')) {
+   public function __construct(string $message = '', array $customData = [], private readonly \Throwable|null $previousException = null)
+   {
+      parent::__construct(message: $message, customData: $customData,previousException: $this->previousException);
 
-      $data['custom_data'] = $this->getCustomData();
-      $data['original_exception'] = [
-        'class' => get_class($this),
-        'message' => $this->message,
-        'file' => $this->file,
-        'line' => $this->line,
-        'trace' =>  $this->getTrace()
-      ];
+      $captureExceptionFunction = '\Sentry\captureException';
+      $eventHintClass   = '\Sentry\EventHint';
+
+      if (function_exists($captureExceptionFunction) && class_exists($eventHintClass)) {
+
+         $data['custom_data'] = $this->getCustomData();
+         $data['original_exception'] = [
+            'class' => get_class($this),
+            'message' => $this->message,
+            'file' => $this->file,
+            'line' => $this->line,
+            'trace' =>  $this->getTrace()
+         ];
 
 
-      $eventId = \Sentry\captureException($previousException ? $previousException : $this,\Sentry\EventHint::fromArray(['extra' => $data]));
-      if (is_string($eventId)) {
-         $this->setSentryEventId($eventId);
+         $eventId = $captureExceptionFunction($previousException ? $previousException : $this,$eventHintClass::fromArray(['extra' => $data]));
+         if (is_string($eventId)) {
+            $this->setSentryEventId($eventId);
+         }
       }
-    }
-  }
+   }
 
 
 

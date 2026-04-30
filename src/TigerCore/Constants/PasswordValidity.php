@@ -5,8 +5,8 @@ namespace TigerCore\Constants;
 
 class PasswordValidity extends BaseConst implements IBaseConst {
 
-  const PWD_INVALID = 0;
-  const PWD_VALID = 1;
+  const int PWD_INVALID = 0;
+  const int PWD_VALID = 1;
 
   public static function createFromBoolean(bool $isPasswordValid):self {
     if ($isPasswordValid) {

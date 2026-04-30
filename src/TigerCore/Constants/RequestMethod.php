@@ -8,12 +8,12 @@ use Nette\Http\IRequest;
 
 class RequestMethod extends BaseConst implements IRequestMethod {
 
-  const HTTP_NA = 0;
-  const HTTP_POST = 1;
-  const HTTP_GET = 2;
-  const HTTP_PUT = 3;
-  const HTTP_DELETE = 4;
-  const HTTP_OPTION = 5;
+  const int HTTP_NA = 0;
+  const int HTTP_POST = 1;
+  const int HTTP_GET = 2;
+  const int HTTP_PUT = 3;
+  const int HTTP_DELETE = 4;
+  const int HTTP_OPTION = 5;
 
   public static function getFromHttpRequest(IRequest $httpRequest):self {
     $method = strtoupper($httpRequest->getMethod());

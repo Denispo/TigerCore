@@ -8,7 +8,7 @@ class Assert_IsArrayOfAssertableObjects extends BaseAssertionArray implements IC
   /**
    * @param class-string $assertableObjectClassName
    */
-  public function __construct(private string $assertableObjectClassName)
+  public function __construct(private readonly string $assertableObjectClassName)
   {
   }
 

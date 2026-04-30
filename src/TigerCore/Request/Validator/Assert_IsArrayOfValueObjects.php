@@ -8,7 +8,7 @@ class Assert_IsArrayOfValueObjects extends BaseAssertionArray implements ICanAss
   /**
    * @param class-string $valueObjectClassName
    */
-  public function __construct(private string $valueObjectClassName)
+  public function __construct(private readonly string $valueObjectClassName)
   {
   }
 

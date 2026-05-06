@@ -26,10 +26,10 @@ class FirebaseCustomToken{
    * @throws InvalidTokenException
    */
   public static function generateToken(
-    array $serviceAccountJsonData,
-    int|string                       $userId,
-    ICanGetTokenClaims|null          $claims = null,
-    VO_FirebaseCustomTokenDuration   $duration = null
+     array $serviceAccountJsonData,
+     int|string                       $userId,
+     ICanGetTokenClaims|null          $claims = null,
+     ?VO_FirebaseCustomTokenDuration $duration = null
   ):VO_TokenPlainStr
   {
     $userId = trim((string)$userId);

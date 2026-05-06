@@ -32,7 +32,7 @@ class JwtTokenUtils{
    * @throws InvalidTokenException
    * @throws InvalidArgumentException
    */
-  public static function decodeToken(VO_TokenPlainStr $tokenStr, VO_TokenPublicKey|array $publicKey, string $algorithm = 'RS256', \stdClass &$headers = null): array {
+  public static function decodeToken(VO_TokenPlainStr $tokenStr, VO_TokenPublicKey|array $publicKey, string $algorithm = 'RS256', ?\stdClass &$headers = null): array {
     try {
       $keyOrKeyArray = [];
       if ($publicKey instanceof VO_TokenPublicKey){

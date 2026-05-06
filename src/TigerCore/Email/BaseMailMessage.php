@@ -16,7 +16,7 @@ class BaseMailMessage {
    * @param string $subject
    * @param string|null $fromName
    */
-  public function __construct(VO_Email $fromEmail, string $fromName = null, string $subject = '')
+  public function __construct(VO_Email $fromEmail, ?string $fromName = null, string $subject = '')
   {
     $this->message = new Message();
     $this->message::$defaultHeaders = [

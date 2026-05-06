@@ -8,9 +8,9 @@ class RequestParam {
 
   /**
    * @param string $customParamName If empty string, real property name will be used as the key name in requst JSON
-   * @param $defaultValue
+   * @param null $defaultValue
    */
-  public function __construct(string $customParamName = '', private $defaultValue = null) {
+  public function __construct(string $customParamName = '', private null $defaultValue = null) {
     $this->customParamName = trim($customParamName);
   }
 

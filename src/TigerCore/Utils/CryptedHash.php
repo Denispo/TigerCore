@@ -54,7 +54,7 @@ class CryptedHash {
    * @throws ExpiredException
    * @throws InvalidArgumentException
    */
-  public static function getValueFromHash(VO_Base64Hash $hash, VO_PasswordPlainText $passphrase, VO_Duration $hashDuration = null):string|int {
+  public static function getValueFromHash(VO_Base64Hash $hash, VO_PasswordPlainText $passphrase, ?VO_Duration $hashDuration = null):string|int {
     $binary = Crypt::decode($hash, $passphrase);
     if (strlen($binary) < 4) {
       // 3 bytes timestamp + 1 byte (at least) UserId

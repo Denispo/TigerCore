@@ -10,7 +10,7 @@ class RequestParam {
    * @param string $customParamName If empty string, real property name will be used as the key name in requst JSON
    * @param null $defaultValue
    */
-  public function __construct(string $customParamName = '', private null $defaultValue = null) {
+  public function __construct(string $customParamName = '', private readonly mixed $defaultValue = null) {
     $this->customParamName = trim($customParamName);
   }
 
@@ -18,7 +18,7 @@ class RequestParam {
     return $this->customParamName;
   }
 
-  public function getDefaultValue() {
+  public function getDefaultValue():mixed {
     return $this->defaultValue;
   }
 
